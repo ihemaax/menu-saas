@@ -7,6 +7,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ThemeController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -14,6 +15,7 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware('auth')->group(function (): void {
     Route::get('/onboarding', [OnboardingController::class, 'create'])->name('onboarding.create');
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
+    Route::get('/onboarding/slug-check', [OnboardingController::class, 'checkSlug'])->name('onboarding.slug-check');
 
     Route::middleware('restaurant.setup')->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
@@ -25,6 +27,9 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/settings/restaurant', [SettingsController::class, 'updateRestaurant'])->name('settings.restaurant.update');
         Route::put('/settings/menu', [SettingsController::class, 'updateMenu'])->name('settings.menu.update');
         Route::get('/settings/menu/qr.svg', [SettingsController::class, 'qrSvg'])->name('settings.menu.qr');
+
+        Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
+        Route::put('/themes', [ThemeController::class, 'update'])->name('themes.update');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

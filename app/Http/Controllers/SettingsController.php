@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\UpdateMenuSettingsRequest;
 use App\Http\Requests\Settings\UpdateRestaurantSettingsRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -16,7 +17,11 @@ class SettingsController extends Controller
         $restaurant = auth()->user()->restaurant()->with('menuSetting')->firstOrFail();
         $menuUrl = route('menu.show', $restaurant->menuSetting->slug);
 
-        return view('settings.index', compact('restaurant', 'menuUrl'));
+        return view('settings.index', [
+            'restaurant' => $restaurant,
+            'menuUrl' => $menuUrl,
+            'themes' => config('menu_themes'),
+        ]);
     }
 
     public function updateRestaurant(UpdateRestaurantSettingsRequest $request): RedirectResponse
@@ -38,17 +43,28 @@ class SettingsController extends Controller
             'logo_path' => $logoPath,
         ]);
 
-        return back()->with('success', 'تم تحديث بيانات المطعم.');
+        return back()->with('success', 'بيانات المطعم اتحدثت.');
     }
 
     public function updateMenu(UpdateMenuSettingsRequest $request): RedirectResponse
     {
-        $request->user()->restaurant->menuSetting->update([
-            'slug' => strtolower($request->slug),
-            'is_public' => $request->boolean('is_public', true),
-        ]);
+        try {
+            $request->user()->restaurant->menuSetting->update([
+                'slug' => str($request->slug)->lower()->slug('-')->value(),
+                'is_public' => $request->boolean('is_public', true),
+                'active_theme' => $request->active_theme,
+            ]);
+        } catch (QueryException $exception) {
+            if ((string) $exception->getCode() === '23000') {
+                return back()->withInput()->withErrors([
+                    'slug' => 'اللينك ده متاخد بالفعل، جرّب اسم تاني.',
+                ]);
+            }
 
-        return back()->with('success', 'تم تحديث إعدادات المنيو.');
+            throw $exception;
+        }
+
+        return back()->with('success', 'إعدادات المنيو اتحفظت.');
     }
 
     public function qrSvg()

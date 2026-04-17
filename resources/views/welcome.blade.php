@@ -1,10 +1,11 @@
 <x-guest-layout>
     <div class="space-y-4 text-center">
-        <h1 class="text-3xl font-extrabold text-slate-900">حوّل منيو مطعمك إلى تجربة رقمية فاخرة</h1>
-        <p class="text-slate-600">من التسجيل حتى QR ومنيو عام احترافي، كل شيء جاهز للعمل التجاري.</p>
-        <div class="flex justify-center gap-3">
-            <a class="zz-btn-primary" href="{{ route('register') }}">ابدأ الآن</a>
-            <a class="zz-btn-secondary" href="{{ route('login') }}">تسجيل الدخول</a>
+        <p class="text-xs font-semibold text-teal-700">نسخة تجريبية</p>
+        <h1 class="text-3xl font-extrabold text-slate-900">خلّي منيو مكانك يبان من أول نظرة.</h1>
+        <p class="text-slate-600">سجل حسابك وطلّع لينك منيو مرتب يتفتح بسرعة على أي موبايل.</p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <a class="zz-btn-primary w-full" href="{{ route('register') }}">اعمل حساب</a>
+            <a class="zz-btn-secondary w-full" href="{{ route('login') }}">دخول</a>
         </div>
     </div>
 </x-guest-layout>

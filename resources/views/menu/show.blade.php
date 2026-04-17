@@ -24,7 +24,7 @@
                 <div class="zz-card p-4">
                     <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/500x320?text=No+Image' }}" class="h-32 w-full rounded-xl object-cover">
                     <h3 class="mt-3 font-bold">{{ $product->name }}</h3>
-                    <p class="text-sm text-slate-500">{{ number_format($product->price, 2) }} ر.س</p>
+                    <p class="text-sm text-slate-500">{{ number_format($product->price, 2) }}</p>
                 </div>
             @endforeach
         </div>
@@ -44,7 +44,7 @@
                                     <div class="flex-1">
                                         <h3 class="font-bold">{{ $product->name }}</h3>
                                         <p class="line-clamp-2 text-sm text-slate-500">{{ $product->description }}</p>
-                                        <p class="mt-2 text-sm font-bold text-teal-700">{{ number_format($product->price, 2) }} ر.س</p>
+                                        <p class="mt-2 text-sm font-bold text-teal-700">{{ number_format($product->price, 2) }}</p>
                                     </div>
                                 </div>
                             </article>

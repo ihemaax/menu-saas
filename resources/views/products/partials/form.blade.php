@@ -14,7 +14,7 @@
         <div><label class="zz-label">السعر</label><input type="number" step="0.01" min="0" class="zz-input" name="price" value="{{ old('price', $product?->price) }}" required></div>
         <div><label class="zz-label">الترتيب</label><input type="number" min="0" class="zz-input" name="sort_order" value="{{ old('sort_order', $product?->sort_order) }}"></div>
     </div>
-    <div><label class="zz-label">صورة المنتج</label><input type="file" class="zz-input" name="image" accept="image/*"></div>
+    <div><label class="zz-label">الصورة</label><input type="file" class="zz-input" name="image" accept="image/*"></div>
     @if($product?->image_path)<img src="{{ asset('storage/'.$product->image_path) }}" class="h-28 w-28 rounded-xl object-cover" alt="{{ $product->name }}">@endif
     <div class="flex gap-6">
         <label class="flex items-center gap-2"><input type="checkbox" name="is_available" value="1" {{ old('is_available', $product?->is_available ?? true) ? 'checked' : '' }}> متاح</label>

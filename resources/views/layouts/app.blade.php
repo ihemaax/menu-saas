@@ -10,40 +10,59 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-['Cairo']">
-<div class="zz-shell">
-    <header class="zz-card mb-6 p-4 md:p-5">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <a href="{{ route('dashboard') }}" class="text-xl font-extrabold text-teal-800">Za3tr-Zatona</a>
-                <p class="text-xs text-slate-500">منصة منيو SaaS احترافية</p>
+<div x-data="{ collapsed: false }" class="zz-layout" dir="ltr">
+    <aside :class="collapsed ? 'w-20' : 'w-72'" class="zz-sidebar">
+        <div class="h-full p-3" dir="rtl">
+            <div class="mb-6 flex items-center justify-between px-2">
+                <a href="{{ route('dashboard') }}" class="font-extrabold text-teal-800" :class="collapsed ? 'text-sm' : 'text-xl'">Z3</a>
+                <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600">☰</button>
             </div>
-            <nav class="flex flex-wrap items-center gap-2 text-sm font-semibold">
-                <a class="zz-btn-secondary" href="{{ route('dashboard') }}">لوحة التحكم</a>
-                <a class="zz-btn-secondary" href="{{ route('categories.index') }}">الأقسام</a>
-                <a class="zz-btn-secondary" href="{{ route('products.index') }}">المنتجات</a>
-                <a class="zz-btn-secondary" href="{{ route('settings.index') }}">الإعدادات</a>
-                <a class="zz-btn-secondary" href="{{ route('profile.edit') }}">الحساب</a>
-                <form action="{{ route('logout') }}" method="POST">@csrf <button class="zz-btn-primary">تسجيل خروج</button></form>
-            </nav>
-        </div>
-    </header>
-
-    @if(session('success'))
-        <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>
-    @endif
-
-    @if($errors->any())
-        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-            <ul class="list-inside list-disc">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
+            <nav class="space-y-2 text-sm font-semibold">
+                @php($items = auth()->user()?->restaurant_id ? [
+                    ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => '🏠'],
+                    ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => '🗂️'],
+                    ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => '🍽️'],
+                    ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => '⚙️'],
+                    ['route' => 'themes.index', 'label' => 'الثيمات', 'icon' => '🎨'],
+                ] : [
+                    ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => '🧭'],
+                ])
+                @foreach($items as $item)
+                    <a href="{{ route($item['route']) }}" class="flex items-center gap-3 rounded-xl px-3 py-2 {{ request()->routeIs($item['route'].'*') ? 'bg-teal-50 text-teal-800' : 'text-slate-700 hover:bg-slate-100' }}">
+                        <span>{{ $item['icon'] }}</span>
+                        <span x-show="!collapsed">{{ $item['label'] }}</span>
+                    </a>
                 @endforeach
-            </ul>
+            </nav>
+            <div class="mt-6 border-t border-slate-200 pt-4" x-show="!collapsed">
+                <a href="{{ route('profile.edit') }}" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">الحساب</a>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf <button class="w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">خروج</button></form>
+            </div>
         </div>
-    @endif
+    </aside>
 
-    {{ $slot ?? '' }}
-    @yield('content')
+    <main :class="collapsed ? 'ml-20' : 'ml-72'" class="zz-main" dir="rtl">
+        <header class="zz-topbar">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-slate-500">Za3tr-Zatona</p>
+                    <p class="text-sm font-bold text-slate-900">إدارة المنيو بشكل أهدى وأسرع</p>
+                </div>
+                <div class="text-sm text-slate-500">{{ now()->format('d M Y') }}</div>
+            </div>
+        </header>
+
+        <div class="p-4 md:p-6 lg:p-8">
+            @if(session('success'))<div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>@endif
+            @if($errors->any())
+                <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                    <ul class="list-disc list-inside">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                </div>
+            @endif
+            {{ $slot ?? '' }}
+            @yield('content')
+        </div>
+    </main>
 </div>
 </body>
 </html>

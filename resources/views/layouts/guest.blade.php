@@ -10,16 +10,27 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-['Cairo']">
-<div class="min-h-screen px-4 py-8 md:px-6">
-    <div class="mx-auto max-w-md">
-        <div class="mb-6 text-center">
-            <a href="{{ route('home') }}" class="text-3xl font-extrabold text-teal-800">Za3tr-Zatona</a>
-            <p class="mt-2 text-sm text-slate-500">نظام SaaS احترافي لإدارة منيو المطاعم</p>
+<div class="zz-auth-wrap">
+    <section class="zz-auth-visual">
+        <div class="relative z-10">
+            <p class="text-sm opacity-80">Za3tr-Zatona</p>
+            <h1 class="mt-3 text-4xl font-extrabold leading-tight">منيو شكله شيك... <br>وشغلك شكله أرتب.</h1>
+            <p class="mt-4 max-w-md text-white/85">كل حاجة محتاجها عشان تعرض أصنافك بستايل يفتح النفس، وتتحكم فيها من مكان واحد.</p>
+            <div class="mt-8 grid max-w-sm grid-cols-2 gap-3 text-sm">
+                <div class="rounded-2xl bg-white/15 p-3">⚡ إعداد سريع</div>
+                <div class="rounded-2xl bg-white/15 p-3">📱 مناسب للموبايل</div>
+                <div class="rounded-2xl bg-white/15 p-3">🎯 لينك + QR</div>
+                <div class="rounded-2xl bg-white/15 p-3">🎨 ثيمات جاهزة</div>
+            </div>
         </div>
-        <div class="zz-card p-6">
+        <div class="absolute -bottom-16 -left-8 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
+        <div class="absolute -top-12 right-0 h-40 w-40 rounded-full bg-cyan-200/20 blur-2xl"></div>
+    </section>
+    <section class="zz-auth-panel">
+        <div class="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
             {{ $slot }}
         </div>
-    </div>
+    </section>
 </div>
 </body>
 </html>

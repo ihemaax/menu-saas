@@ -2,13 +2,10 @@
 
 @section('content')
 <div class="zz-card p-6">
-    <div class="mb-4 flex items-center justify-between">
-        <h1 class="zz-title">المنتجات</h1>
-        <a href="{{ route('products.create') }}" class="zz-btn-primary">إضافة منتج</a>
-    </div>
+    <div class="mb-4 flex items-center justify-between"><h1 class="zz-title">المنتجات</h1><a href="{{ route('products.create') }}" class="zz-btn-primary">أضف منتج</a></div>
 
     @if($products->isEmpty())
-        <div class="zz-empty">لا توجد منتجات حالياً.</div>
+        <div class="zz-empty">مافيش منتجات لحد دلوقتي.</div>
     @else
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             @foreach($products as $product)
@@ -17,16 +14,14 @@
                     <div class="mt-3">
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="font-bold">{{ $product->name }}</h3>
-                            <span class="zz-badge">{{ number_format($product->price, 2) }} ر.س</span>
+                            <span class="zz-chip">{{ number_format($product->price, 2) }}</span>
                         </div>
                         <p class="mt-1 text-sm text-slate-500">{{ $product->category->name_ar }}</p>
                         <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $product->description }}</p>
                     </div>
                     <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="zz-badge {{ $product->is_available ? 'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-700' }}">{{ $product->is_available ? 'متاح':'غير متاح' }}</span>
-                        @if($product->is_featured)
-                            <span class="zz-badge bg-amber-100 text-amber-700">مميز</span>
-                        @endif
+                        <span class="zz-chip {{ $product->is_available ? 'bg-emerald-100 text-emerald-700' : '' }}">{{ $product->is_available ? 'متاح' : 'مخفي' }}</span>
+                        @if($product->is_featured)<span class="zz-chip bg-amber-100 text-amber-700">مميز</span>@endif
                     </div>
                     <div class="mt-4 flex gap-2">
                         <a class="zz-btn-secondary w-full" href="{{ route('products.edit', $product) }}">تعديل</a>

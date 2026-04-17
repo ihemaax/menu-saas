@@ -28,6 +28,9 @@ class MenuController extends Controller
             ->take(6)
             ->get();
 
-        return view('menu.show', compact('restaurant', 'categories', 'featuredProducts'));
+        $themes = config('menu_themes');
+        $activeTheme = $themes[$menuSetting->active_theme] ?? $themes['appetite'];
+
+        return view($activeTheme['view'], compact('restaurant', 'categories', 'featuredProducts', 'menuSetting'));
     }
 }
