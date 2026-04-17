@@ -33,12 +33,14 @@ class OnboardingController extends Controller
         try {
             DB::transaction(function () use ($request, $user): void {
                 $logoPath = $request->file('logo')?->store('restaurants/logos', 'public');
+                $bannerPath = $request->file('banner')?->store('restaurants/banners', 'public');
 
                 $restaurant = Restaurant::create([
                     'name' => $request->string('restaurant_name')->toString(),
                     'phone' => $request->filled('phone') ? $request->string('phone')->toString() : null,
                     'description' => $request->filled('description') ? $request->string('description')->toString() : null,
                     'logo_path' => $logoPath,
+                    'banner_path' => $bannerPath,
                 ]);
 
                 $user->update(['restaurant_id' => $restaurant->id]);
