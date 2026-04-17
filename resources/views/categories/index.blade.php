@@ -1,73 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-12 d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ __('Categories') }}</h1>
-        <a href="{{ route('categories.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ __('Add Category') }}
-        </a>
+<div class="zz-card p-6">
+    <div class="mb-4 flex items-center justify-between">
+        <h1 class="zz-title">الأقسام</h1>
+        <a href="{{ route('categories.create') }}" class="zz-btn-primary">إضافة قسم</a>
     </div>
-</div>
-
-@if($categories->count() > 0)
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>{{ __('Name (Arabic)') }}</th>
-                                <th>{{ __('Name (English)') }}</th>
-                                <th>{{ __('Order') }}</th>
-                                <th>{{ __('Products') }}</th>
-                                <th>{{ __('Actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($categories as $category)
-                            <tr>
-                                <td>{{ $category->name_ar }}</td>
-                                <td>{{ $category->name_en }}</td>
-                                <td>{{ $category->order }}</td>
-                                <td>{{ $category->products->count() }}</td>
-                                <td>
-                                    <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i> {{ __('Edit') }}
-                                    </a>
-                                    <form method="POST" action="{{ route('categories.destroy', $category) }}" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('Are you sure?') }}')">
-                                            <i class="bi bi-trash"></i> {{ __('Delete') }}
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+    @if($categories->isEmpty())
+        <div class="zz-empty">لا توجد أقسام بعد.</div>
+    @else
+        <div class="space-y-3">
+            @foreach($categories as $category)
+                <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 p-4">
+                    <div>
+                        <p class="font-bold">{{ $category->name_ar }}</p>
+                        <p class="text-sm text-slate-500">{{ $category->name_en ?: '—' }}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="zz-badge">الترتيب: {{ $category->sort_order }}</span>
+                        <span class="zz-badge {{ $category->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">{{ $category->is_active ? 'نشط' : 'مخفي' }}</span>
+                        <a class="zz-btn-secondary" href="{{ route('categories.edit', $category) }}">تعديل</a>
+                        <form method="POST" action="{{ route('categories.destroy', $category) }}">@csrf @method('DELETE')<button class="zz-btn-secondary">حذف</button></form>
+                    </div>
                 </div>
-            </div>
+            @endforeach
         </div>
-    </div>
+    @endif
 </div>
-@else
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="bi bi-tags display-4 text-muted mb-3"></i>
-                <h4>{{ __('No categories yet') }}</h4>
-                <p class="text-muted">{{ __('Start by adding your first category') }}</p>
-                <a href="{{ route('categories.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> {{ __('Add First Category') }}
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 @endsection

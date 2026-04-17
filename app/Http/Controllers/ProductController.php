@@ -2,119 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $tenant = auth()->user()->tenant;
-        $products = $tenant->products()->with('category')->orderBy('order')->get();
+        $restaurant = auth()->user()->restaurant;
+
+        $products = $restaurant->products()
+            ->with('category')
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->paginate(12);
 
         return view('products.index', compact('products'));
     }
 
-    public function create()
+    public function create(): View
     {
-        $tenant = auth()->user()->tenant;
-        $categories = $tenant->categories;
+        $restaurant = auth()->user()->restaurant;
+        $categories = $restaurant->categories()->where('is_active', true)->orderBy('sort_order')->get();
 
         return view('products.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_available' => 'boolean',
-            'is_featured' => 'boolean',
-        ]);
+        $restaurant = $request->user()->restaurant;
 
-        $tenant = auth()->user()->tenant;
-        $maxOrder = $tenant->products()->max('order') ?? 0;
-
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
+        abort_unless($restaurant->categories()->whereKey($request->integer('category_id'))->exists(), 403);
 
         Product::create([
-            'tenant_id' => $tenant->id,
-            'category_id' => $request->category_id,
+            'restaurant_id' => $restaurant->id,
+            'category_id' => $request->integer('category_id'),
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
-            'image' => $imagePath,
-            'is_available' => $request->is_available ?? true,
-            'is_featured' => $request->is_featured ?? false,
-            'order' => $maxOrder + 1,
+            'image_path' => $request->file('image')?->store('products/images', 'public'),
+            'sort_order' => $request->integer('sort_order') ?: ((int) $restaurant->products()->max('sort_order') + 1),
+            'is_available' => $request->boolean('is_available', true),
+            'is_featured' => $request->boolean('is_featured'),
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('products.index')->with('success', 'تمت إضافة المنتج بنجاح.');
     }
 
-    public function edit(Product $product)
+    public function edit(Product $product): View
     {
         $this->authorize('update', $product);
 
-        $tenant = auth()->user()->tenant;
-        $categories = $tenant->categories;
+        $categories = auth()->user()->restaurant->categories()->where('is_active', true)->orderBy('sort_order')->get();
 
         return view('products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
         $this->authorize('update', $product);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_available' => 'boolean',
-            'is_featured' => 'boolean',
-        ]);
+        abort_unless(
+            $request->user()->restaurant->categories()->whereKey($request->integer('category_id'))->exists(),
+            403
+        );
 
-        $imagePath = $product->image;
+        $imagePath = $product->image_path;
         if ($request->hasFile('image')) {
             if ($imagePath) {
                 Storage::disk('public')->delete($imagePath);
             }
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = $request->file('image')->store('products/images', 'public');
         }
 
         $product->update([
-            'category_id' => $request->category_id,
+            'category_id' => $request->integer('category_id'),
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
-            'image' => $imagePath,
-            'is_available' => $request->is_available ?? true,
-            'is_featured' => $request->is_featured ?? false,
+            'image_path' => $imagePath,
+            'sort_order' => $request->integer('sort_order') ?: $product->sort_order,
+            'is_available' => $request->boolean('is_available'),
+            'is_featured' => $request->boolean('is_featured'),
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('products.index')->with('success', 'تم تحديث المنتج بنجاح.');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): RedirectResponse
     {
         $this->authorize('delete', $product);
 
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
         }
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('products.index')->with('success', 'تم حذف المنتج.');
     }
 }

@@ -2,71 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Category\StoreCategoryRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $tenant = auth()->user()->tenant;
-        $categories = $tenant->categories()->orderBy('order')->get();
+        $restaurant = auth()->user()->restaurant;
 
-        return view('categories.index', compact('categories'));
+        return view('categories.index', [
+            'categories' => $restaurant->categories()->latest('sort_order')->get(),
+        ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('categories.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name_ar' => 'required|string|max:255',
-            'name_en' => 'nullable|string|max:255',
-        ]);
-
-        $tenant = auth()->user()->tenant;
-        $maxOrder = $tenant->categories()->max('order') ?? 0;
+        $restaurant = $request->user()->restaurant;
 
         Category::create([
-            'tenant_id' => $tenant->id,
+            'restaurant_id' => $restaurant->id,
             'name_ar' => $request->name_ar,
             'name_en' => $request->name_en,
-            'order' => $maxOrder + 1,
+            'sort_order' => $request->integer('sort_order') ?: ((int) $restaurant->categories()->max('sort_order') + 1),
+            'is_active' => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index')->with('success', 'تم إنشاء القسم بنجاح.');
     }
 
-    public function edit(Category $category)
+    public function edit(Category $category): View
     {
         $this->authorize('update', $category);
 
         return view('categories.edit', compact('category'));
     }
 
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->authorize('update', $category);
 
-        $request->validate([
-            'name_ar' => 'required|string|max:255',
-            'name_en' => 'nullable|string|max:255',
+        $category->update([
+            'name_ar' => $request->name_ar,
+            'name_en' => $request->name_en,
+            'sort_order' => $request->integer('sort_order') ?: $category->sort_order,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
-        $category->update($request->only(['name_ar', 'name_en']));
-
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('categories.index')->with('success', 'تم تحديث القسم بنجاح.');
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): RedirectResponse
     {
         $this->authorize('delete', $category);
 
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('categories.index')->with('success', 'تم حذف القسم.');
     }
 }
