@@ -1,5 +1,65 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+            background: #f6f2ea;
+            color: #20302a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+        .btn-primary {
+            background: #20302a;
+            color: white;
+        }
+        .btn-outline-primary {
+            border: 1px solid #20302a;
+            color: #20302a;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ config('app.name', 'Laravel') }}</h1>
+            <p>نظام إدارة المنيو السحابي</p>
+        </div>
+        <div class="card-body">
+            <p>ابدأ بإنشاء حسابك وإدارة منيو مطعمك بسهولة.</p>
+            <a href="{{ route('register') }}" class="btn btn-primary">إنشاء حساب جديد</a>
+            <a href="{{ route('login') }}" class="btn btn-outline-primary">تسجيل الدخول</a>
+        </div>
+    </div>
+</body>
+</html><!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
