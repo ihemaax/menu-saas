@@ -15,6 +15,7 @@ class Restaurant extends Model
         'name',
         'phone',
         'logo_path',
+        'banner_path',
         'description',
     ];
 

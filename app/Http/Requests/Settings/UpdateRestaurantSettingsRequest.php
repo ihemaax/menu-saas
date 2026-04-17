@@ -18,6 +18,7 @@ class UpdateRestaurantSettingsRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:30'],
             'description' => ['nullable', 'string', 'max:800'],
             'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 }

@@ -13,7 +13,8 @@
             <div><label class="zz-label">اسم المطعم</label><input id="restaurant-name" name="restaurant_name" class="zz-input" value="{{ old('restaurant_name') }}" required></div>
             <div><label class="zz-label">رقم التليفون</label><input name="phone" class="zz-input" value="{{ old('phone') }}"></div>
             <div><label class="zz-label">وصف بسيط</label><textarea name="description" rows="3" class="zz-input">{{ old('description') }}</textarea></div>
-            <div><label class="zz-label">لوجو المكان</label><input type="file" name="logo" class="zz-input" accept="image/*"></div>
+            <div><label class="zz-label">لوجو المكان (صورة البروفايل)</label><input type="file" name="logo" class="zz-input" accept="image/*"></div>
+            <div><label class="zz-label">صورة الكفر / البانر</label><input type="file" name="banner" class="zz-input" accept="image/*"></div>
         </section>
 
         <section class="zz-card p-6 space-y-4">
