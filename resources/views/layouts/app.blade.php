@@ -13,30 +13,35 @@
 <div x-data="{ collapsed: false }" class="zz-layout" dir="ltr">
     <aside :class="collapsed ? 'w-20' : 'w-72'" class="zz-sidebar">
         <div class="h-full p-3" dir="rtl">
-            <div class="mb-6 flex items-center justify-between px-2">
-                <a href="{{ route('dashboard') }}" class="font-extrabold text-teal-800" :class="collapsed ? 'text-sm' : 'text-xl'">Z3</a>
-                <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600">☰</button>
+            <div class="mb-8 flex items-center justify-between px-2">
+                <a href="{{ route('dashboard') }}" class="font-extrabold text-slate-900" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr</a>
+                <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50">
+                    <x-icon name="menu" class="h-4 w-4"/>
+                </button>
             </div>
-            <nav class="space-y-2 text-sm font-semibold">
-                @php($items = auth()->user()?->restaurant_id ? [
-                    ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => '🏠'],
-                    ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => '🗂️'],
-                    ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => '🍽️'],
-                    ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => '⚙️'],
-                    ['route' => 'themes.index', 'label' => 'الثيمات', 'icon' => '🎨'],
-                ] : [
-                    ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => '🧭'],
-                ])
+
+            @php($items = auth()->user()?->restaurant_id ? [
+                ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => 'home'],
+                ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => 'category'],
+                ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => 'product'],
+                ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => 'settings'],
+                ['route' => 'themes.index', 'label' => 'الثيمات', 'icon' => 'palette'],
+            ] : [
+                ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => 'settings'],
+            ])
+
+            <nav class="space-y-2">
                 @foreach($items as $item)
-                    <a href="{{ route($item['route']) }}" class="flex items-center gap-3 rounded-xl px-3 py-2 {{ request()->routeIs($item['route'].'*') ? 'bg-teal-50 text-teal-800' : 'text-slate-700 hover:bg-slate-100' }}">
-                        <span>{{ $item['icon'] }}</span>
+                    <a href="{{ route($item['route']) }}" class="zz-nav-link {{ request()->routeIs($item['route'].'*') ? 'zz-nav-link-active' : '' }}">
+                        <x-icon :name="$item['icon']" class="h-5 w-5"/>
                         <span x-show="!collapsed">{{ $item['label'] }}</span>
                     </a>
                 @endforeach
             </nav>
-            <div class="mt-6 border-t border-slate-200 pt-4" x-show="!collapsed">
-                <a href="{{ route('profile.edit') }}" class="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">الحساب</a>
-                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf <button class="w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">خروج</button></form>
+
+            <div class="mt-8 border-t border-slate-200 pt-4" x-show="!collapsed">
+                <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب</a>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf <button class="w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">تسجيل خروج</button></form>
             </div>
         </div>
     </aside>
@@ -45,8 +50,8 @@
         <header class="zz-topbar">
             <div class="px-6 py-4 flex items-center justify-between">
                 <div>
-                    <p class="text-xs text-slate-500">Za3tr-Zatona</p>
-                    <p class="text-sm font-bold text-slate-900">إدارة المنيو بشكل أهدى وأسرع</p>
+                    <p class="text-xs text-slate-500">Za3tr-Zatona Control</p>
+                    <p class="text-sm font-bold text-slate-900">لوحة تحكم المطعم</p>
                 </div>
                 <div class="text-sm text-slate-500">{{ now()->format('d M Y') }}</div>
             </div>
