@@ -2,93 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tenant;
-use Illuminate\Http\Request;
+use App\Http\Requests\Settings\UpdateMenuSettingsRequest;
+use App\Http\Requests\Settings\UpdateRestaurantSettingsRequest;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SettingsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $tenant = auth()->user()->tenant;
+        $restaurant = auth()->user()->restaurant()->with('menuSetting')->firstOrFail();
+        $menuUrl = route('menu.show', $restaurant->menuSetting->slug);
 
-        if (!$tenant) {
-            return view('settings.create');
-        }
-
-        return view('settings.edit', compact('tenant'));
+        return view('settings.index', [
+            'restaurant' => $restaurant,
+            'menuUrl' => $menuUrl,
+            'themes' => config('menu_themes'),
+        ]);
     }
 
-    public function store(Request $request)
+    public function updateRestaurant(UpdateRestaurantSettingsRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'slug' => 'required|string|unique:tenants,slug',
-            'description' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_open' => 'boolean',
-        ]);
+        $restaurant = $request->user()->restaurant;
 
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos', 'public');
-        }
-
-        $tenant = Tenant::create([
-            'user_id' => auth()->id(),
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'slug' => $request->slug,
-            'description' => $request->description,
-            'logo' => $logoPath,
-            'is_open' => $request->boolean('is_open', true),
-        ]);
-
-        auth()->user()->update(['tenant_id' => $tenant->id]);
-
-        return redirect()->route('dashboard')->with('success', 'Settings saved successfully.');
-    }
-
-    public function update(Request $request)
-    {
-        $tenant = auth()->user()->tenant;
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'slug' => 'required|string|unique:tenants,slug,' . $tenant->id,
-            'description' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_open' => 'boolean',
-        ]);
-
-        $logoPath = $tenant->logo;
+        $logoPath = $restaurant->logo_path;
         if ($request->hasFile('logo')) {
             if ($logoPath) {
                 Storage::disk('public')->delete($logoPath);
             }
-            $logoPath = $request->file('logo')->store('logos', 'public');
+            $logoPath = $request->file('logo')->store('restaurants/logos', 'public');
         }
 
-        $tenant->update([
+        $restaurant->update([
             'name' => $request->name,
             'phone' => $request->phone,
-            'slug' => $request->slug,
             'description' => $request->description,
-            'logo' => $logoPath,
-            'is_open' => $request->boolean('is_open', $tenant->is_open),
+            'logo_path' => $logoPath,
         ]);
 
-        return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
+        return back()->with('success', 'بيانات المطعم اتحدثت.');
     }
 
-    public function generateQrCode()
+    public function updateMenu(UpdateMenuSettingsRequest $request): RedirectResponse
     {
-        $tenant = auth()->user()->tenant;
-        $url = route('menu.show', $tenant->slug);
+        try {
+            $request->user()->restaurant->menuSetting->update([
+                'slug' => str($request->slug)->lower()->slug('-')->value(),
+                'is_public' => $request->boolean('is_public', true),
+                'active_theme' => $request->active_theme,
+            ]);
+        } catch (QueryException $exception) {
+            if ((string) $exception->getCode() === '23000') {
+                return back()->withInput()->withErrors([
+                    'slug' => 'اللينك ده متاخد بالفعل، جرّب اسم تاني.',
+                ]);
+            }
 
-        return QrCode::size(300)->format('png')->generate($url);
+            throw $exception;
+        }
+
+        return back()->with('success', 'إعدادات المنيو اتحفظت.');
+    }
+
+    public function qrSvg()
+    {
+        $slug = auth()->user()->restaurant->menuSetting->slug;
+        $url = route('menu.show', $slug);
+
+        return response(QrCode::format('svg')->size(360)->margin(1)->generate($url), 200)
+            ->header('Content-Type', 'image/svg+xml');
     }
 }

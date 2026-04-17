@@ -4,21 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'tenant_id',
+        'restaurant_id',
         'category_id',
         'name',
         'description',
         'price',
-        'image',
+        'image_path',
         'is_available',
         'is_featured',
-        'order',
+        'sort_order',
     ];
 
     protected $casts = [
@@ -27,12 +28,12 @@ class Product extends Model
         'is_featured' => 'boolean',
     ];
 
-    public function tenant()
+    public function restaurant(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(Restaurant::class);
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }

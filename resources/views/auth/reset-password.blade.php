@@ -1,39 +1,12 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
+    <h1 class="text-2xl font-extrabold">باسورد جديد</h1>
+    <p class="mt-1 text-sm text-slate-500">اختار باسورد سهل عليك وصعب على غيرك.</p>
+    <form method="POST" action="{{ route('password.store') }}" class="mt-6 space-y-4">
         @csrf
-
-        <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
+        <div><label class="zz-label">الإيميل</label><input type="email" name="email" value="{{ old('email', $request->email) }}" class="zz-input" required></div>
+        <div><label class="zz-label">الباسورد</label><input type="password" name="password" class="zz-input" required></div>
+        <div><label class="zz-label">تأكيد الباسورد</label><input type="password" name="password_confirmation" class="zz-input" required></div>
+        <button class="zz-btn-primary w-full">حفظ</button>
     </form>
 </x-guest-layout>
