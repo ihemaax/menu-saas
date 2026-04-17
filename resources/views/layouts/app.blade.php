@@ -1,135 +1,73 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
+    <title>{{ $title ?? 'Za3tr-Zatona' }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700&display=swap" rel="stylesheet" />
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
-    <style>
-        :root {
-            --zz-bg: #f6f2ea;
-            --zz-surface: #ffffff;
-            --zz-text: #20302a;
-            --zz-text-secondary: #6b7280;
-            --zz-primary: #20302a;
-            --zz-accent: #d4af37;
-            --zz-border: #e5e7eb;
-        }
-
-        body {
-            background-color: var(--zz-bg);
-            color: var(--zz-text);
-            font-family: "Cairo", sans-serif;
-        }
-
-        .navbar {
-            background-color: var(--zz-surface);
-            border-bottom: 1px solid var(--zz-border);
-        }
-
-        .card {
-            background-color: var(--zz-surface);
-            border: 1px solid var(--zz-border);
-            border-radius: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: var(--zz-primary);
-            border-color: var(--zz-primary);
-        }
-
-        .btn-primary:hover {
-            background-color: #1a2520;
-            border-color: #1a2520;
-        }
-
-        .table {
-            color: var(--zz-text);
-        }
-
-        .form-control {
-            border-color: var(--zz-border);
-        }
-
-        .form-control:focus {
-            border-color: var(--zz-primary);
-            box-shadow: 0 0 0 0.2rem rgba(32, 48, 42, 0.25);
-        }
-    </style>
+    <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="bi bi-shop"></i> {{ config('app.name') }}
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('categories.index') }}">{{ __('Categories') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.index') }}">{{ __('Products') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('settings.index') }}">{{ __('Settings') }}</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            {{ Auth::user()->name }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('Profile') }}</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">{{ __('Log Out') }}</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+<body class="font-['Cairo']">
+<div x-data="{ collapsed: false }" class="zz-layout" dir="ltr">
+    <aside :class="collapsed ? 'w-20' : 'w-72'" class="zz-sidebar">
+        <div class="h-full p-3" dir="rtl">
+            <div class="mb-8 flex items-center justify-between px-2">
+                <a href="{{ route('dashboard') }}" class="font-extrabold text-slate-900" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr</a>
+                <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50">
+                    <x-icon name="menu" class="h-4 w-4"/>
+                </button>
+            </div>
+
+            @php($items = auth()->user()?->restaurant_id ? [
+                ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => 'home'],
+                ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => 'category'],
+                ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => 'product'],
+                ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => 'settings'],
+                ['route' => 'themes.index', 'label' => 'الثيمات', 'icon' => 'palette'],
+            ] : [
+                ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => 'settings'],
+            ])
+
+            <nav class="space-y-2">
+                @foreach($items as $item)
+                    <a href="{{ route($item['route']) }}" class="zz-nav-link {{ request()->routeIs($item['route'].'*') ? 'zz-nav-link-active' : '' }}">
+                        <x-icon :name="$item['icon']" class="h-5 w-5"/>
+                        <span x-show="!collapsed">{{ $item['label'] }}</span>
+                    </a>
+                @endforeach
+            </nav>
+
+            <div class="mt-8 border-t border-slate-200 pt-4" x-show="!collapsed">
+                <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب</a>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf <button class="w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">تسجيل خروج</button></form>
             </div>
         </div>
-    </nav>
+    </aside>
 
-    <div class="container-fluid mt-4">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <main :class="collapsed ? 'ml-20' : 'ml-72'" class="zz-main" dir="rtl">
+        <header class="zz-topbar">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-slate-500">Za3tr-Zatona Control</p>
+                    <p class="text-sm font-bold text-slate-900">لوحة تحكم المطعم</p>
+                </div>
+                <div class="text-sm text-slate-500">{{ now()->format('d M Y') }}</div>
             </div>
-        @endif
+        </header>
 
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @yield('content')
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="p-4 md:p-6 lg:p-8">
+            @if(session('success'))<div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>@endif
+            @if($errors->any())
+                <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                    <ul class="list-disc list-inside">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                </div>
+            @endif
+            {{ $slot ?? '' }}
+            @yield('content')
+        </div>
+    </main>
+</div>
 </body>
 </html>

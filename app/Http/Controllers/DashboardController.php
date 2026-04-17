@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Tenant;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function __invoke(): View
     {
-        $tenant = auth()->user()->tenant;
+        $restaurant = auth()->user()->restaurant()->with('menuSetting')->firstOrFail();
 
-        if (!$tenant) {
-            return redirect()->route('settings.index');
-        }
+        $stats = [
+            'categories_count' => $restaurant->categories()->count(),
+            'products_count' => $restaurant->products()->count(),
+            'available_products_count' => $restaurant->products()->where('is_available', true)->count(),
+            'featured_products_count' => $restaurant->products()->where('is_featured', true)->count(),
+        ];
 
-        $categoriesCount = $tenant->categories()->count();
-        $productsCount = $tenant->products()->count();
-
-        return view('dashboard', compact('tenant', 'categoriesCount', 'productsCount'));
+        return view('dashboard', [
+            'restaurant' => $restaurant,
+            'menuUrl' => route('menu.show', $restaurant->menuSetting->slug),
+            'stats' => $stats,
+        ]);
     }
 }

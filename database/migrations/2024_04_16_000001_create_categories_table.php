@@ -6,24 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('restaurant_id')->constrained()->cascadeOnDelete();
             $table->string('name_ar');
             $table->string('name_en')->nullable();
-            $table->integer('order')->default(0);
+            $table->unsignedInteger('sort_order')->default(0)->index();
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
+            $table->index(['restaurant_id', 'is_active']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('categories');

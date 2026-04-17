@@ -6,29 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
+        Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('phone')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('slug')->unique();
+            $table->string('phone', 30)->nullable();
+            $table->string('logo_path')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_open')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('tenants');
+        Schema::dropIfExists('restaurants');
     }
 };

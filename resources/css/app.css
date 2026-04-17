@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {@apply bg-slate-100 text-slate-900 antialiased;}
+}
+
+@layer components {
+  .zz-layout {@apply min-h-screen bg-slate-100;}
+  .zz-sidebar {@apply fixed left-0 top-0 z-40 h-screen border-r border-slate-200 bg-white transition-all duration-300;}
+  .zz-main {@apply min-h-screen transition-all duration-300;}
+  .zz-topbar {@apply sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur;}
+  .zz-card {@apply rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;}
+  .zz-title {@apply text-2xl font-extrabold tracking-tight text-slate-900;}
+  .zz-subtitle {@apply text-sm text-slate-500;}
+  .zz-input {@apply mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100;}
+  .zz-label {@apply text-sm font-semibold text-slate-700;}
+  .zz-btn-primary {@apply inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800;}
+  .zz-btn-secondary {@apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50;}
+  .zz-empty {@apply rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500;}
+  .zz-auth-wrap {@apply min-h-screen grid lg:grid-cols-2;}
+  .zz-auth-visual {@apply hidden lg:flex bg-gradient-to-br from-slate-900 via-slate-800 to-teal-800 text-white p-12 relative overflow-hidden;}
+  .zz-auth-panel {@apply p-6 md:p-10 flex items-center justify-center;}
+  .zz-chip {@apply rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700;}
+  .zz-nav-link {@apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900;}
+  .zz-nav-link-active {@apply bg-slate-900 text-white hover:bg-slate-900 hover:text-white;}
+}
