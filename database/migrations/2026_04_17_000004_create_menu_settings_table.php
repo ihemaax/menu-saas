@@ -8,18 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('restaurants', function (Blueprint $table) {
+        Schema::create('menu_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('phone', 30)->nullable();
-            $table->string('logo_path')->nullable();
-            $table->text('description')->nullable();
+            $table->foreignId('restaurant_id')->unique()->constrained()->cascadeOnDelete();
+            $table->string('slug')->unique();
+            $table->boolean('is_public')->default(true)->index();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('restaurants');
+        Schema::dropIfExists('menu_settings');
     }
 };

@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tenant;
-use Illuminate\Http\Request;
+use App\Models\MenuSetting;
+use Illuminate\View\View;
 
 class MenuController extends Controller
 {
-    public function show($slug)
+    public function show(string $slug): View
     {
-        $tenant = Tenant::where('slug', $slug)->firstOrFail();
+        $menuSetting = MenuSetting::where('slug', $slug)
+            ->where('is_public', true)
+            ->firstOrFail();
 
-        $categories = $tenant->categories()->with(['products' => function ($query) {
-            $query->where('is_available', true)->orderBy('order');
-        }])->orderBy('order')->get();
+        $restaurant = $menuSetting->restaurant()->firstOrFail();
 
-        $featuredProducts = $tenant->products()->where('is_featured', true)->where('is_available', true)->orderBy('order')->get();
+        $categories = $restaurant->categories()
+            ->where('is_active', true)
+            ->with(['products' => fn ($query) => $query->where('is_available', true)->orderBy('sort_order')])
+            ->orderBy('sort_order')
+            ->get();
 
-        return view('menu.show', compact('tenant', 'categories', 'featuredProducts'));
+        $featuredProducts = $restaurant->products()
+            ->where('is_available', true)
+            ->where('is_featured', true)
+            ->orderBy('sort_order')
+            ->take(6)
+            ->get();
+
+        return view('menu.show', compact('restaurant', 'categories', 'featuredProducts'));
     }
 }

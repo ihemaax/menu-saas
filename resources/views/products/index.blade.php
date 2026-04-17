@@ -1,97 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-12 d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ __('Products') }}</h1>
-        <a href="{{ route('products.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ __('Add Product') }}
-        </a>
+<div class="zz-card p-6">
+    <div class="mb-4 flex items-center justify-between">
+        <h1 class="zz-title">المنتجات</h1>
+        <a href="{{ route('products.create') }}" class="zz-btn-primary">إضافة منتج</a>
     </div>
-</div>
 
-@if($products->count() > 0)
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>{{ __('Image') }}</th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Category') }}</th>
-                                <th>{{ __('Price') }}</th>
-                                <th>{{ __('Available') }}</th>
-                                <th>{{ __('Featured') }}</th>
-                                <th>{{ __('Actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($products as $product)
-                            <tr>
-                                <td>
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                                    @else
-                                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-image text-muted"></i>
-                                        </div>
-                                    @endif
-                                </td>
-                                <td>{{ $product->name }}</td>
-                                <td>{{ $product->category->name_ar }} / {{ $product->category->name_en }}</td>
-                                <td>{{ number_format($product->price, 2) }} {{ __('SAR') }}</td>
-                                <td>
-                                    @if($product->is_available)
-                                        <span class="badge bg-success">{{ __('Yes') }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ __('No') }}</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($product->is_featured)
-                                        <span class="badge bg-warning">{{ __('Yes') }}</span>
-                                    @else
-                                        <span class="badge bg-secondary">{{ __('No') }}</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i> {{ __('Edit') }}
-                                    </a>
-                                    <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('Are you sure?') }}')">
-                                            <i class="bi bi-trash"></i> {{ __('Delete') }}
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    @if($products->isEmpty())
+        <div class="zz-empty">لا توجد منتجات حالياً.</div>
+    @else
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            @foreach($products as $product)
+                <article class="rounded-2xl border border-slate-200 bg-white p-4">
+                    <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/700x420?text=No+Image' }}" class="h-40 w-full rounded-xl object-cover" alt="{{ $product->name }}">
+                    <div class="mt-3">
+                        <div class="flex items-start justify-between gap-2">
+                            <h3 class="font-bold">{{ $product->name }}</h3>
+                            <span class="zz-badge">{{ number_format($product->price, 2) }} ر.س</span>
+                        </div>
+                        <p class="mt-1 text-sm text-slate-500">{{ $product->category->name_ar }}</p>
+                        <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $product->description }}</p>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="zz-badge {{ $product->is_available ? 'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-700' }}">{{ $product->is_available ? 'متاح':'غير متاح' }}</span>
+                        @if($product->is_featured)
+                            <span class="zz-badge bg-amber-100 text-amber-700">مميز</span>
+                        @endif
+                    </div>
+                    <div class="mt-4 flex gap-2">
+                        <a class="zz-btn-secondary w-full" href="{{ route('products.edit', $product) }}">تعديل</a>
+                        <form class="w-full" method="POST" action="{{ route('products.destroy', $product) }}">@csrf @method('DELETE')<button class="zz-btn-secondary w-full">حذف</button></form>
+                    </div>
+                </article>
+            @endforeach
         </div>
-    </div>
+        <div class="mt-5">{{ $products->links() }}</div>
+    @endif
 </div>
-@else
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body text-center">
-                <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
-                <h4>{{ __('No products yet') }}</h4>
-                <p class="text-muted">{{ __('Start by adding your first product') }}</p>
-                <a href="{{ route('products.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> {{ __('Add First Product') }}
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 @endsection
