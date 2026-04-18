@@ -8,78 +8,90 @@
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css'])
 </head>
-<body class="font-['Cairo'] bg-zinc-950 text-zinc-100">
-<main class="mx-auto max-w-6xl p-3 pb-10 sm:p-6">
-    <header class="rounded-3xl border border-zinc-800 bg-gradient-to-br from-zinc-950 via-zinc-900 to-red-950 p-4 shadow-2xl sm:p-6">
-        <div class="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
-            <div>
-                <div class="inline-flex rounded-full border border-red-500/40 bg-red-600/15 px-3 py-1 text-xs font-bold text-red-200">Street Menu</div>
-                <h1 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{{ $restaurant->name }}</h1>
-                <p class="mt-2 max-w-2xl text-sm text-zinc-300">{{ $restaurant->description ?: 'نكهات قوية وتجربة سريعة وممتعة.' }}</p>
+<body class="font-['Cairo'] bg-[#0a0a0c] text-zinc-100">
+@php($formatEgp = fn (float $price) => rtrim(rtrim(number_format($price, 2, '.', ''), '0'), '.').' ج.م')
+<main class="mx-auto max-w-7xl px-3 pb-12 pt-4 sm:px-6">
+    <header class="overflow-hidden rounded-[2rem] border-2 border-orange-500 bg-[#141416] shadow-[0_28px_70px_rgba(249,115,22,0.25)]">
+        <div class="grid gap-4 p-4 sm:grid-cols-[1.35fr_1fr] sm:p-6">
+            <div class="rounded-3xl bg-gradient-to-br from-red-600 via-orange-500 to-amber-400 p-5 text-zinc-950">
+                <div class="flex items-center justify-between">
+                    <span class="rounded-full border border-zinc-900/20 bg-zinc-950/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em]">Street Fuel</span>
+                    <div class="h-14 w-14 overflow-hidden rounded-2xl border-2 border-zinc-950/30 bg-white/85">
+                        <img src="{{ $restaurant->logo_path ? asset('storage/'.$restaurant->logo_path) : 'https://placehold.co/180x180?text=Logo' }}" class="h-full w-full object-cover" alt="{{ $restaurant->name }} logo">
+                    </div>
+                </div>
+                <h1 class="mt-4 text-3xl font-black leading-tight sm:text-4xl">{{ $restaurant->name }}</h1>
+                <p class="mt-2 max-w-2xl text-sm font-semibold text-zinc-900/80">{{ $restaurant->description ?: 'نكهات جريئة، هيدر قوي، وتجربة مشاهدة ممتعة وسريعة.' }}</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-bold">
+                    <span class="rounded-full bg-zinc-950 px-3 py-1 text-white">Hot Deals</span>
+                    <span class="rounded-full bg-white px-3 py-1 text-zinc-950">Fast Pickup</span>
+                    <span class="rounded-full bg-zinc-900/10 px-3 py-1">Fresh Daily</span>
+                </div>
             </div>
-            <div class="h-20 w-20 overflow-hidden rounded-2xl border-2 border-red-400/50 bg-zinc-100 shadow-lg sm:h-24 sm:w-24">
-                <img src="{{ $restaurant->logo_path ? asset('storage/'.$restaurant->logo_path) : 'https://placehold.co/200x200?text=Logo' }}" class="h-full w-full object-cover" alt="{{ $restaurant->name }} logo">
-            </div>
-        </div>
 
-        <div class="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
-            <div class="rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm text-zinc-400">
-                <div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m1.35-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg><span>ابحث عن منتج</span></div>
+            <div class="relative overflow-hidden rounded-3xl border border-zinc-700">
+                <img src="{{ $restaurant->banner_path ? asset('storage/'.$restaurant->banner_path) : 'https://placehold.co/820x620?text=Street+Food' }}" class="h-full min-h-[220px] w-full object-cover" alt="cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <label class="absolute inset-x-3 bottom-3 flex items-center gap-2 rounded-2xl border border-zinc-500 bg-black/65 px-3 py-2 text-sm text-zinc-200 backdrop-blur">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m1.35-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
+                    <input type="search" placeholder="ابحث عن برجر، فرايز..." class="w-full border-0 bg-transparent p-0 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-0">
+                </label>
             </div>
-            <button class="rounded-2xl border border-red-500 bg-red-600 px-5 py-3 text-sm font-extrabold text-white">عروض اليوم</button>
         </div>
     </header>
 
-    <section class="mt-5">
-        <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <section class="mt-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div class="flex min-w-max gap-2">
             @foreach($categories as $category)
-                <a href="#cat-{{ $category->id }}" class="rounded-2xl border border-zinc-700 bg-zinc-900 px-3 py-3 text-center text-sm font-bold text-zinc-200 transition hover:border-red-500 hover:text-white">{{ $category->name_ar }}</a>
+                <a href="#cat-{{ $category->id }}" class="rounded-xl border border-zinc-700 bg-zinc-900 px-5 py-3 text-sm font-black text-zinc-100 transition hover:-translate-y-0.5 hover:border-orange-400 hover:bg-orange-500 hover:text-zinc-950">{{ $category->name_ar }}</a>
             @endforeach
         </div>
     </section>
 
     @if($featuredProducts->isNotEmpty())
-        <section class="mt-6">
-            <h2 class="mb-3 text-xl font-black text-white">الأكثر طلبًا</h2>
-            <div class="grid gap-4 md:grid-cols-3">
-                @foreach($featuredProducts as $product)
-                    <article class="relative overflow-hidden rounded-3xl border border-zinc-700 bg-zinc-900">
-                        <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/520x520?text=No+Image' }}" class="h-52 w-full object-cover opacity-85" alt="{{ $product->name }}">
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/65 to-transparent p-4">
-                            <h3 class="font-extrabold text-white">{{ $product->name }}</h3>
-                            <p class="mt-1 line-clamp-1 text-xs text-zinc-300">{{ $product->description ?: 'وصف مختصر للمنتج.' }}</p>
-                            <p class="mt-2 inline-flex rounded-full bg-red-600 px-3 py-1 text-sm font-extrabold text-white">{{ number_format($product->price, 2) }}</p>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
+        <section class="mt-6 grid gap-4 md:grid-cols-3">
+            @foreach($featuredProducts as $product)
+                <article class="overflow-hidden rounded-3xl border border-zinc-700 bg-zinc-900">
+                    <div class="relative h-52">
+                        <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/600x500?text=Food' }}" class="h-full w-full object-cover" alt="{{ $product->name }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <p class="absolute right-3 top-3 rounded-full bg-orange-500 px-3 py-1 text-xs font-black text-zinc-950">Featured</p>
+                        <p class="absolute bottom-3 left-3 rounded-xl bg-red-600 px-3 py-1 text-sm font-black text-white">{{ $formatEgp((float) $product->price) }}</p>
+                    </div>
+                    <div class="space-y-2 p-4">
+                        <h2 class="text-lg font-black text-white">{{ $product->name }}</h2>
+                        <p class="line-clamp-2 text-sm text-zinc-400">{{ $product->description ?: 'وجبة بطابع حيوي وقوام مقرمش ولذيذ.' }}</p>
+                        <p class="text-xs font-semibold text-zinc-500">⭐ 4.8 • Ready in 15 min</p>
+                    </div>
+                </article>
+            @endforeach
         </section>
     @endif
 
-    <section class="mt-7 space-y-5">
+    <section class="mt-8 space-y-6">
         @forelse($categories as $category)
             @if($category->products->isNotEmpty())
-                <section id="cat-{{ $category->id }}" class="rounded-3xl border border-zinc-700 bg-zinc-900 p-4 sm:p-5">
-                    <h2 class="text-2xl font-black text-white">{{ $category->name_ar }}</h2>
-                    <div class="mt-4 grid gap-3 md:grid-cols-2">
+                <section id="cat-{{ $category->id }}" class="rounded-3xl border border-zinc-700 bg-zinc-900/80 p-4 backdrop-blur sm:p-6">
+                    <h2 class="text-3xl font-black text-white">{{ $category->name_ar }}</h2>
+                    <div class="mt-4 grid gap-3 lg:grid-cols-2">
                         @foreach($category->products as $product)
-                            <article class="flex gap-3 rounded-2xl border border-zinc-700 bg-zinc-950 p-3">
-                                <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/240x240?text=No+Image' }}" class="h-24 w-24 rounded-xl object-cover" alt="{{ $product->name }}">
-                                <div class="flex-1">
-                                    <h3 class="font-extrabold text-white">{{ $product->name }}</h3>
-                                    <p class="mt-1 line-clamp-2 text-xs text-zinc-400">{{ $product->description ?: 'وصف بسيط للمنتج.' }}</p>
-                                    <div class="mt-2 flex items-center justify-between">
-                                        <span class="text-[11px] font-semibold text-zinc-500">جاهز خلال 20 دقيقة</span>
-                                        <span class="text-lg font-black text-red-400">{{ number_format($product->price, 2) }}</span>
+                            <article class="grid grid-cols-[1fr_auto] overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950">
+                                <div class="flex gap-3 p-3">
+                                    <img src="{{ $product->image_path ? asset('storage/'.$product->image_path) : 'https://placehold.co/220x220?text=Dish' }}" class="h-20 w-20 rounded-xl object-cover" alt="{{ $product->name }}">
+                                    <div>
+                                        <h3 class="font-black text-white">{{ $product->name }}</h3>
+                                        <p class="mt-1 line-clamp-2 text-xs text-zinc-400">{{ $product->description ?: 'صنف مليان نكهة ومناسب لعشاق السرعة.' }}</p>
+                                        <p class="mt-1 text-[11px] font-semibold text-zinc-500">20 min • Highly Rated</p>
                                     </div>
                                 </div>
+                                <div class="flex items-center bg-orange-500 px-3 text-sm font-black text-zinc-950">{{ $formatEgp((float) $product->price) }}</div>
                             </article>
                         @endforeach
                     </div>
                 </section>
             @endif
         @empty
-            <div class="rounded-2xl border border-zinc-700 bg-zinc-900 p-5 text-center text-zinc-400">لا يوجد أصناف متاحة حاليًا.</div>
+            <div class="rounded-2xl border border-zinc-700 bg-zinc-900 p-6 text-center text-zinc-400">لا يوجد أصناف متاحة حاليًا.</div>
         @endforelse
     </section>
 </main>

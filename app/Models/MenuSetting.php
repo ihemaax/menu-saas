@@ -14,6 +14,7 @@ class MenuSetting extends Model
         'restaurant_id',
         'slug',
         'is_public',
+        'theme',
     ];
 
     protected $casts = [
