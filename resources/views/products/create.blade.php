@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mx-auto max-w-2xl zz-card p-6">
-    <h1 class="zz-title">إضافة منتج</h1>
-    @include('products.partials.form', ['action' => route('products.store'), 'method' => 'POST', 'product' => null])
+<div class="zz-page">
+    <section class="zz-page-header">
+        <h1 class="zz-title">إضافة منتج</h1>
+        <p class="zz-subtitle mt-1">أدخل بيانات المنتج بدقة ليظهر بشكل احترافي داخل المنيو.</p>
+    </section>
+
+    <section class="zz-card p-5 md:p-6">
+        @include('products.partials.form', ['action' => route('products.store'), 'method' => 'POST', 'product' => null])
+    </section>
 </div>
 @endsection

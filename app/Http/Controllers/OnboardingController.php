@@ -39,11 +39,8 @@ class OnboardingController extends Controller
                     'description' => $request->filled('description') ? $request->string('description')->toString() : null,
                     'logo_path' => $logoPath,
                     'banner_path' => $bannerPath,
-<<<<<<< HEAD
-=======
                     'subscription_status' => 'active',
                     'subscription_starts_at' => now(),
->>>>>>> codex-pr-8
                 ]);
 
                 $user->update(['restaurant_id' => $restaurant->id]);
@@ -52,6 +49,7 @@ class OnboardingController extends Controller
                     'restaurant_id' => $restaurant->id,
                     'slug' => $this->normalizeSlug($request->string('slug')->toString()),
                     'is_public' => $request->boolean('is_public', true),
+                    'theme' => 'classy',
                 ]);
             });
         } catch (QueryException $exception) {
