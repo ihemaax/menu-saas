@@ -37,6 +37,28 @@
                 <p class="mt-2 text-xs text-slate-500">لينكك النهائي: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-slate-500">أي تعديل بيتراجع مباشرة.</p>
             </div>
+
+            <div>
+                <label class="zz-label">اختيار الثيم</label>
+                <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                    @foreach($menuThemes as $key => $theme)
+                        <label class="cursor-pointer rounded-2xl border border-slate-200 p-3 transition hover:border-indigo-300 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60">
+                            <input type="radio" class="sr-only" name="theme" value="{{ $key }}" {{ old('theme', $restaurant->menuSetting->theme ?? 'classy') === $key ? 'checked' : '' }}>
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="font-bold text-slate-800">{{ $theme['label'] }}</p>
+                                <div class="flex items-center gap-1">
+                                    @foreach($theme['preview_colors'] as $color)
+                                        <span class="h-3 w-3 rounded-full border border-slate-200" style="background-color: {{ $color }}"></span>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <p class="mt-1 text-xs text-slate-500">{{ $theme['description'] }}</p>
+                        </label>
+                    @endforeach
+                </div>
+                @error('theme')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
             <label class="flex items-center gap-2"><input type="checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاح للناس</label>
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>
         </form>

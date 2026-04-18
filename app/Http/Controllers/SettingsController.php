@@ -20,6 +20,7 @@ class SettingsController extends Controller
         return view('settings.index', [
             'restaurant' => $restaurant,
             'menuUrl' => $menuUrl,
+            'menuThemes' => config('menu_themes'),
         ]);
     }
 
@@ -29,10 +30,7 @@ class SettingsController extends Controller
 
         $logoPath = $restaurant->logo_path;
         $bannerPath = $restaurant->banner_path;
-<<<<<<< HEAD
-=======
 
->>>>>>> codex-pr-8
         if ($request->hasFile('logo')) {
             if ($logoPath) {
                 Storage::disk('public')->delete($logoPath);
@@ -64,6 +62,7 @@ class SettingsController extends Controller
             $request->user()->restaurant->menuSetting->update([
                 'slug' => str($request->slug)->lower()->slug('-')->value(),
                 'is_public' => $request->boolean('is_public', true),
+                'theme' => $request->string('theme')->toString(),
             ]);
         } catch (QueryException $exception) {
             if ((string) $exception->getCode() === '23000') {
