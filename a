@@ -1,0 +1,39 @@
+[33mcommit 95119ab48386e1765b88aa1dfecb672e7f131aba[m[33m ([m[1;31morigin/codex/create-new-app-menu-theme-iixvrp[m[33m, [m[1;32mcodex-pr-8[m[33m)[m
+Author: ihemaax <ihemaax@gmail.com>
+Date:   Sat Apr 18 02:42:34 2026 +0200
+
+    Restructure to single default menu and add private super admin dashboard
+
+.env.example
+app/Http/Controllers/Auth/RegisteredUserController.php
+app/Http/Controllers/MenuController.php
+app/Http/Controllers/OnboardingController.php
+app/Http/Controllers/Owner/SuperAdminController.php
+app/Http/Controllers/SettingsController.php
+app/Http/Controllers/ThemeController.php
+app/Http/Middleware/EnsureRestaurantSubscriptionIsActive.php
+app/Http/Middleware/EnsureSuperAdmin.php
+app/Http/Requests/Onboarding/StoreOnboardingRequest.php
+app/Http/Requests/Settings/UpdateMenuSettingsRequest.php
+app/Http/Requests/Settings/UpdateRestaurantSettingsRequest.php
+app/Models/MenuSetting.php
+app/Models/Restaurant.php
+app/Models/User.php
+bootstrap/app.php
+config/app.php
+config/menu_themes.php
+database/migrations/2026_04_17_000006_add_banner_path_to_restaurants_table.php
+database/migrations/2026_04_18_000007_drop_active_theme_from_menu_settings_table.php
+database/migrations/2026_04_18_000008_add_subscription_fields_to_restaurants_table.php
+database/migrations/2026_04_18_000009_add_is_super_admin_to_users_table.php
+resources/views/dashboard.blade.php
+resources/views/layouts/app.blade.php
+resources/views/menu/show.blade.php
+resources/views/menu/themes/appetite.blade.php
+resources/views/menu/themes/classy.blade.php
+resources/views/menu/themes/minimal.blade.php
+resources/views/onboarding/create.blade.php
+resources/views/owner/dashboard.blade.php
+resources/views/settings/index.blade.php
+resources/views/themes/index.blade.php
+routes/web.php

@@ -8,13 +8,6 @@ return [
         'view' => 'menu.themes.classy',
         'preview_colors' => ['#111827', '#c69f65', '#f7f3ed'],
     ],
-    'app_menu_light' => [
-        'name' => 'Modern App',
-        'label' => 'Modern App',
-        'description' => 'واجهة تطبيق موبايل بتمرير سريع، أقسام sticky، وبطاقات تصفح مدمجة.',
-        'view' => 'menu.themes.app-menu-light',
-        'preview_colors' => ['#0f172a', '#3b82f6', '#ecfeff'],
-    ],
     'appetite' => [
         'name' => 'Bold Street',
         'label' => 'Bold / Street Food',
@@ -25,8 +18,8 @@ return [
     'minimal' => [
         'name' => 'Minimal Clean',
         'label' => 'Minimal / Clean',
-        'description' => 'ستايل نظيف وخفيف يركز على المحتوى بتفاصيل بسيطة ومساحات هادئة.',
+        'description' => 'ستايل نظيف ومتزن بمساحات هادئة وتفاصيل عصرية مناسبة للكافيهات والعلامات الهادئة.',
         'view' => 'menu.themes.minimal',
-        'preview_colors' => ['#ffffff', '#e2e8f0', '#0f172a'],
+        'preview_colors' => ['#f8fafc', '#dbe7df', '#5f7f72'],
     ],
 ];
