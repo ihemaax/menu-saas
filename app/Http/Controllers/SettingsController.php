@@ -20,7 +20,6 @@ class SettingsController extends Controller
         return view('settings.index', [
             'restaurant' => $restaurant,
             'menuUrl' => $menuUrl,
-            'themes' => config('menu_themes'),
         ]);
     }
 
@@ -29,6 +28,8 @@ class SettingsController extends Controller
         $restaurant = $request->user()->restaurant;
 
         $logoPath = $restaurant->logo_path;
+        $bannerPath = $restaurant->banner_path;
+
         if ($request->hasFile('logo')) {
             if ($logoPath) {
                 Storage::disk('public')->delete($logoPath);
@@ -36,11 +37,19 @@ class SettingsController extends Controller
             $logoPath = $request->file('logo')->store('restaurants/logos', 'public');
         }
 
+        if ($request->hasFile('banner')) {
+            if ($bannerPath) {
+                Storage::disk('public')->delete($bannerPath);
+            }
+            $bannerPath = $request->file('banner')->store('restaurants/banners', 'public');
+        }
+
         $restaurant->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'description' => $request->description,
             'logo_path' => $logoPath,
+            'banner_path' => $bannerPath,
         ]);
 
         return back()->with('success', 'بيانات المطعم اتحدثت.');
@@ -52,7 +61,6 @@ class SettingsController extends Controller
             $request->user()->restaurant->menuSetting->update([
                 'slug' => str($request->slug)->lower()->slug('-')->value(),
                 'is_public' => $request->boolean('is_public', true),
-                'active_theme' => $request->active_theme,
             ]);
         } catch (QueryException $exception) {
             if ((string) $exception->getCode() === '23000') {

@@ -97,6 +97,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'super_admin_email' => env('SUPER_ADMIN_EMAIL', ''),
+
     'key' => env('APP_KEY'),
 
     'previous_keys' => [

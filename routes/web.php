@@ -4,10 +4,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\Owner\SuperAdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\ThemeController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -17,7 +17,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
     Route::get('/onboarding/slug-check', [OnboardingController::class, 'checkSlug'])->name('onboarding.slug-check');
 
-    Route::middleware('restaurant.setup')->group(function (): void {
+    Route::middleware(['restaurant.setup', 'restaurant.subscription'])->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
         Route::resource('categories', CategoryController::class)->except('show');
@@ -27,9 +27,11 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/settings/restaurant', [SettingsController::class, 'updateRestaurant'])->name('settings.restaurant.update');
         Route::put('/settings/menu', [SettingsController::class, 'updateMenu'])->name('settings.menu.update');
         Route::get('/settings/menu/qr.svg', [SettingsController::class, 'qrSvg'])->name('settings.menu.qr');
+    });
 
-        Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
-        Route::put('/themes', [ThemeController::class, 'update'])->name('themes.update');
+    Route::middleware('super.admin')->prefix('owner')->name('owner.')->group(function (): void {
+        Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('dashboard');
+        Route::patch('/restaurants/{restaurant}/subscription', [SuperAdminController::class, 'updateSubscription'])->name('restaurants.subscription.update');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

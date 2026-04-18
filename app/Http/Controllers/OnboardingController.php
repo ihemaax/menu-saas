@@ -21,9 +21,7 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return view('onboarding.create', [
-            'themes' => config('menu_themes'),
-        ]);
+        return view('onboarding.create');
     }
 
     public function store(StoreOnboardingRequest $request): RedirectResponse
@@ -33,12 +31,16 @@ class OnboardingController extends Controller
         try {
             DB::transaction(function () use ($request, $user): void {
                 $logoPath = $request->file('logo')?->store('restaurants/logos', 'public');
+                $bannerPath = $request->file('banner')?->store('restaurants/banners', 'public');
 
                 $restaurant = Restaurant::create([
                     'name' => $request->string('restaurant_name')->toString(),
                     'phone' => $request->filled('phone') ? $request->string('phone')->toString() : null,
                     'description' => $request->filled('description') ? $request->string('description')->toString() : null,
                     'logo_path' => $logoPath,
+                    'banner_path' => $bannerPath,
+                    'subscription_status' => 'active',
+                    'subscription_starts_at' => now(),
                 ]);
 
                 $user->update(['restaurant_id' => $restaurant->id]);
@@ -47,7 +49,6 @@ class OnboardingController extends Controller
                     'restaurant_id' => $restaurant->id,
                     'slug' => $this->normalizeSlug($request->string('slug')->toString()),
                     'is_public' => $request->boolean('is_public', true),
-                    'active_theme' => $request->string('active_theme')->toString(),
                 ]);
             });
         } catch (QueryException $exception) {

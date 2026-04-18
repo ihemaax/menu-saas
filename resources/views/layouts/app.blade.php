@@ -14,21 +14,28 @@
     <aside :class="collapsed ? 'w-20' : 'w-72'" class="zz-sidebar">
         <div class="h-full p-3" dir="rtl">
             <div class="mb-8 flex items-center justify-between px-2">
-                <a href="{{ route('dashboard') }}" class="font-extrabold text-slate-900" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr</a>
+                <a href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}" class="font-extrabold text-slate-900" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr</a>
                 <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50">
                     <x-icon name="menu" class="h-4 w-4"/>
                 </button>
             </div>
 
-            @php($items = auth()->user()?->restaurant_id ? [
-                ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => 'home'],
-                ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => 'category'],
-                ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => 'product'],
-                ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => 'settings'],
-                ['route' => 'themes.index', 'label' => 'الثيمات', 'icon' => 'palette'],
-            ] : [
-                ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => 'settings'],
-            ])
+            @php
+                $items = auth()->user()?->restaurant_id
+                    ? [
+                        ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => 'home'],
+                        ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => 'category'],
+                        ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => 'product'],
+                        ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => 'settings'],
+                    ]
+                    : [
+                        ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => 'settings'],
+                    ];
+
+                if (auth()->user()?->isSuperAdmin()) {
+                    $items[] = ['route' => 'owner.dashboard', 'label' => 'لوحة المالك', 'icon' => 'home'];
+                }
+            @endphp
 
             <nav class="space-y-2">
                 @foreach($items as $item)
@@ -51,7 +58,7 @@
             <div class="px-6 py-4 flex items-center justify-between">
                 <div>
                     <p class="text-xs text-slate-500">Za3tr-Zatona Control</p>
-                    <p class="text-sm font-bold text-slate-900">لوحة تحكم المطعم</p>
+                    <p class="text-sm font-bold text-slate-900">لوحة التحكم</p>
                 </div>
                 <div class="text-sm text-slate-500">{{ now()->format('d M Y') }}</div>
             </div>

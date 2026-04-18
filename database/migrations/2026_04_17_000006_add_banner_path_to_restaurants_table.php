@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('menu_settings', function (Blueprint $table) {
-            $table->string('active_theme', 50)->default('appetite')->after('is_public');
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->string('banner_path')->nullable()->after('logo_path');
         });
     }
 
     public function down(): void
     {
-        Schema::table('menu_settings', function (Blueprint $table) {
-            $table->dropColumn('active_theme');
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->dropColumn('banner_path');
         });
     }
 };

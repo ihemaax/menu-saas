@@ -9,8 +9,12 @@
             <div><label class="zz-label">اسم المطعم</label><input class="zz-input" name="name" value="{{ old('name', $restaurant->name) }}" required></div>
             <div><label class="zz-label">التليفون</label><input class="zz-input" name="phone" value="{{ old('phone', $restaurant->phone) }}"></div>
             <div><label class="zz-label">وصف مختصر</label><textarea class="zz-input" name="description" rows="3">{{ old('description', $restaurant->description) }}</textarea></div>
-            <div><label class="zz-label">اللوجو</label><input type="file" class="zz-input" name="logo" accept="image/*"></div>
-            @if($restaurant->logo_path)<img src="{{ asset('storage/'.$restaurant->logo_path) }}" class="h-20 w-20 rounded-xl object-cover" alt="logo">@endif
+            <div><label class="zz-label">اللوجو (صورة البروفايل)</label><input type="file" class="zz-input" name="logo" accept="image/*"></div>
+            <div><label class="zz-label">صورة الكفر / البانر</label><input type="file" class="zz-input" name="banner" accept="image/*"></div>
+            <div class="grid gap-3 sm:grid-cols-2">
+                @if($restaurant->logo_path)<img src="{{ asset('storage/'.$restaurant->logo_path) }}" class="h-20 w-20 rounded-full object-cover" alt="logo">@endif
+                @if($restaurant->banner_path)<img src="{{ asset('storage/'.$restaurant->banner_path) }}" class="h-20 w-full rounded-xl object-cover" alt="banner">@endif
+            </div>
             <button class="zz-btn-primary">حفظ</button>
         </form>
     </section>
@@ -32,14 +36,6 @@
                 >
                 <p class="mt-2 text-xs text-slate-500">لينكك النهائي: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-slate-500">أي تعديل بيتراجع مباشرة.</p>
-            </div>
-            <div>
-                <label class="zz-label">الثيم النشط</label>
-                <select name="active_theme" class="zz-input">
-                    @foreach($themes as $key => $theme)
-                        <option value="{{ $key }}" @selected(old('active_theme', $restaurant->menuSetting->active_theme) === $key)>{{ $theme['label'] }}</option>
-                    @endforeach
-                </select>
             </div>
             <label class="flex items-center gap-2"><input type="checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاح للناس</label>
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>

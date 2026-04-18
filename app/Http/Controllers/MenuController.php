@@ -9,8 +9,12 @@ class MenuController extends Controller
 {
     public function show(string $slug): View
     {
-        $menuSetting = MenuSetting::where('slug', $slug)
+        $menuSetting = MenuSetting::query()
+            ->where('slug', $slug)
             ->where('is_public', true)
+            ->whereHas('restaurant', fn ($query) => $query
+                ->where('subscription_status', 'active')
+                ->where(fn ($sub) => $sub->whereNull('subscription_ends_at')->orWhere('subscription_ends_at', '>', now())))
             ->firstOrFail();
 
         $restaurant = $menuSetting->restaurant()->firstOrFail();
@@ -28,9 +32,6 @@ class MenuController extends Controller
             ->take(6)
             ->get();
 
-        $themes = config('menu_themes');
-        $activeTheme = $themes[$menuSetting->active_theme] ?? $themes['appetite'];
-
-        return view($activeTheme['view'], compact('restaurant', 'categories', 'featuredProducts', 'menuSetting'));
+        return view('menu.show', compact('restaurant', 'categories', 'featuredProducts', 'menuSetting'));
     }
 }

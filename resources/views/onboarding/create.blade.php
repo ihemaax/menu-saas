@@ -13,7 +13,8 @@
             <div><label class="zz-label">اسم المطعم</label><input id="restaurant-name" name="restaurant_name" class="zz-input" value="{{ old('restaurant_name') }}" required></div>
             <div><label class="zz-label">رقم التليفون</label><input name="phone" class="zz-input" value="{{ old('phone') }}"></div>
             <div><label class="zz-label">وصف بسيط</label><textarea name="description" rows="3" class="zz-input">{{ old('description') }}</textarea></div>
-            <div><label class="zz-label">لوجو المكان</label><input type="file" name="logo" class="zz-input" accept="image/*"></div>
+            <div><label class="zz-label">لوجو المكان (صورة البروفايل)</label><input type="file" name="logo" class="zz-input" accept="image/*"></div>
+            <div><label class="zz-label">صورة الكفر / البانر</label><input type="file" name="banner" class="zz-input" accept="image/*"></div>
         </section>
 
         <section class="zz-card p-6 space-y-4">
@@ -31,19 +32,6 @@
                 >
                 <p class="mt-2 text-xs text-slate-500">يعني إيه؟ ده الجزء اللي بيظهر آخر لينك المنيو. مثال: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.(old('slug') ?: 'your-name')) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-slate-500">اكتب الاسم وإحنا هنتأكد فورًا لو متاح.</p>
-            </div>
-
-            <div>
-                <label class="zz-label">اختار الثيم المبدئي</label>
-                <div class="mt-2 grid gap-3 sm:grid-cols-3">
-                    @foreach($themes as $key => $theme)
-                        <label class="rounded-xl border border-slate-200 p-3 cursor-pointer hover:border-teal-400">
-                            <input type="radio" name="active_theme" value="{{ $key }}" class="mb-2" {{ old('active_theme', 'appetite') === $key ? 'checked' : '' }}>
-                            <p class="text-sm font-bold">{{ $theme['label'] }}</p>
-                            <p class="text-xs text-slate-500 mt-1">{{ $theme['description'] }}</p>
-                        </label>
-                    @endforeach
-                </div>
             </div>
 
             <label class="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" name="is_public" value="1" checked> المنيو يكون متاح لأي حد باللينك</label>
