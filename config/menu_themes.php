@@ -22,6 +22,14 @@ return [
         'view' => 'menu.themes.appetite',
         'preview_colors' => ['#18181b', '#dc2626', '#f4f4f5'],
     ],
+
+    'app_menu_light' => [
+        'name' => 'App Menu Light',
+        'label' => 'App Menu Light',
+        'description' => 'ستايل تطبيق موبايل فاتح ببطاقات ناعمة وخلفيات mint هادية.',
+        'view' => 'menu.themes.app-menu-light',
+        'preview_colors' => ['#0f766e', '#d8ecea', '#ffffff'],
+    ],
     'minimal' => [
         'name' => 'Minimal Clean',
         'label' => 'Minimal / Clean',
