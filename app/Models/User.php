@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'restaurant_id'])]
+#[Fillable(['name', 'email', 'password', 'restaurant_id', 'is_super_admin'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -22,11 +22,19 @@ class User extends Authenticatable
         return $this->belongsTo(Restaurant::class);
     }
 
+    public function isSuperAdmin(): bool
+    {
+        $ownerEmail = (string) config('app.super_admin_email');
+
+        return (bool) $this->is_super_admin || ($ownerEmail !== '' && strcasecmp($this->email, $ownerEmail) === 0);
+    }
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_super_admin' => 'boolean',
         ];
     }
 }

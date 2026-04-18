@@ -37,14 +37,6 @@
                 <p class="mt-2 text-xs text-slate-500">لينكك النهائي: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-slate-500">أي تعديل بيتراجع مباشرة.</p>
             </div>
-            <div>
-                <label class="zz-label">الثيم النشط</label>
-                <select name="active_theme" class="zz-input">
-                    @foreach($themes as $key => $theme)
-                        <option value="{{ $key }}" @selected(old('active_theme', $restaurant->menuSetting->active_theme) === $key)>{{ $theme['label'] }}</option>
-                    @endforeach
-                </select>
-            </div>
             <label class="flex items-center gap-2"><input type="checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاح للناس</label>
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>
         </form>

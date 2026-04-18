@@ -40,6 +40,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'is_super_admin' => strcasecmp($request->string('email')->toString(), (string) config('app.super_admin_email')) === 0,
         ]);
 
         event(new Registered($user));

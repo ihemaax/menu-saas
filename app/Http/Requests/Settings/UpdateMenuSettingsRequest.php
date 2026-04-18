@@ -19,7 +19,6 @@ class UpdateMenuSettingsRequest extends FormRequest
         return [
             'slug' => ['required', 'string', 'alpha_dash', 'min:3', 'max:60', Rule::unique('menu_settings', 'slug')->ignore($menuSettingId)],
             'is_public' => ['nullable', 'boolean'],
-            'active_theme' => ['required', 'string', 'in:'.implode(',', array_keys(config('menu_themes')))],
         ];
     }
 }

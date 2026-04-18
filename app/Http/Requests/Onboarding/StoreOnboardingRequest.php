@@ -21,7 +21,6 @@ class StoreOnboardingRequest extends FormRequest
             'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'slug' => ['required', 'string', 'alpha_dash', 'min:3', 'max:60', 'unique:menu_settings,slug'],
             'is_public' => ['nullable', 'boolean'],
-            'active_theme' => ['required', 'string', 'in:'.implode(',', array_keys(config('menu_themes')))],
         ];
     }
 }

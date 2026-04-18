@@ -17,6 +17,14 @@ class Restaurant extends Model
         'logo_path',
         'banner_path',
         'description',
+        'subscription_status',
+        'subscription_starts_at',
+        'subscription_ends_at',
+    ];
+
+    protected $casts = [
+        'subscription_starts_at' => 'datetime',
+        'subscription_ends_at' => 'datetime',
     ];
 
     public function users(): HasMany
@@ -37,5 +45,14 @@ class Restaurant extends Model
     public function menuSetting(): HasOne
     {
         return $this->hasOne(MenuSetting::class);
+    }
+
+    public function isSubscriptionActive(): bool
+    {
+        if ($this->subscription_status !== 'active') {
+            return false;
+        }
+
+        return ! $this->subscription_ends_at || $this->subscription_ends_at->isFuture();
     }
 }

@@ -25,9 +25,8 @@
     <div class="grid gap-6 xl:grid-cols-3">
         <section class="xl:col-span-2 zz-card p-6">
             <h2 class="text-lg font-bold">خطوات سريعة</h2>
-            <div class="mt-4 grid gap-3 md:grid-cols-3">
+            <div class="mt-4 grid gap-3 md:grid-cols-2">
                 <a class="rounded-xl border border-slate-200 p-4 hover:bg-slate-50" href="{{ route('products.index') }}"><p class="font-bold">إدارة المنتجات</p><p class="text-xs text-slate-500 mt-1">راجع الأسعار والتوفر</p></a>
-                <a class="rounded-xl border border-slate-200 p-4 hover:bg-slate-50" href="{{ route('themes.index') }}"><p class="font-bold">اختيار ثيم</p><p class="text-xs text-slate-500 mt-1">غيّر شكل المنيو</p></a>
                 <a class="rounded-xl border border-slate-200 p-4 hover:bg-slate-50" href="{{ route('settings.index') }}"><p class="font-bold">إعدادات المنيو</p><p class="text-xs text-slate-500 mt-1">لينك + إظهار/إخفاء</p></a>
             </div>
             @if($stats['products_count'] === 0)
