@@ -4,37 +4,22 @@ return [
     'classy' => [
         'name' => 'Elegant Luxury',
         'label' => 'Elegant / Luxury',
-        'description' => 'ستايل راقي وفخم بمساحات هادئة يناسب المطاعم والكافيهات الراقية.',
+        'description' => 'ستايل راقي بمظهر فاخر، بانر أنيق، ومساحات مريحة للمطاعم الراقية.',
         'view' => 'menu.themes.classy',
-        'preview_colors' => ['#111827', '#b45309', '#fafaf9'],
-    ],
-    'app_menu_light' => [
-        'name' => 'Modern App',
-        'label' => 'Modern App',
-        'description' => 'واجهة شبيهة بتطبيقات الأكل: تصفح سريع، بطاقات مدمجة، وفلو واضح.',
-        'view' => 'menu.themes.app-menu-light',
-        'preview_colors' => ['#0f766e', '#d7e9e7', '#f8fcfc'],
+        'preview_colors' => ['#111827', '#c69f65', '#f7f3ed'],
     ],
     'appetite' => [
         'name' => 'Bold Street',
         'label' => 'Bold / Street Food',
-        'description' => 'ستايل جريء وحيوي بهيدر قوي وتباين عالي مناسب لعلامات الفاست فود.',
+        'description' => 'ستايل جريء وحيوي بهوية قوية وتباين عالي مناسب للفاست فود.',
         'view' => 'menu.themes.appetite',
-        'preview_colors' => ['#18181b', '#dc2626', '#f4f4f5'],
-    ],
-
-    'app_menu_light' => [
-        'name' => 'App Menu Light',
-        'label' => 'App Menu Light',
-        'description' => 'ستايل تطبيق موبايل فاتح ببطاقات ناعمة وخلفيات mint هادية.',
-        'view' => 'menu.themes.app-menu-light',
-        'preview_colors' => ['#0f766e', '#d8ecea', '#ffffff'],
+        'preview_colors' => ['#09090b', '#f97316', '#ef4444'],
     ],
     'minimal' => [
         'name' => 'Minimal Clean',
         'label' => 'Minimal / Clean',
-        'description' => 'ستايل بسيط وخفيف جدًا يركز على المحتوى مع مساحات نظيفة.',
+        'description' => 'ستايل نظيف ومتزن بمساحات هادئة وتفاصيل عصرية مناسبة للكافيهات والعلامات الهادئة.',
         'view' => 'menu.themes.minimal',
-        'preview_colors' => ['#0f172a', '#94a3b8', '#ffffff'],
+        'preview_colors' => ['#f8fafc', '#dbe7df', '#5f7f72'],
     ],
 ];
