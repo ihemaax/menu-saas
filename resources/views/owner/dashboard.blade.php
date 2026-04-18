@@ -28,7 +28,17 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white">
                 @foreach($restaurants as $restaurant)
-                    @php($owner = $restaurant->users->first())
+                    @php
+                        $owner = $restaurant->users->first();
+                        $statusMap = [
+                            'active' => ['label' => 'نشط', 'class' => 'bg-emerald-100 text-emerald-700'],
+                            'suspended' => ['label' => 'موقوف', 'class' => 'bg-rose-100 text-rose-700'],
+                            'expired' => ['label' => 'منتهي', 'class' => 'bg-amber-100 text-amber-700'],
+                        ];
+                        $statusData = $statusMap[$restaurant->subscription_status] ?? ['label' => 'غير محدد', 'class' => 'bg-slate-100 text-slate-700'];
+                        $statusLabel = $statusData['label'];
+                        $statusClass = $statusData['class'];
+                    @endphp
                     <tr>
                         <td class="px-4 py-3">
                             <p class="font-bold text-slate-900">{{ $restaurant->name }}</p>
@@ -39,14 +49,6 @@
                         <td class="px-4 py-3">{{ $restaurant->phone ?: '-' }}</td>
                         <td class="px-4 py-3">{{ $restaurant->created_at->format('Y-m-d') }}</td>
                         <td class="px-4 py-3">
-                            @php
-                                $statusMap = [
-                                    'active' => ['نشط', 'bg-emerald-100 text-emerald-700'],
-                                    'suspended' => ['موقوف', 'bg-rose-100 text-rose-700'],
-                                    'expired' => ['منتهي', 'bg-amber-100 text-amber-700'],
-                                ];
-                                [$statusLabel, $statusClass] = $statusMap[$restaurant->subscription_status] ?? ['غير محدد', 'bg-slate-100 text-slate-700'];
-                            @endphp
                             <span class="inline-flex rounded-full px-2 py-1 text-xs font-bold {{ $statusClass }}">{{ $statusLabel }}</span>
                             <p class="mt-1 text-[11px] text-slate-500">{{ $restaurant->subscription_starts_at?->format('Y-m-d') ?: '-' }} / {{ $restaurant->subscription_ends_at?->format('Y-m-d') ?: '-' }}</p>
                         </td>
