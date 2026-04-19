@@ -4,8 +4,8 @@
 @php
     $stats = [
         'total' => $restaurants->count(),
-        'active' => $restaurants->where('subscription_status', 'active')->count(),
-        'expired' => $restaurants->where('subscription_status', 'expired')->count(),
+        'active' => $restaurants->filter(fn($restaurant) => $restaurant->effectiveSubscriptionStatus() === 'active')->count(),
+        'expired' => $restaurants->filter(fn($restaurant) => $restaurant->effectiveSubscriptionStatus() === 'expired')->count(),
         'public_menu' => $restaurants->filter(fn($restaurant) => (bool) $restaurant->menuSetting?->is_public)->count(),
     ];
 
@@ -64,7 +64,7 @@
                     @foreach($restaurants as $restaurant)
                         @php
                             $owner = $restaurant->users->first();
-                            $statusData = $statusMap[$restaurant->subscription_status] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
+                            $statusData = $statusMap[$restaurant->effectiveSubscriptionStatus()] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
                             $menuUrl = $restaurant->menuSetting?->slug ? route('menu.show', $restaurant->menuSetting->slug) : null;
                             $isPublicMenu = (bool) $restaurant->menuSetting?->is_public;
                         @endphp
@@ -148,7 +148,7 @@
             @foreach($restaurants as $restaurant)
                 @php
                     $owner = $restaurant->users->first();
-                    $statusData = $statusMap[$restaurant->subscription_status] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
+                    $statusData = $statusMap[$restaurant->effectiveSubscriptionStatus()] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
                     $menuUrl = $restaurant->menuSetting?->slug ? route('menu.show', $restaurant->menuSetting->slug) : null;
                     $isPublicMenu = (bool) $restaurant->menuSetting?->is_public;
                 @endphp

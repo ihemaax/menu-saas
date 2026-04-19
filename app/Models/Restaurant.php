@@ -47,12 +47,35 @@ class Restaurant extends Model
         return $this->hasOne(MenuSetting::class);
     }
 
-    public function isSubscriptionActive(): bool
+    public function effectiveSubscriptionStatus(): string
     {
-        if ($this->subscription_status !== 'active') {
-            return false;
+        if ($this->subscription_status === 'suspended') {
+            return 'suspended';
         }
 
-        return ! $this->subscription_ends_at || $this->subscription_ends_at->isFuture();
+        if ($this->subscription_status === 'active' && $this->subscription_ends_at?->isPast()) {
+            return 'expired';
+        }
+
+        return $this->subscription_status ?: 'expired';
+    }
+
+    public function isSubscriptionActive(): bool
+    {
+        return $this->effectiveSubscriptionStatus() === 'active';
+    }
+
+    public function isSubscriptionReadOnly(): bool
+    {
+        return in_array($this->effectiveSubscriptionStatus(), ['expired', 'suspended'], true);
+    }
+
+    public function subscriptionDaysRemaining(): ?int
+    {
+        if (! $this->isSubscriptionActive() || ! $this->subscription_ends_at) {
+            return null;
+        }
+
+        return max(0, now()->startOfDay()->diffInDays($this->subscription_ends_at->startOfDay(), false));
     }
 }
