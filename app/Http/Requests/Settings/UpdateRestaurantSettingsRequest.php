@@ -16,6 +16,7 @@ class UpdateRestaurantSettingsRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:150'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'address' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:800'],
             'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
             'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
