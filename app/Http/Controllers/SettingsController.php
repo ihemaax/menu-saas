@@ -53,7 +53,7 @@ class SettingsController extends Controller
             'banner_path' => $bannerPath,
         ]);
 
-        return back()->with('success', 'بيانات المطعم اتحدثت.');
+        return back()->with('success', 'بيانات المطعم اتحفظت بنجاح.');
     }
 
     public function updateMenu(UpdateMenuSettingsRequest $request): RedirectResponse
@@ -74,7 +74,7 @@ class SettingsController extends Controller
             throw $exception;
         }
 
-        return back()->with('success', 'إعدادات المنيو اتحفظت.');
+        return back()->with('success', 'إعدادات المنيو اتحدثت.');
     }
 
     public function qrSvg()
