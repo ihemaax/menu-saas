@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Onboarding\StoreOnboardingRequest;
 use App\Models\MenuSetting;
 use App\Models\Restaurant;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -28,10 +29,19 @@ class OnboardingController extends Controller
     {
         $user = $request->user();
 
+        if ($user->restaurant_id) {
+            return redirect()->route('dashboard');
+        }
+
         try {
             DB::transaction(function () use ($request, $user): void {
                 $logoPath = $request->file('logo')?->store('restaurants/logos', 'public');
                 $bannerPath = $request->file('banner')?->store('restaurants/banners', 'public');
+                $trialDays = max(1, (int) config('subscription.free_trial_days', 30));
+                $trialStartsAt = $user->created_at
+                    ? CarbonImmutable::parse($user->created_at)
+                    : now()->toImmutable();
+                $trialEndsAt = $trialStartsAt->addDays($trialDays);
 
                 $restaurant = Restaurant::create([
                     'name' => $request->string('restaurant_name')->toString(),
@@ -40,7 +50,8 @@ class OnboardingController extends Controller
                     'logo_path' => $logoPath,
                     'banner_path' => $bannerPath,
                     'subscription_status' => 'active',
-                    'subscription_starts_at' => now(),
+                    'subscription_starts_at' => $trialStartsAt,
+                    'subscription_ends_at' => $trialEndsAt,
                 ]);
 
                 $user->update(['restaurant_id' => $restaurant->id]);

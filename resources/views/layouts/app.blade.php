@@ -16,6 +16,8 @@
     $effectiveSubscriptionStatus = $subscriptionRestaurant?->effectiveSubscriptionStatus();
     $isReadOnlyMode = $subscriptionRestaurant?->isSubscriptionReadOnly() ?? false;
     $daysRemaining = $subscriptionRestaurant?->subscriptionDaysRemaining();
+    $freeTrialDays = max(1, (int) config('subscription.free_trial_days', 30));
+    $subscriptionPlanLabel = $subscriptionRestaurant?->isFreeTrialSubscription() ? "باقة مجانية ({$freeTrialDays} يوم)" : 'باقة مفعلة';
 
     $statusBadgeMap = [
         'active' => ['label' => 'نشط', 'class' => 'zz-badge-active'],
@@ -132,9 +134,10 @@
                             <p class="text-sm text-[#5d6457]">{{ $subscriptionMessage }}</p>
                         </div>
                         <div class="grid gap-2 text-xs text-[#5d6457] sm:grid-cols-3 sm:text-sm">
+                            <p><span class="font-semibold">الباقة:</span> {{ $subscriptionPlanLabel }}</p>
                             <p><span class="font-semibold">البداية:</span> {{ $subscriptionRestaurant->subscription_starts_at?->format('Y-m-d') ?: '-' }}</p>
                             <p><span class="font-semibold">النهاية:</span> {{ $subscriptionRestaurant->subscription_ends_at?->format('Y-m-d') ?: '-' }}</p>
-                            <p><span class="font-semibold">المتبقي:</span> {{ $daysRemaining !== null ? $daysRemaining.' يوم' : '-' }}</p>
+                            <p class="sm:col-span-3"><span class="font-semibold">المتبقي:</span> {{ $daysRemaining !== null ? $daysRemaining.' يوم' : '-' }}</p>
                         </div>
                     </div>
                 </section>

@@ -71,6 +71,20 @@ class Restaurant extends Model
         return in_array($this->effectiveSubscriptionStatus(), ['expired', 'suspended'], true);
     }
 
+    public function isFreeTrialSubscription(): bool
+    {
+        if (! $this->subscription_starts_at || ! $this->subscription_ends_at) {
+            return false;
+        }
+
+        $trialDays = max(1, (int) config('subscription.free_trial_days', 30));
+
+        return $this->subscription_starts_at
+            ->copy()
+            ->addDays($trialDays)
+            ->equalTo($this->subscription_ends_at);
+    }
+
     public function subscriptionDaysRemaining(): ?int
     {
         if (! $this->isSubscriptionActive() || ! $this->subscription_ends_at) {
