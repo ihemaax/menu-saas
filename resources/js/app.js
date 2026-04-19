@@ -13,7 +13,7 @@ document.addEventListener('click', (event) => {
 
   navigator.clipboard.writeText(target.value ?? target.textContent ?? '').then(() => {
     const old = button.textContent;
-    button.textContent = 'اتنسخ';
+    button.textContent = 'اتنسخ فعلاً';
     setTimeout(() => (button.textContent = old), 1200);
   });
 });
@@ -47,7 +47,7 @@ slugInputs.forEach((input) => {
     const slug = normalize(input.value);
     input.value = slug;
 
-    if (previewEl) previewEl.textContent = `${window.location.origin}/menu/${slug || 'your-name'}`;
+    if (previewEl) previewEl.textContent = `${window.location.origin}/menu/${slug || 'اسم-مطعمك'}`;
     if (!statusEl) return;
 
     clearTimeout(timer);
@@ -57,7 +57,7 @@ slugInputs.forEach((input) => {
       return;
     }
 
-    statusEl.textContent = 'بنتأكد دلوقتي...';
+    statusEl.textContent = 'لحظة ونتأكد...';
     statusEl.className = 'text-xs text-slate-500';
 
     timer = setTimeout(async () => {

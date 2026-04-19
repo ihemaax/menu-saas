@@ -36,7 +36,7 @@ class CategoryController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'تم إنشاء القسم بنجاح.');
+        return redirect()->route('categories.index')->with('success', 'القسم اتضاف بنجاح.');
     }
 
     public function edit(Category $category): View
@@ -57,7 +57,7 @@ class CategoryController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'تم تحديث القسم بنجاح.');
+        return redirect()->route('categories.index')->with('success', 'تعديلات القسم اتحفظت.');
     }
 
     public function destroy(Category $category): RedirectResponse
@@ -66,6 +66,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success', 'تم حذف القسم.');
+        return redirect()->route('categories.index')->with('success', 'القسم اتمسح من المنيو.');
     }
 }

@@ -62,7 +62,7 @@ class OnboardingController extends Controller
             throw $exception;
         }
 
-        return redirect()->route('dashboard')->with('success', 'مطعمك بقى جاهز، نبدأ؟');
+        return redirect()->route('dashboard')->with('success', 'تمام، مطعمك جاهز وإنت دلوقتي على اللوحة.');
     }
 
     public function checkSlug(Request $request): JsonResponse
@@ -82,7 +82,7 @@ class OnboardingController extends Controller
         return response()->json([
             'available' => ! $exists,
             'slug' => $candidate,
-            'message' => $exists ? 'الاسم ده مستخدم، غيّره شوية.' : 'ممتاز، اللينك ده متاح.',
+            'message' => $exists ? 'الاسم ده مستخدم، جرّب اقتراح تاني.' : 'ممتاز، اللينك متاح.',
         ]);
     }
 
