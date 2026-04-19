@@ -10,6 +10,7 @@
             @csrf @method('PUT')
             <div><label class="zz-label">اسم المطعم</label><input class="zz-input" name="name" value="{{ old('name', $restaurant->name) }}" required></div>
             <div><label class="zz-label">رقم الموبايل</label><input class="zz-input" name="phone" value="{{ old('phone', $restaurant->phone) }}" placeholder="مثال: 0100XXXXXXX"></div>
+            <div><label class="zz-label">عنوان المطعم</label><input class="zz-input" name="address" value="{{ old('address', $restaurant->address) }}" placeholder="مثال: 15 ش البحر، سيدي بشر، الإسكندرية"></div>
             <div><label class="zz-label">وصف مختصر</label><textarea class="zz-input" name="description" rows="3" placeholder="اكتب نبذة بسيطة عن المطعم">{{ old('description', $restaurant->description) }}</textarea></div>
             <div><label class="zz-label">اللوجو</label><input type="file" class="zz-input" name="logo" accept="image/*"></div>
             <div><label class="zz-label">صورة الغلاف</label><input type="file" class="zz-input" name="banner" accept="image/*"></div>

@@ -33,12 +33,12 @@
         .elite-card{background:#fffdf9;border:1px solid #e7ddd1;border-radius:24px;box-shadow:0 10px 24px rgba(60,52,40,.05);overflow:hidden;}
         .elite-card-body{padding:18px;}
         .elite-card-title{margin:0 0 14px;font-size:1.02rem;font-weight:900;}
-        .elite-message{position:relative;border-radius:20px;padding:18px;background:linear-gradient(135deg,#7e8b70 0%,#a6b595 100%);color:#fff;box-shadow:0 16px 34px rgba(111,127,95,.18);overflow:hidden;}
-        .elite-message::after{content:"";position:absolute;top:-40px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.10);}
-        .elite-message strong{position:relative;display:block;font-size:1rem;line-height:1.9;z-index:2;}
         .elite-info-list{display:grid;gap:10px;}
-        .elite-info-item{display:flex;align-items:flex-start;gap:10px;color:#4d4a45;font-size:.92rem;line-height:1.75;font-weight:700;}
-        .elite-info-icon{width:36px;height:36px;border-radius:12px;background:#f3efe8;color:#6f7f5f;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:1rem;}
+        .elite-info-item{display:flex;align-items:flex-start;gap:10px;color:#4d4a45;font-size:.92rem;line-height:1.75;font-weight:700;padding:10px;border-radius:14px;background:#faf7f2;border:1px solid #eee5d9;}
+        .elite-info-icon{width:34px;height:34px;border-radius:10px;background:#f0ebe2;color:#6f7f5f;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:.95rem;}
+        .elite-info-text{display:grid;gap:1px;}
+        .elite-info-label{font-size:.76rem;color:#8a8176;font-weight:800;}
+        .elite-info-value{color:#312d28;}
         .elite-categories{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
         .elite-categories::-webkit-scrollbar{display:none;}
         .elite-cat{text-decoration:none;min-width:92px;width:92px;text-align:center;}
@@ -76,9 +76,13 @@
 @php
     $restaurantName = $restaurant->name;
     $restaurantPhone = $restaurant->phone;
-    $restaurantAddress = null;
+    $restaurantAddress = $restaurant->address;
     $restaurantSubtitle = $restaurant->description;
     $allItemsCount = $categories->sum(fn($category) => $category->products->count());
+    $sidebarItems = collect([
+        $restaurantPhone ? ['label' => 'رقم التواصل', 'value' => $restaurantPhone, 'icon' => '☎', 'link' => 'tel:'.$restaurantPhone] : null,
+        $restaurantAddress ? ['label' => 'العنوان', 'value' => $restaurantAddress, 'icon' => '⌂', 'link' => null] : null,
+    ])->filter()->values();
 @endphp
 <div class="elite-home">
     <section class="elite-hero-shell">
@@ -89,13 +93,14 @@
                     <div class="elite-identity-top">
                         <div class="elite-logo-frame"><div class="elite-logo"></div></div>
                         <div>
-                            <div class="elite-brand-kicker"><span class="dot"></span>المنيو الإلكتروني الرسمي</div>
+                            <div class="elite-brand-kicker"><span class="dot"></span>المنيو</div>
                             <h1 class="elite-title">{{ $restaurantName }}</h1>
-                            <p class="elite-subtitle">{{ $restaurantSubtitle ?: ($restaurantPhone ?: 'منيو إلكتروني منظم وواضح يسهّل على العميل تصفح الأصناف بسرعة من خلال QR.') }}</p>
+                            @if($restaurantSubtitle)
+                                <p class="elite-subtitle">{{ $restaurantSubtitle }}</p>
+                            @endif
                         </div>
                     </div>
                     <div class="elite-meta-row">
-                        <div class="elite-pill success"><span class="dot"></span>منيو رقمي سريع وسهل التصفح</div>
                         @if($restaurantPhone)<div class="elite-pill">{{ $restaurantPhone }}</div>@endif
                         @if($restaurantAddress)<div class="elite-pill">{{ $restaurantAddress }}</div>@endif
                         <div class="elite-pill">{{ $allItemsCount }} صنف متاح</div>
@@ -107,19 +112,28 @@
 
     <div class="elite-layout" id="menu-area">
         <aside class="elite-sidebar">
-            <div class="elite-card"><div class="elite-card-body"><div class="elite-message"><strong>اختر من الأصناف المتاحة واستعرض المنيو بسهولة من خلال تصميم واضح وسريع ومناسب تمامًا للعرض على الموبايل عبر QR.</strong></div></div></div>
-            <div class="elite-card">
-                <div class="elite-card-body">
-                    <h3 class="elite-card-title">معلومات المطعم</h3>
-                    <div class="elite-info-list">
-                        <div class="elite-info-item"><span class="elite-info-icon">•</span><div>عرض منظم للأصناف مع تجربة تصفح مريحة وسهلة للعميل.</div></div>
-                        @if($restaurantPhone)
-                            <div class="elite-info-item"><span class="elite-info-icon">•</span><div><a href="tel:{{ $restaurantPhone }}" style="color:inherit;text-decoration:none;">{{ $restaurantPhone }}</a></div></div>
-                        @endif
-                        <div class="elite-info-item"><span class="elite-info-icon">•</span><div>الواجهة مناسبة للعرض السريع بعد مسح رمز الـ QR مباشرة.</div></div>
+            @if($sidebarItems->isNotEmpty())
+                <div class="elite-card">
+                    <div class="elite-card-body">
+                        <h3 class="elite-card-title">معلومات المطعم</h3>
+                        <div class="elite-info-list">
+                            @foreach($sidebarItems as $sidebarItem)
+                                <div class="elite-info-item">
+                                    <span class="elite-info-icon">{{ $sidebarItem['icon'] }}</span>
+                                    <div class="elite-info-text">
+                                        <span class="elite-info-label">{{ $sidebarItem['label'] }}</span>
+                                        @if($sidebarItem['link'])
+                                            <a href="{{ $sidebarItem['link'] }}" class="elite-info-value" style="text-decoration:none;">{{ $sidebarItem['value'] }}</a>
+                                        @else
+                                            <span class="elite-info-value">{{ $sidebarItem['value'] }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </aside>
 
         <main class="elite-main">
@@ -159,7 +173,9 @@
                                                     <h4 class="elite-product-name">{{ $item->name }}</h4>
                                                     <span class="elite-product-category">{{ $category->name_ar }}</span>
                                                 </div>
-                                                <p class="elite-product-desc">{{ $item->description ?: 'صنف متاح ضمن المنيو الإلكتروني مع عرض واضح ومرتب للعميل.' }}</p>
+                                                @if($item->description)
+                                                    <p class="elite-product-desc">{{ $item->description }}</p>
+                                                @endif
                                                 <div class="elite-product-bottom">
                                                     <div>
                                                         <div class="elite-price-label">السعر</div>
