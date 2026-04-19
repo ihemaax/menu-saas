@@ -47,6 +47,7 @@ class SettingsController extends Controller
         $restaurant->update([
             'name' => $request->name,
             'phone' => $request->phone,
+            'address' => $request->address,
             'description' => $request->description,
             'logo_path' => $logoPath,
             'banner_path' => $bannerPath,
