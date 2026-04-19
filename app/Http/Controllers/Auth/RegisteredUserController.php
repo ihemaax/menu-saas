@@ -30,15 +30,30 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $normalizedPhone = preg_replace('/\D+/', '', (string) $request->string('phone'));
+        $request->merge(['phone' => $normalizedPhone]);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'regex:/^[0-9]{10,15}$/', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'name.required' => 'الاسم مطلوب.',
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'البريد الإلكتروني غير صحيح.',
+            'email.unique' => 'البريد الإلكتروني مسجل مسبقًا، جرّب تسجيل الدخول مباشرة.',
+            'phone.required' => 'رقم الموبايل مطلوب.',
+            'phone.regex' => 'رقم الموبايل غير صحيح. اكتب رقمًا من 10 إلى 15 رقم.',
+            'phone.unique' => 'رقم الموبايل مسجل مسبقًا، استخدم رقمًا آخر أو سجّل الدخول مباشرة.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'is_super_admin' => strcasecmp($request->string('email')->toString(), (string) config('app.super_admin_email')) === 0,
         ]);

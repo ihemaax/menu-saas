@@ -41,6 +41,30 @@
   .zz-badge-muted {@apply bg-[#efe6d5] text-[#7a6540];}
   .zz-badge-danger {@apply bg-[#f6d9d4] text-[#8f3d2f];}
 
+
+  .zz-sidebar-header {@apply mb-6 flex min-h-[56px] items-center gap-2 rounded-2xl bg-[#f2ede2] p-2;}
+  .zz-sidebar-header-collapsed {@apply justify-center;}
+  .zz-brand {@apply flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-2 text-[#253126] transition hover:bg-[#ebe4d7];}
+  .zz-brand-mark {@apply inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#6f7f43] text-xs font-extrabold text-white;}
+  .zz-brand-name {@apply truncate text-lg font-extrabold;}
+  .zz-sidebar-toggle {@apply h-9 w-9 items-center justify-center rounded-xl border border-[#d7cfbf] bg-white text-[#5f695f] transition hover:bg-[#f7f2e8];}
+
+  .zz-stat-card {@apply rounded-2xl border border-[#e8dfd1] bg-[#f9f6f0] px-4 py-3 shadow-[0_4px_12px_rgba(36,41,34,0.04)];}
+  .zz-stat-label {@apply text-xs font-semibold text-[#7a756a];}
+  .zz-stat-value {@apply mt-1 text-2xl font-extrabold text-[#243126];}
+
+  .zz-badge-info {@apply bg-[#d8ece8] text-[#2d6a62];}
+
+  .zz-owner-table td {@apply py-2.5;}
+  .zz-owner-table th {@apply py-2.5;}
+  .zz-action-grid {@apply grid gap-2 xl:grid-cols-2;}
+  .zz-action-grid .zz-action-submit {@apply xl:col-span-2;}
+  .zz-input-compact {@apply mt-1 rounded-xl px-3 py-1.5 text-xs;}
+  .zz-mini-label {@apply text-[11px] font-bold text-[#6a665a];}
+  .zz-owner-card {@apply space-y-3 rounded-2xl border border-[#ddd5c8] bg-white p-4 shadow-[0_8px_20px_rgba(38,44,35,0.06)];}
+
+  .zz-subscription-banner {@apply rounded-2xl border border-[#d7cfbf] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(37,44,35,0.05)];}
+  .zz-subscription-banner-warning {@apply border-[#efc5bd] bg-[#fff8f6];}
   .zz-nav-link {@apply flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-[#5f685f] transition hover:bg-[#f1ecdf] hover:text-[#253126];}
   .zz-nav-link-active {@apply bg-[#6f7f43] text-white shadow-[0_8px_20px_rgba(110,127,67,0.32)] hover:bg-[#6f7f43] hover:text-white;}
 

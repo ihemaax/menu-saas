@@ -15,7 +15,7 @@
         <div class="relative z-10">
             <p class="text-sm opacity-80">Za3tr-Zatona</p>
             <h1 class="mt-3 text-4xl font-extrabold leading-tight">منيو شكله احترافي<br>من أول زيارة.</h1>
-            <p class="mt-4 max-w-md text-white/85">أضف الأصناف، رتّب الأقسام، وشارك لينك واحد يعرض منيوك بشكل يليق بالمكان.</p>
+            <p class="mt-4 max-w-md text-white/85">أضف الأصناف، رتّب الأقسام، وشارك رابط واحد يعرض المنيو بشكل يليق بمكانك.</p>
             <div class="mt-8 grid max-w-sm grid-cols-2 gap-3 text-sm">
                 <div class="rounded-2xl bg-white/15 p-3">إعدادات سريعة</div>
                 <div class="rounded-2xl bg-white/15 p-3">تجربة موبايل ممتازة</div>
