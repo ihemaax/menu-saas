@@ -20,7 +20,6 @@ class SettingsController extends Controller
         return view('settings.index', [
             'restaurant' => $restaurant,
             'menuUrl' => $menuUrl,
-            'menuThemes' => config('menu_themes'),
         ]);
     }
 
@@ -53,7 +52,7 @@ class SettingsController extends Controller
             'banner_path' => $bannerPath,
         ]);
 
-        return back()->with('success', 'بيانات المطعم اتحدثت.');
+        return back()->with('success', 'بيانات المطعم اتحفظت بنجاح.');
     }
 
     public function updateMenu(UpdateMenuSettingsRequest $request): RedirectResponse
@@ -62,7 +61,6 @@ class SettingsController extends Controller
             $request->user()->restaurant->menuSetting->update([
                 'slug' => str($request->slug)->lower()->slug('-')->value(),
                 'is_public' => $request->boolean('is_public', true),
-                'theme' => $request->string('theme')->toString(),
             ]);
         } catch (QueryException $exception) {
             if ((string) $exception->getCode() === '23000') {
@@ -74,7 +72,7 @@ class SettingsController extends Controller
             throw $exception;
         }
 
-        return back()->with('success', 'إعدادات المنيو اتحفظت.');
+        return back()->with('success', 'إعدادات المنيو اتحدثت.');
     }
 
     public function qrSvg()

@@ -38,6 +38,6 @@ class SuperAdminController extends Controller
             'subscription_ends_at' => $validated['subscription_ends_at'] ?? null,
         ]);
 
-        return back()->with('success', 'تم تحديث حالة الاشتراك بنجاح.');
+        return back()->with('success', 'حالة الاشتراك اتحدثت بنجاح.');
     }
 }

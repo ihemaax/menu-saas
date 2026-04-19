@@ -25,17 +25,6 @@ class MenuController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $featuredProducts = $restaurant->products()
-            ->where('is_available', true)
-            ->where('is_featured', true)
-            ->orderBy('sort_order')
-            ->take(6)
-            ->get();
-
-        $themes = config('menu_themes');
-        $activeThemeKey = $menuSetting->theme;
-        $activeTheme = $themes[$activeThemeKey] ?? $themes['classy'];
-
-        return view($activeTheme['view'], compact('restaurant', 'categories', 'featuredProducts', 'menuSetting', 'activeThemeKey'));
+        return view('menu.show', compact('restaurant', 'categories', 'menuSetting'));
     }
 }

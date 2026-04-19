@@ -3,26 +3,54 @@
 @tailwind utilities;
 
 @layer base {
-  body {@apply bg-slate-100 text-slate-900 antialiased;}
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-[#f6f3ee] text-[#1f2933] antialiased;
+  }
 }
 
 @layer components {
-  .zz-layout {@apply min-h-screen bg-slate-100;}
-  .zz-sidebar {@apply fixed left-0 top-0 z-40 h-screen border-r border-slate-200 bg-white transition-all duration-300;}
+  .zz-layout {@apply min-h-screen bg-[#f6f3ee];}
+  .zz-sidebar {@apply fixed inset-y-0 right-0 z-40 w-72 border-l border-[#d8d1c5] bg-[#fbf8f3] shadow-[0_0_40px_rgba(35,35,35,0.08)] transition-transform duration-300;}
   .zz-main {@apply min-h-screen transition-all duration-300;}
-  .zz-topbar {@apply sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur;}
-  .zz-card {@apply rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70;}
-  .zz-title {@apply text-2xl font-extrabold tracking-tight text-slate-900;}
-  .zz-subtitle {@apply text-sm text-slate-500;}
-  .zz-input {@apply mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100;}
-  .zz-label {@apply text-sm font-semibold text-slate-700;}
-  .zz-btn-primary {@apply inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800;}
-  .zz-btn-secondary {@apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50;}
-  .zz-empty {@apply rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500;}
+  .zz-topbar {@apply sticky top-0 z-30 border-b border-[#ddd5c8] bg-[#f6f3ee]/95 backdrop-blur;}
+  .zz-page {@apply mx-auto w-full max-w-[1300px] space-y-6 px-4 py-5 md:px-6 lg:px-8;}
+
+  .zz-card {@apply rounded-3xl border border-[#ddd5c8] bg-white p-6 shadow-[0_12px_28px_rgba(43,51,42,0.08)];}
+  .zz-card-muted {@apply rounded-2xl border border-[#e7dfd2] bg-[#f8f5ef] p-4;}
+  .zz-title {@apply text-2xl font-extrabold tracking-tight text-[#1f2933] md:text-3xl;}
+  .zz-section-title {@apply text-lg font-bold text-[#253126];}
+  .zz-subtitle {@apply text-sm leading-6 text-[#5f695f];}
+
+  .zz-input {@apply mt-1 w-full rounded-2xl border border-[#d7cfbf] bg-[#fffdfa] px-4 py-2.5 text-sm text-[#1f2933] outline-none transition placeholder:text-[#9b988f] focus:border-[#6f7f43] focus:ring-2 focus:ring-[#d8e0bf];}
+  .zz-label {@apply text-sm font-semibold text-[#2f3a2f];}
+  .zz-checkbox {@apply h-4 w-4 rounded border-[#c6beaf] text-[#6f7f43] focus:ring-[#cfd9aa];}
+
+  .zz-btn-primary {@apply inline-flex items-center justify-center rounded-2xl bg-[#6f7f43] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#5f6d38] focus:outline-none focus:ring-2 focus:ring-[#cdd8a3];}
+  .zz-btn-secondary {@apply inline-flex items-center justify-center rounded-2xl border border-[#d2c8b7] bg-white px-4 py-2.5 text-sm font-semibold text-[#2e3830] transition hover:bg-[#f8f5ef] focus:outline-none focus:ring-2 focus:ring-[#ece2ca];}
+  .zz-btn-ghost {@apply inline-flex items-center justify-center rounded-2xl bg-transparent px-3 py-2 text-sm font-semibold text-[#6a744f] transition hover:bg-[#eef1e4];}
+  .zz-btn-danger {@apply inline-flex items-center justify-center rounded-2xl bg-[#b84d3a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#9f3f2e] focus:outline-none focus:ring-2 focus:ring-[#f1c1b7];}
+
+  .zz-empty {@apply rounded-2xl border border-dashed border-[#d6ccbb] bg-[#f8f5ef] px-6 py-8 text-center text-sm leading-7 text-[#666157];}
+  .zz-chip {@apply inline-flex items-center rounded-full border border-[#d6ccbb] bg-[#f9f4ea] px-3 py-1 text-xs font-semibold text-[#5b594f];}
+  .zz-badge {@apply inline-flex items-center rounded-full border border-transparent px-2.5 py-1 text-xs font-bold;}
+  .zz-badge-active {@apply bg-[#dce8c8] text-[#3e5a20];}
+  .zz-badge-muted {@apply bg-[#efe6d5] text-[#7a6540];}
+  .zz-badge-danger {@apply bg-[#f6d9d4] text-[#8f3d2f];}
+
+  .zz-nav-link {@apply flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-[#5f685f] transition hover:bg-[#f1ecdf] hover:text-[#253126];}
+  .zz-nav-link-active {@apply bg-[#6f7f43] text-white shadow-[0_8px_20px_rgba(110,127,67,0.32)] hover:bg-[#6f7f43] hover:text-white;}
+
+  .zz-table-wrap {@apply overflow-hidden rounded-3xl border border-[#ddd5c8] bg-white shadow-[0_8px_24px_rgba(32,37,31,0.07)];}
+  .zz-table {@apply min-w-full divide-y divide-[#ece4d6] text-sm;}
+  .zz-table thead {@apply bg-[#f8f4eb] text-[#5d6356];}
+  .zz-table th {@apply px-4 py-3 text-right text-xs font-bold tracking-wide;}
+  .zz-table td {@apply px-4 py-3 align-top text-[#2f3a2f];}
+
   .zz-auth-wrap {@apply min-h-screen grid lg:grid-cols-2;}
-  .zz-auth-visual {@apply hidden lg:flex bg-gradient-to-br from-slate-900 via-slate-800 to-teal-800 text-white p-12 relative overflow-hidden;}
+  .zz-auth-visual {@apply hidden lg:flex bg-gradient-to-br from-[#2a3324] via-[#43512f] to-[#795c35] text-white p-12 relative overflow-hidden;}
   .zz-auth-panel {@apply p-6 md:p-10 flex items-center justify-center;}
-  .zz-chip {@apply rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700;}
-  .zz-nav-link {@apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900;}
-  .zz-nav-link-active {@apply bg-slate-900 text-white hover:bg-slate-900 hover:text-white;}
 }

@@ -50,7 +50,7 @@ class ProductController extends Controller
             'is_featured' => $request->boolean('is_featured'),
         ]);
 
-        return redirect()->route('products.index')->with('success', 'تمت إضافة المنتج بنجاح.');
+        return redirect()->route('products.index')->with('success', 'الصنف اتضاف بنجاح.');
     }
 
     public function edit(Product $product): View
@@ -90,7 +90,7 @@ class ProductController extends Controller
             'is_featured' => $request->boolean('is_featured'),
         ]);
 
-        return redirect()->route('products.index')->with('success', 'تم تحديث المنتج بنجاح.');
+        return redirect()->route('products.index')->with('success', 'تعديلات الصنف اتحفظت.');
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -103,6 +103,6 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'تم حذف المنتج.');
+        return redirect()->route('products.index')->with('success', 'الصنف اتمسح من المنيو.');
     }
 }

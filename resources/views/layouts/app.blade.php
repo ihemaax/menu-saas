@@ -10,12 +10,20 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-['Cairo']">
-<div x-data="{ collapsed: false }" class="zz-layout" dir="ltr">
-    <aside :class="collapsed ? 'w-20' : 'w-72'" class="zz-sidebar">
-        <div class="h-full p-3" dir="rtl">
-            <div class="mb-8 flex items-center justify-between px-2">
-                <a href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}" class="font-extrabold text-slate-900" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr</a>
-                <button @click="collapsed = !collapsed" class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50">
+<div x-data="{ collapsed: false, mobileOpen: false }" class="zz-layout">
+    <div x-show="mobileOpen" x-transition.opacity class="fixed inset-0 z-30 bg-[#1f2933]/40 lg:hidden" @click="mobileOpen = false"></div>
+
+    <aside
+        :class="[collapsed ? 'lg:w-24' : 'lg:w-72', mobileOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0']"
+        class="zz-sidebar w-72"
+    >
+        <div class="flex h-full flex-col p-3">
+            <div class="mb-6 flex items-center justify-between rounded-2xl bg-[#f2ede2] px-3 py-3">
+                <a href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}" class="font-extrabold text-[#253126]" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr-Zatona</a>
+                <button @click="collapsed = !collapsed" class="hidden rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] hover:bg-[#f7f2e8] lg:inline-flex">
+                    <x-icon name="menu" class="h-4 w-4"/>
+                </button>
+                <button @click="mobileOpen = false" class="rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] lg:hidden">
                     <x-icon name="menu" class="h-4 w-4"/>
                 </button>
             </div>
@@ -23,54 +31,68 @@
             @php
                 $items = auth()->user()?->restaurant_id
                     ? [
-                        ['route' => 'dashboard', 'label' => 'الرئيسية', 'icon' => 'home'],
-                        ['route' => 'categories.index', 'label' => 'الأقسام', 'icon' => 'category'],
-                        ['route' => 'products.index', 'label' => 'المنتجات', 'icon' => 'product'],
-                        ['route' => 'settings.index', 'label' => 'الإعدادات', 'icon' => 'settings'],
+                        ['route' => 'dashboard', 'label' => 'الرئيسية', 'hint' => 'ملخص سريع', 'icon' => 'home'],
+                        ['route' => 'categories.index', 'label' => 'الأقسام', 'hint' => 'تنظيم المنيو', 'icon' => 'category'],
+                        ['route' => 'products.index', 'label' => 'المنتجات', 'hint' => 'إدارة الأصناف', 'icon' => 'product'],
+                        ['route' => 'settings.index', 'label' => 'الإعدادات', 'hint' => 'الهوية واللينك', 'icon' => 'settings'],
                     ]
                     : [
-                        ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'icon' => 'settings'],
+                        ['route' => 'onboarding.create', 'label' => 'تجهيز الحساب', 'hint' => 'خطوة البداية', 'icon' => 'settings'],
                     ];
 
                 if (auth()->user()?->isSuperAdmin()) {
-                    $items[] = ['route' => 'owner.dashboard', 'label' => 'لوحة المالك', 'icon' => 'home'];
+                    $items[] = ['route' => 'owner.dashboard', 'label' => 'لوحة المالك', 'hint' => 'المطاعم والاشتراكات', 'icon' => 'home'];
                 }
             @endphp
 
             <nav class="space-y-2">
                 @foreach($items as $item)
                     <a href="{{ route($item['route']) }}" class="zz-nav-link {{ request()->routeIs($item['route'].'*') ? 'zz-nav-link-active' : '' }}">
-                        <x-icon :name="$item['icon']" class="h-5 w-5"/>
-                        <span x-show="!collapsed">{{ $item['label'] }}</span>
+                        <x-icon :name="$item['icon']" class="h-5 w-5 shrink-0"/>
+                        <div x-show="!collapsed" class="min-w-0">
+                            <p class="truncate">{{ $item['label'] }}</p>
+                            <p class="text-xs opacity-75">{{ $item['hint'] }}</p>
+                        </div>
                     </a>
                 @endforeach
             </nav>
 
-            <div class="mt-8 border-t border-slate-200 pt-4" x-show="!collapsed">
-                <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب</a>
-                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf <button class="w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">تسجيل خروج</button></form>
+            <div class="mt-auto border-t border-[#ddd5c8] pt-4" x-show="!collapsed || window.innerWidth < 1024">
+                <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب والبيانات</a>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf
+                    <button class="zz-btn-secondary w-full">تسجيل الخروج</button>
+                </form>
             </div>
         </div>
     </aside>
 
-    <main :class="collapsed ? 'ml-20' : 'ml-72'" class="zz-main" dir="rtl">
+    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main">
         <header class="zz-topbar">
-            <div class="px-6 py-4 flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-slate-500">Za3tr-Zatona Control</p>
-                    <p class="text-sm font-bold text-slate-900">لوحة التحكم</p>
+            <div class="mx-auto flex w-full max-w-[1300px] items-center justify-between px-4 py-4 md:px-6 lg:px-8">
+                <div class="flex items-center gap-3">
+                    <button @click="mobileOpen = true" class="inline-flex rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] lg:hidden">
+                        <x-icon name="menu" class="h-5 w-5"/>
+                    </button>
+                    <div>
+                        <p class="text-xs font-semibold text-[#7d725f]">Za3tr-Zatona Admin</p>
+                        <p class="text-sm font-bold text-[#2a3324]">إدارة المطعم</p>
+                    </div>
                 </div>
-                <div class="text-sm text-slate-500">{{ now()->format('d M Y') }}</div>
+                <div class="text-sm text-[#6b665a]">{{ now()->translatedFormat('d F Y') }}</div>
             </div>
         </header>
 
-        <div class="p-4 md:p-6 lg:p-8">
-            @if(session('success'))<div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>@endif
+        <div class="zz-page">
+            @if(session('success'))
+                <div class="rounded-2xl border border-[#c9ddb0] bg-[#eef6e1] px-4 py-3 text-sm font-semibold text-[#3f5a21]">{{ session('success') }}</div>
+            @endif
+
             @if($errors->any())
-                <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                    <ul class="list-disc list-inside">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                <div class="rounded-2xl border border-[#efc5bd] bg-[#fbe9e5] px-4 py-3 text-sm text-[#8b3b2e]">
+                    <ul class="list-inside list-disc space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
                 </div>
             @endif
+
             {{ $slot ?? '' }}
             @yield('content')
         </div>
