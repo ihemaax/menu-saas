@@ -18,12 +18,20 @@
         class="zz-sidebar w-72"
     >
         <div class="flex h-full flex-col p-3">
-            <div class="mb-6 flex items-center justify-between rounded-2xl bg-[#f2ede2] px-3 py-3">
-                <a href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}" class="font-extrabold text-[#253126]" :class="collapsed ? 'text-lg' : 'text-2xl'">Za3tr-Zatona</a>
-                <button @click="collapsed = !collapsed" class="hidden rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] hover:bg-[#f7f2e8] lg:inline-flex">
+            <div class="zz-sidebar-header" :class="collapsed ? 'zz-sidebar-header-collapsed' : ''">
+                <a
+                    href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}"
+                    class="zz-brand"
+                    :class="collapsed ? 'justify-center' : ''"
+                    :title="collapsed ? 'Za3tr-Zatona' : ''"
+                >
+                    <span class="zz-brand-mark">ZZ</span>
+                    <span x-show="!collapsed" x-transition.opacity class="zz-brand-name">Za3tr-Zatona</span>
+                </a>
+                <button @click="collapsed = !collapsed" type="button" class="zz-sidebar-toggle hidden lg:inline-flex" :aria-label="collapsed ? 'توسيع القائمة الجانبية' : 'طي القائمة الجانبية'">
                     <x-icon name="menu" class="h-4 w-4"/>
                 </button>
-                <button @click="mobileOpen = false" class="rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] lg:hidden">
+                <button @click="mobileOpen = false" type="button" class="zz-sidebar-toggle lg:hidden" aria-label="إغلاق القائمة الجانبية">
                     <x-icon name="menu" class="h-4 w-4"/>
                 </button>
             </div>
@@ -47,7 +55,12 @@
 
             <nav class="space-y-2">
                 @foreach($items as $item)
-                    <a href="{{ route($item['route']) }}" class="zz-nav-link {{ request()->routeIs($item['route'].'*') ? 'zz-nav-link-active' : '' }}">
+                    <a
+                        href="{{ route($item['route']) }}"
+                        class="zz-nav-link {{ request()->routeIs($item['route'].'*') ? 'zz-nav-link-active' : '' }}"
+                        :class="collapsed ? '!gap-0 justify-center px-0' : ''"
+                        :title="collapsed ? '{{ $item['label'] }}' : ''"
+                    >
                         <x-icon :name="$item['icon']" class="h-5 w-5 shrink-0"/>
                         <div x-show="!collapsed" class="min-w-0">
                             <p class="truncate">{{ $item['label'] }}</p>
