@@ -34,25 +34,12 @@
                 <p id="slug-status" class="mt-1 text-xs text-[#6e695e]">أي تعديل بيتراجع فورًا.</p>
             </div>
 
-            <div>
-                <label class="zz-label">الثيم</label>
-                <div class="mt-2 grid gap-3 sm:grid-cols-2">
-                    @foreach($menuThemes as $key => $theme)
-                        <label class="cursor-pointer rounded-2xl border border-[#ded4c4] p-3 transition hover:border-[#c1b79f] has-[:checked]:border-[#6f7f43] has-[:checked]:bg-[#edf2df]">
-                            <input type="radio" class="sr-only" name="theme" value="{{ $key }}" {{ old('theme', $restaurant->menuSetting->theme ?? 'classy') === $key ? 'checked' : '' }}>
-                            <div class="flex items-center justify-between gap-2">
-                                <p class="font-bold text-[#2c372b]">{{ $theme['label'] }}</p>
-                                <div class="flex items-center gap-1">
-                                    @foreach($theme['preview_colors'] as $color)
-                                        <span class="h-3 w-3 rounded-full border border-[#d7cfbf]" style="background-color: {{ $color }}"></span>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <p class="mt-1 text-xs text-[#6e695e]">{{ $theme['description'] }}</p>
-                        </label>
-                    @endforeach
-                </div>
+            <div class="rounded-2xl border border-[#ded4c4] bg-[#f8f5ef] p-3">
+                <p class="text-sm font-bold text-[#2c372b]">ثيم المنيو الحالي</p>
+                <p class="mt-1 text-xs text-[#6e695e]">المنيو شغالة على ثيم Elite بشكل ثابت لكل المطاعم.</p>
             </div>
+
+            
 
             <label class="flex items-center gap-2 text-sm font-semibold text-[#2f3a2f]"><input type="checkbox" class="zz-checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاحة لأي حد معاه اللينك</label>
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>

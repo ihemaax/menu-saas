@@ -49,7 +49,6 @@ class OnboardingController extends Controller
                     'restaurant_id' => $restaurant->id,
                     'slug' => $this->normalizeSlug($request->string('slug')->toString()),
                     'is_public' => $request->boolean('is_public', true),
-                    'theme' => 'classy',
                 ]);
             });
         } catch (QueryException $exception) {
