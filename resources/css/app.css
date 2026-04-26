@@ -12,6 +12,13 @@
     --zz-text-primary: #2F3A2A;
     --zz-text-secondary: #7A7A6A;
     --zz-border: #DDD6C8;
+    --zz-beige-50-95: rgba(247, 243, 235, 0.95);
+    --zz-text-secondary-muted: rgba(122, 122, 106, 0.7);
+    --zz-olive-500-20: rgba(138, 154, 91, 0.2);
+    --zz-olive-500-25: rgba(138, 154, 91, 0.25);
+    --zz-olive-500-35: rgba(138, 154, 91, 0.35);
+    --zz-olive-500-40: rgba(138, 154, 91, 0.4);
+    --zz-olive-500-60: rgba(138, 154, 91, 0.6);
   }
 
   html {
@@ -27,7 +34,7 @@
   .zz-layout {@apply min-h-screen bg-[var(--zz-beige-50)];}
   .zz-sidebar {@apply fixed inset-y-0 right-0 z-40 w-72 border-l border-[var(--zz-border)] bg-[var(--zz-white)] shadow-[0_18px_34px_rgba(47,58,42,0.08)] transition-transform duration-300;}
   .zz-main {@apply min-h-screen transition-all duration-300;}
-  .zz-topbar {@apply sticky top-0 z-30 border-b border-[var(--zz-border)] bg-[var(--zz-beige-50)]/95 backdrop-blur;}
+  .zz-topbar {@apply sticky top-0 z-30 border-b border-[var(--zz-border)] bg-[var(--zz-beige-50-95)] backdrop-blur;}
   .zz-page {@apply mx-auto w-full max-w-[1300px] space-y-7 px-4 py-6 md:px-6 lg:px-8;}
 
   .zz-card {@apply rounded-[18px] border border-[var(--zz-border)] bg-[var(--zz-white)] p-6 shadow-[0_10px_24px_rgba(47,58,42,0.05)];}
@@ -36,12 +43,12 @@
   .zz-section-title {@apply text-lg font-extrabold text-[var(--zz-text-primary)];}
   .zz-subtitle {@apply text-sm leading-7 text-[var(--zz-text-secondary)];}
 
-  .zz-input {@apply mt-1 w-full rounded-2xl border border-[var(--zz-border)] bg-[var(--zz-white)] px-4 py-2.5 text-sm text-[var(--zz-text-primary)] outline-none transition placeholder:text-[var(--zz-text-secondary)]/70 focus:border-[var(--zz-olive-500)] focus:ring-2 focus:ring-[var(--zz-olive-500)]/20;}
+  .zz-input {@apply mt-1 w-full rounded-2xl border border-[var(--zz-border)] bg-[var(--zz-white)] px-4 py-2.5 text-sm text-[var(--zz-text-primary)] outline-none transition placeholder:text-[var(--zz-text-secondary-muted)] focus:border-[var(--zz-olive-500)] focus:ring-2 focus:ring-[var(--zz-olive-500-20)];}
   .zz-label {@apply text-sm font-semibold text-[var(--zz-text-primary)];}
-  .zz-checkbox {@apply h-4 w-4 rounded border-[var(--zz-border)] text-[var(--zz-olive-500)] focus:ring-[var(--zz-olive-500)]/40;}
+  .zz-checkbox {@apply h-4 w-4 rounded border-[var(--zz-border)] text-[var(--zz-olive-500)] focus:ring-[var(--zz-olive-500-40)];}
 
-  .zz-btn-primary {@apply inline-flex items-center justify-center rounded-2xl bg-[var(--zz-olive-500)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--zz-olive-600)] focus:outline-none focus:ring-2 focus:ring-[var(--zz-olive-500)]/35 disabled:cursor-not-allowed disabled:bg-[var(--zz-olive-500)]/60;}
-  .zz-btn-secondary {@apply inline-flex items-center justify-center rounded-2xl border border-[var(--zz-olive-500)] bg-[var(--zz-white)] px-4 py-2.5 text-sm font-semibold text-[var(--zz-olive-600)] transition hover:bg-[var(--zz-beige-50)] focus:outline-none focus:ring-2 focus:ring-[var(--zz-olive-500)]/25 disabled:cursor-not-allowed disabled:opacity-60;}
+  .zz-btn-primary {@apply inline-flex items-center justify-center rounded-2xl bg-[var(--zz-olive-500)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--zz-olive-600)] focus:outline-none focus:ring-2 focus:ring-[var(--zz-olive-500-35)] disabled:cursor-not-allowed disabled:bg-[var(--zz-olive-500-60)];}
+  .zz-btn-secondary {@apply inline-flex items-center justify-center rounded-2xl border border-[var(--zz-olive-500)] bg-[var(--zz-white)] px-4 py-2.5 text-sm font-semibold text-[var(--zz-olive-600)] transition hover:bg-[var(--zz-beige-50)] focus:outline-none focus:ring-2 focus:ring-[var(--zz-olive-500-25)] disabled:cursor-not-allowed disabled:opacity-60;}
   .zz-btn-ghost {@apply inline-flex items-center justify-center rounded-2xl bg-transparent px-3 py-2 text-sm font-semibold text-[var(--zz-olive-600)] transition hover:bg-[var(--zz-beige-50)];}
   .zz-btn-danger {@apply inline-flex items-center justify-center rounded-2xl bg-[#b84d3a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#9f3f2e] focus:outline-none focus:ring-2 focus:ring-[#f1c1b7];}
 
