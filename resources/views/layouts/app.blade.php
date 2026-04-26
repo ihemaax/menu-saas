@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Za3tr-Zatona' }}</title>
+    <title>{{ $title ?? 'Osirix' }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -52,8 +52,8 @@
                     href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}"
                     class="zz-brand"
                 >
-                    <span class="zz-brand-mark">ZZ</span>
-                    <span class="zz-brand-name">Za3tr-Zatona</span>
+                    <span class="zz-brand-mark">𓂀</span>
+                    <span class="zz-brand-name">Osirix</span>
                 </a>
                 <button @click="collapsed = !collapsed" type="button" class="zz-sidebar-toggle hidden lg:inline-flex" :aria-label="collapsed ? 'توسيع القائمة الجانبية' : 'طي القائمة الجانبية'">
                     <x-icon name="menu" class="h-4 w-4"/>
@@ -114,8 +114,8 @@
                         <x-icon name="menu" class="h-5 w-5"/>
                     </button>
                     <div>
-                        <p class="text-xs font-semibold text-[#7d725f]">Za3tr-Zatona Admin</p>
-                        <p class="text-sm font-bold text-[#2a3324]">إدارة المطعم</p>
+                        <p class="text-xs font-semibold text-[#7d725f]">Osirix Control Hub</p>
+                        <p class="text-sm font-bold text-[#2a3324]">لوحة إدارة المطعم</p>
                     </div>
                 </div>
                 <div class="text-sm text-[#6b665a]">{{ now()->translatedFormat('d F Y') }}</div>
