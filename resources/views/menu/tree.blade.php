@@ -30,6 +30,7 @@
         .cat-img img{width:100%;height:100%;object-fit:cover}
         .cat-name{font-weight:800;font-size:.82rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.2em}
         .section{padding:14px}
+        .section{scroll-margin-top:20px;scroll-margin-bottom:96px}
         .sec-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 2px 10px}
         .sec-title{margin:0;font-size:1.4rem;color:#1f2f23}
         .count{background:#edf4eb;color:#46603e;padding:7px 12px;border-radius:999px;font-weight:800}
@@ -41,10 +42,18 @@
         .bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
         .price{font-size:1.1rem;font-weight:900;color:var(--accent)}
         .badge{background:#e9f2e6;color:#35592f;padding:6px 10px;border-radius:999px;font-weight:800;font-size:.75rem}
+        .mobile-catbar{display:none}
         @media (max-width:768px){
             .wrap{padding:10px}.hero-body{grid-template-columns:1fr;margin-top:-45px;padding:12px}.logo{width:118px;height:118px;margin:0 auto}
             h1{font-size:1.4rem;text-align:center}.sub{text-align:center}.meta{justify-content:center}.item{grid-template-columns:92px 1fr}.item img{min-height:92px}
             .cat{min-width:86px;flex-basis:86px}.cat-img{width:72px;height:72px}
+            .cats-panel{display:none}
+            .wrap{padding-bottom:110px}
+            .mobile-catbar{display:flex;position:fixed;left:10px;right:10px;bottom:12px;z-index:60;gap:8px;overflow-x:auto;padding:8px;border-radius:20px;background:rgba(16,29,20,.78);backdrop-filter:blur(14px);box-shadow:0 14px 34px rgba(0,0,0,.22);scroll-snap-type:x mandatory}
+            .mobile-catbar::-webkit-scrollbar{display:none}
+            .mobile-cat-link{min-width:92px;flex:0 0 92px;text-decoration:none;color:#ecf5e9;background:rgba(255,255,255,.08);border:1px solid rgba(220,236,215,.28);border-radius:14px;padding:8px 6px;display:grid;gap:4px;justify-items:center;scroll-snap-align:start}
+            .mobile-cat-link .dot{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;font-size:.78rem;font-weight:900;background:rgba(255,255,255,.1)}
+            .mobile-cat-link .txt{font-size:.74rem;font-weight:800;line-height:1.3;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.1em}
         }
     </style>
 </head>
@@ -67,7 +76,7 @@
         </div>
     </section>
 
-    <section class="panel">
+    <section class="panel cats-panel">
         <h3>التصنيفات</h3>
         <div class="cats">
             @foreach($categories as $category)
@@ -105,6 +114,17 @@
             </section>
         @endif
     @endforeach
+
+    <nav class="mobile-catbar" aria-label="التصنيفات">
+        @foreach($categories as $category)
+            @if($category->products->count())
+                <a href="#cat-{{ $category->id }}" class="mobile-cat-link">
+                    <span class="dot">{{ mb_substr($category->name_ar, 0, 1) }}</span>
+                    <span class="txt">{{ $category->name_ar }}</span>
+                </a>
+            @endif
+        @endforeach
+    </nav>
 </div>
 </body>
 </html>
