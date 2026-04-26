@@ -39,13 +39,12 @@
         .elite-info-text{display:grid;gap:1px;}
         .elite-info-label{font-size:.76rem;color:#8a8176;font-weight:800;}
         .elite-info-value{color:#312d28;}
-        .elite-categories{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
-        .elite-categories::-webkit-scrollbar{display:none;}
-        .elite-cat{text-decoration:none;min-width:92px;width:92px;text-align:center;}
-        .elite-cat-ring{width:92px;height:92px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ddd8cf 0%,#f3efe8 100%);margin:0 auto 8px;transition:.2s ease;box-shadow:0 10px 20px rgba(60,52,40,.05);}
+        .elite-categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;padding-bottom:4px;}
+        .elite-cat{text-decoration:none;min-width:0;width:auto;text-align:center;display:grid;gap:8px;align-content:start;justify-items:center;}
+        .elite-cat-ring{width:100%;max-width:92px;aspect-ratio:1/1;height:auto;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ddd8cf 0%,#f3efe8 100%);margin:0 auto;transition:.2s ease;box-shadow:0 10px 20px rgba(60,52,40,.05);}
         .elite-cat-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fff;background:#f2eee7;}
         .elite-cat-inner img{width:100%;height:100%;object-fit:cover;}
-        .elite-cat-label{color:#615d55;font-size:.8rem;font-weight:900;line-height:1.35;}
+        .elite-cat-label{color:#615d55;font-size:.8rem;font-weight:900;line-height:1.35;white-space:normal;word-break:break-word;min-height:2.3em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
         .elite-cat:hover .elite-cat-ring{background:linear-gradient(135deg,#7d8d6d 0%,#b6c4a6 100%);transform:translateY(-2px);box-shadow:0 14px 24px rgba(111,127,95,.16);}
         .elite-feed{display:grid;gap:18px;}
         .elite-section{background:#fffdf9;border:1px solid #e7ddd1;border-radius:24px;box-shadow:0 10px 24px rgba(60,52,40,.05);overflow:hidden;}
@@ -69,7 +68,42 @@
         .elite-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:#f5f0e8;color:#6f7f5f;font-size:.75rem;font-weight:900;}
         .elite-empty{background:#fffdf9;border:1px solid #e7ddd1;border-radius:22px;box-shadow:0 10px 24px rgba(60,52,40,.05);padding:28px 18px;text-align:center;color:#6f6a61;font-weight:800;}
         @media (max-width: 991.98px){.elite-layout{grid-template-columns:1fr}.elite-sidebar{order:2}.elite-main{order:1}}
-        @media (max-width: 767.98px){.elite-home{padding-bottom:28px}.elite-hero-card{border-radius:0 0 22px 22px}.elite-cover{min-height:220px}.elite-hero-content{margin-top:-34px;padding:0 12px 14px}.elite-identity-card{border-radius:20px;padding:14px}.elite-identity-top{grid-template-columns:1fr;gap:14px}.elite-logo-frame{width:86px;height:86px;padding:4px}.elite-title{font-size:1.12rem;line-height:1.3}.elite-subtitle{font-size:.82rem;line-height:1.7}.elite-meta-row{gap:8px;padding-top:14px;margin-top:14px}.elite-pill{font-size:.72rem;padding:8px 10px}.elite-card-body{padding:14px}.elite-cat,.elite-cat-ring{width:74px;min-width:74px;height:74px}.elite-cat-label{font-size:.74rem}.elite-section-head{padding:14px 14px 8px}.elite-products{padding:0 14px 14px;gap:12px}.elite-product{grid-template-columns:82px minmax(0,1fr);gap:10px;border-radius:16px;padding:8px}.elite-product-media{border-radius:12px;overflow:hidden}.elite-product-image{min-height:auto;height:82px;border-radius:12px}.elite-product-badge{top:auto;bottom:6px;inset-inline-start:6px;padding:5px 8px;font-size:.58rem}.elite-product-body{gap:7px;padding:0;justify-content:center}.elite-product-name{font-size:.87rem}.elite-product-category{font-size:.60rem;padding:5px 7px}.elite-product-desc{font-size:.74rem;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.elite-price-label{font-size:.66rem}.elite-price-value{font-size:.88rem}.elite-badge{padding:7px 10px;font-size:.70rem;border-radius:12px}}
+        @media (max-width: 767.98px){
+            .elite-home{padding-bottom:28px}
+            .elite-hero-card{border-radius:0 0 22px 22px}
+            .elite-cover{min-height:220px}
+            .elite-hero-content{margin-top:-34px;padding:0 12px 14px}
+            .elite-identity-card{border-radius:20px;padding:14px}
+            .elite-identity-top{grid-template-columns:1fr;gap:14px}
+            .elite-logo-frame{width:100%;max-width:180px;aspect-ratio:1/1;height:auto;padding:0;margin:0 auto}
+            .elite-logo-frame::after{display:none}
+            .elite-logo{border-width:0}
+            .elite-title{font-size:1.12rem;line-height:1.3;text-align:center}
+            .elite-subtitle{font-size:.82rem;line-height:1.7;text-align:center}
+            .elite-brand-kicker{display:flex;justify-content:center}
+            .elite-meta-row{gap:8px;padding-top:14px;margin-top:14px;justify-content:center}
+            .elite-meta-row .elite-pill-phone,
+            .elite-meta-row .elite-pill-count{display:none}
+            .elite-pill{font-size:.72rem;padding:8px 10px}
+            .elite-card-body{padding:14px}
+            .elite-categories{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+            .elite-cat{gap:6px}
+            .elite-cat-ring{width:100%;max-width:74px}
+            .elite-cat-label{font-size:.74rem}
+            .elite-section-head{padding:14px 14px 8px}
+            .elite-products{padding:0 14px 14px;gap:12px}
+            .elite-product{grid-template-columns:82px minmax(0,1fr);gap:10px;border-radius:16px;padding:8px}
+            .elite-product-media{border-radius:12px;overflow:hidden}
+            .elite-product-image{min-height:auto;height:82px;border-radius:12px}
+            .elite-product-badge{top:auto;bottom:6px;inset-inline-start:6px;padding:5px 8px;font-size:.58rem}
+            .elite-product-body{gap:7px;padding:0;justify-content:center}
+            .elite-product-name{font-size:.87rem}
+            .elite-product-category{font-size:.60rem;padding:5px 7px}
+            .elite-product-desc{font-size:.74rem;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+            .elite-price-label{font-size:.66rem}
+            .elite-price-value{font-size:.88rem}
+            .elite-badge{padding:7px 10px;font-size:.70rem;border-radius:12px}
+        }
     </style>
 </head>
 <body>
@@ -101,9 +135,9 @@
                         </div>
                     </div>
                     <div class="elite-meta-row">
-                        @if($restaurantPhone)<div class="elite-pill">{{ $restaurantPhone }}</div>@endif
+                        @if($restaurantPhone)<div class="elite-pill elite-pill-phone">{{ $restaurantPhone }}</div>@endif
                         @if($restaurantAddress)<div class="elite-pill">{{ $restaurantAddress }}</div>@endif
-                        <div class="elite-pill">{{ $allItemsCount }} صنف متاح</div>
+                        <div class="elite-pill elite-pill-count">{{ $allItemsCount }} صنف متاح</div>
                     </div>
                 </div>
             </div>
