@@ -42,7 +42,7 @@
 
     <aside
         :class="[collapsed ? 'lg:w-24' : 'lg:w-72', mobileOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0']"
-        class="zz-sidebar w-72"
+        class="zz-sidebar w-72 !bg-[#fbf8f3] !border-l-[#d8d1c5]"
     >
         <div class="flex h-full flex-col p-3">
             <div class="zz-sidebar-header" :class="collapsed ? 'justify-center' : 'justify-between'">
@@ -106,7 +106,7 @@
         </div>
     </aside>
 
-    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main">
+    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main !bg-[#f6f3ee]">
         <header class="zz-topbar">
             <div class="mx-auto flex w-full max-w-[1300px] items-center justify-between px-4 py-4 md:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
