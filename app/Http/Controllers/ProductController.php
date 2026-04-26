@@ -16,7 +16,8 @@ class ProductController extends Controller
     {
         $restaurant = auth()->user()->restaurant;
 
-        $products = $restaurant->products()
+        $products = Product::query()
+            ->where('products.restaurant_id', $restaurant->id)
             ->select('products.*')
             ->join('categories', 'categories.id', '=', 'products.category_id')
             ->with('category')
