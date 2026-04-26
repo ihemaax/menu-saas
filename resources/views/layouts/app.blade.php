@@ -47,7 +47,7 @@
 @endphp
 
 <div x-data="{ collapsed: false, mobileOpen: false }" class="zz-layout">
-    <div x-show="mobileOpen" x-transition.opacity class="fixed inset-0 z-30 bg-[#1f2933]/40 lg:hidden" @click="mobileOpen = false"></div>
+    <div x-show="mobileOpen" x-transition.opacity class="fixed inset-0 z-30 bg-black/60 lg:hidden" @click="mobileOpen = false"></div>
 
     <aside
         :class="[collapsed ? 'lg:w-24' : 'lg:w-72', mobileOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0']"
@@ -106,7 +106,7 @@
                 @endforeach
             </nav>
 
-            <div class="mt-auto border-t border-[#ddd5c8] pt-4" x-show="!collapsed || window.innerWidth < 1024">
+            <div class="mt-auto border-t border-[#5f4825] pt-4" x-show="!collapsed || window.innerWidth < 1024">
                 <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب والبيانات</a>
                 <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf
                     <button class="zz-btn-secondary w-full">تسجيل الخروج</button>
@@ -119,7 +119,7 @@
         <header class="zz-topbar">
             <div class="mx-auto flex w-full max-w-[1300px] items-center justify-between px-4 py-4 md:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
-                    <button @click="mobileOpen = true" class="inline-flex rounded-xl border border-[#d7cfbf] bg-white p-2 text-[#5f695f] lg:hidden">
+                    <button @click="mobileOpen = true" class="inline-flex rounded-xl border border-[#7a5b2f] bg-[#171109] p-2 text-[#e5c583] lg:hidden">
                         <x-icon name="menu" class="h-5 w-5"/>
                     </button>
                     <div>
@@ -127,7 +127,7 @@
                         <p class="text-sm font-bold text-[#2a3324]">لوحة إدارة المطعم</p>
                     </div>
                 </div>
-                <div class="text-sm text-[#6b665a]">{{ now()->translatedFormat('d F Y') }}</div>
+                <div class="text-sm text-[#bfa06b]">{{ now()->translatedFormat('d F Y') }}</div>
             </div>
         </header>
 
@@ -137,12 +137,12 @@
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center gap-2">
-                                <h2 class="text-sm font-bold text-[#2a3324]">حالة الاشتراك</h2>
+                                <h2 class="text-sm font-bold text-[#f0ddb3]">حالة الاشتراك</h2>
                                 <span class="zz-badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
                             </div>
-                            <p class="text-sm text-[#5d6457]">{{ $subscriptionMessage }}</p>
+                            <p class="text-sm text-[#d3bc8d]">{{ $subscriptionMessage }}</p>
                         </div>
-                        <div class="grid gap-2 text-xs text-[#5d6457] sm:grid-cols-3 sm:text-sm">
+                        <div class="grid gap-2 text-xs text-[#c6ae7e] sm:grid-cols-3 sm:text-sm">
                             <p><span class="font-semibold">الباقة:</span> {{ $subscriptionPlanLabel }}</p>
                             <p><span class="font-semibold">البداية:</span> {{ $subscriptionRestaurant->subscription_starts_at?->format('Y-m-d') ?: '-' }}</p>
                             <p><span class="font-semibold">النهاية:</span> {{ $subscriptionRestaurant->subscription_ends_at?->format('Y-m-d') ?: '-' }}</p>
