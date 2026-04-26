@@ -35,12 +35,14 @@
                 <p id="slug-status" class="mt-1 text-xs text-[#6e695e]">أي تعديل بيتراجع فورًا.</p>
             </div>
 
-            <div class="rounded-2xl border border-[#ded4c4] bg-[#f8f5ef] p-3">
-                <p class="text-sm font-bold text-[#2c372b]">ثيم المنيو الحالي</p>
-                <p class="mt-1 text-xs text-[#6e695e]">المنيو شغالة على ثيم Elite بشكل ثابت لكل المطاعم.</p>
+            <div>
+                <label class="zz-label">ثيم المنيو</label>
+                <select name="theme" class="zz-input" required>
+                    <option value="classy" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'classy')>Classic (الأساسي)</option>
+                    <option value="tree" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'tree')>Tree Essence (جديد)</option>
+                </select>
+                <p class="mt-2 text-xs text-[#6e695e]">تقدر تبدّل بين الثيم الأساسي والثيم الجديد في أي وقت.</p>
             </div>
-
-            
 
             <label class="flex items-center gap-2 text-sm font-semibold text-[#2f3a2f]"><input type="checkbox" class="zz-checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاحة لأي حد معاه اللينك</label>
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>

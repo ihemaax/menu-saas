@@ -1,6 +1,7 @@
 <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="mt-5 space-y-4">
     @csrf
     @if($method !== 'POST') @method($method) @endif
+    @if(isset($page))<input type="hidden" name="page" value="{{ old('page', $page) }}">@endif
 
     <div><label class="zz-label">اسم الصنف</label><input class="zz-input" name="name" value="{{ old('name', $product?->name) }}" placeholder="مثال: برجر دبل" required></div>
 
@@ -29,6 +30,6 @@
 
     <div class="flex gap-2">
         <button class="zz-btn-primary">حفظ الصنف</button>
-        <a href="{{ route('products.index') }}" class="zz-btn-secondary">رجوع</a>
+        <a href="{{ route('products.index', isset($page) ? ['page' => $page] : []) }}" class="zz-btn-secondary">رجوع</a>
     </div>
 </form>
