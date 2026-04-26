@@ -51,9 +51,10 @@
             .wrap{padding-bottom:110px}
             .mobile-catbar{display:flex;position:fixed;left:10px;right:10px;bottom:12px;z-index:60;gap:8px;overflow-x:auto;padding:8px;border-radius:20px;background:rgba(16,29,20,.78);backdrop-filter:blur(14px);box-shadow:0 14px 34px rgba(0,0,0,.22);scroll-snap-type:x mandatory}
             .mobile-catbar::-webkit-scrollbar{display:none}
-            .mobile-cat-link{min-width:92px;flex:0 0 92px;text-decoration:none;color:#ecf5e9;background:rgba(255,255,255,.08);border:1px solid rgba(220,236,215,.28);border-radius:14px;padding:8px 6px;display:grid;gap:4px;justify-items:center;scroll-snap-align:start}
-            .mobile-cat-link .dot{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;font-size:.78rem;font-weight:900;background:rgba(255,255,255,.1)}
-            .mobile-cat-link .txt{font-size:.74rem;font-weight:800;line-height:1.3;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.1em}
+            .mobile-cat-link{min-width:86px;flex:0 0 86px;text-decoration:none;color:#eef8eb;background:rgba(255,255,255,.06);border:1px solid rgba(220,236,215,.26);border-radius:14px;padding:7px 5px;display:grid;gap:4px;justify-items:center;scroll-snap-align:start}
+            .mobile-cat-link .thumb{width:50px;height:50px;border-radius:50%;border:2px solid rgba(238,248,233,.8);overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+            .mobile-cat-link .thumb img{width:100%;height:100%;object-fit:cover}
+            .mobile-cat-link .txt{font-size:.7rem;font-weight:800;line-height:1.28;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2em}
         }
     </style>
 </head>
@@ -118,8 +119,9 @@
     <nav class="mobile-catbar" aria-label="التصنيفات">
         @foreach($categories as $category)
             @if($category->products->count())
+                @php($mobileCatPreview = $category->products->first())
                 <a href="#cat-{{ $category->id }}" class="mobile-cat-link">
-                    <span class="dot">{{ mb_substr($category->name_ar, 0, 1) }}</span>
+                    <span class="thumb"><img src="{{ $mobileCatPreview?->image_path ? asset('storage/'.$mobileCatPreview->image_path) : 'https://via.placeholder.com/300x300?text=Food' }}" alt="{{ $category->name_ar }}"></span>
                     <span class="txt">{{ $category->name_ar }}</span>
                 </a>
             @endif
