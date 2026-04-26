@@ -8,15 +8,6 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        .zz-layout,.zz-main,.zz-page{background:#f6f3ee!important;color:#1f2933!important}
-        .zz-sidebar{background:#fbf8f3!important;border-left-color:#d8d1c5!important}
-        .zz-topbar{background:rgba(246,243,238,.95)!important;border-bottom-color:#ddd5c8!important}
-        .zz-card,.zz-subscription-banner,.zz-table-wrap{background:#fff!important;border-color:#ddd5c8!important}
-        .zz-card-muted{background:#f8f5ef!important;border-color:#e7dfd2!important}
-        .zz-nav-link-active,.zz-btn-primary{background:#6f7f43!important;color:#fff!important}
-        .zz-btn-secondary{background:#fff!important;color:#2e3830!important;border-color:#d2c8b7!important}
-    </style>
 </head>
 <body class="font-['Cairo']">
 @php
@@ -51,7 +42,7 @@
 
     <aside
         :class="[collapsed ? 'lg:w-24' : 'lg:w-72', mobileOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0']"
-        class="zz-sidebar w-72 !bg-[#fbf8f3] !border-l-[#d8d1c5]"
+        class="zz-sidebar w-72"
     >
         <div class="flex h-full flex-col p-3">
             <div class="zz-sidebar-header" :class="collapsed ? 'justify-center' : 'justify-between'">
@@ -106,7 +97,7 @@
                 @endforeach
             </nav>
 
-            <div class="mt-auto border-t border-[#5f4825] pt-4" x-show="!collapsed || window.innerWidth < 1024">
+            <div class="mt-auto border-t border-[var(--zz-border)] pt-4" x-show="!collapsed || window.innerWidth < 1024">
                 <a href="{{ route('profile.edit') }}" class="zz-nav-link">الحساب والبيانات</a>
                 <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf
                     <button class="zz-btn-secondary w-full">تسجيل الخروج</button>
@@ -115,19 +106,19 @@
         </div>
     </aside>
 
-    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main !bg-[#f6f3ee]">
+    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main">
         <header class="zz-topbar">
             <div class="mx-auto flex w-full max-w-[1300px] items-center justify-between px-4 py-4 md:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
-                    <button @click="mobileOpen = true" class="inline-flex rounded-xl border border-[#7a5b2f] bg-[#171109] p-2 text-[#e5c583] lg:hidden">
+                    <button @click="mobileOpen = true" class="inline-flex rounded-xl border border-[var(--zz-border)] bg-[var(--zz-white)] p-2 text-[var(--zz-text-secondary)] lg:hidden">
                         <x-icon name="menu" class="h-5 w-5"/>
                     </button>
                     <div>
-                        <p class="text-xs font-semibold text-[#7d725f]">Osirix Control Hub</p>
-                        <p class="text-sm font-bold text-[#2a3324]">لوحة إدارة المطعم</p>
+                        <p class="text-xs font-semibold text-[var(--zz-text-secondary)]">Osirix Control Hub</p>
+                        <p class="text-sm font-bold text-[var(--zz-text-primary)]">لوحة إدارة المطعم</p>
                     </div>
                 </div>
-                <div class="text-sm text-[#bfa06b]">{{ now()->translatedFormat('d F Y') }}</div>
+                <div class="text-sm text-[var(--zz-text-secondary)]">{{ now()->translatedFormat('d F Y') }}</div>
             </div>
         </header>
 
@@ -137,12 +128,12 @@
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center gap-2">
-                                <h2 class="text-sm font-bold text-[#f0ddb3]">حالة الاشتراك</h2>
+                                <h2 class="text-sm font-bold text-[var(--zz-text-primary)]">حالة الاشتراك</h2>
                                 <span class="zz-badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
                             </div>
-                            <p class="text-sm text-[#d3bc8d]">{{ $subscriptionMessage }}</p>
+                            <p class="text-sm text-[var(--zz-text-secondary)]">{{ $subscriptionMessage }}</p>
                         </div>
-                        <div class="grid gap-2 text-xs text-[#c6ae7e] sm:grid-cols-3 sm:text-sm">
+                        <div class="grid gap-2 text-xs text-[var(--zz-text-secondary)] sm:grid-cols-3 sm:text-sm">
                             <p><span class="font-semibold">الباقة:</span> {{ $subscriptionPlanLabel }}</p>
                             <p><span class="font-semibold">البداية:</span> {{ $subscriptionRestaurant->subscription_starts_at?->format('Y-m-d') ?: '-' }}</p>
                             <p><span class="font-semibold">النهاية:</span> {{ $subscriptionRestaurant->subscription_ends_at?->format('Y-m-d') ?: '-' }}</p>
