@@ -4,10 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Za3tr-Zatona' }}</title>
+    <title>{{ $title ?? 'Osirix' }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .zz-layout,.zz-main,.zz-page{background:#f6f3ee!important;color:#1f2933!important}
+        .zz-sidebar{background:#fbf8f3!important;border-left-color:#d8d1c5!important}
+        .zz-topbar{background:rgba(246,243,238,.95)!important;border-bottom-color:#ddd5c8!important}
+        .zz-card,.zz-subscription-banner,.zz-table-wrap{background:#fff!important;border-color:#ddd5c8!important}
+        .zz-card-muted{background:#f8f5ef!important;border-color:#e7dfd2!important}
+        .zz-nav-link-active,.zz-btn-primary{background:#6f7f43!important;color:#fff!important}
+        .zz-btn-secondary{background:#fff!important;color:#2e3830!important;border-color:#d2c8b7!important}
+    </style>
 </head>
 <body class="font-['Cairo']">
 @php
@@ -42,7 +51,7 @@
 
     <aside
         :class="[collapsed ? 'lg:w-24' : 'lg:w-72', mobileOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0']"
-        class="zz-sidebar w-72"
+        class="zz-sidebar w-72 !bg-[#fbf8f3] !border-l-[#d8d1c5]"
     >
         <div class="flex h-full flex-col p-3">
             <div class="zz-sidebar-header" :class="collapsed ? 'justify-center' : 'justify-between'">
@@ -52,8 +61,8 @@
                     href="{{ route(auth()->user()?->restaurant_id ? 'dashboard' : 'onboarding.create') }}"
                     class="zz-brand"
                 >
-                    <span class="zz-brand-mark">ZZ</span>
-                    <span class="zz-brand-name">Za3tr-Zatona</span>
+                    <span class="zz-brand-mark">𓂀</span>
+                    <span class="zz-brand-name">Osirix</span>
                 </a>
                 <button @click="collapsed = !collapsed" type="button" class="zz-sidebar-toggle hidden lg:inline-flex" :aria-label="collapsed ? 'توسيع القائمة الجانبية' : 'طي القائمة الجانبية'">
                     <x-icon name="menu" class="h-4 w-4"/>
@@ -106,7 +115,7 @@
         </div>
     </aside>
 
-    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main">
+    <main :class="collapsed ? 'lg:mr-24' : 'lg:mr-72'" class="zz-main !bg-[#f6f3ee]">
         <header class="zz-topbar">
             <div class="mx-auto flex w-full max-w-[1300px] items-center justify-between px-4 py-4 md:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
@@ -114,8 +123,8 @@
                         <x-icon name="menu" class="h-5 w-5"/>
                     </button>
                     <div>
-                        <p class="text-xs font-semibold text-[#7d725f]">Za3tr-Zatona Admin</p>
-                        <p class="text-sm font-bold text-[#2a3324]">إدارة المطعم</p>
+                        <p class="text-xs font-semibold text-[#7d725f]">Osirix Control Hub</p>
+                        <p class="text-sm font-bold text-[#2a3324]">لوحة إدارة المطعم</p>
                     </div>
                 </div>
                 <div class="text-sm text-[#6b665a]">{{ now()->translatedFormat('d F Y') }}</div>
