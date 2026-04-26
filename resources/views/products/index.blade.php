@@ -30,8 +30,8 @@
                         @if($product->is_featured)<span class="zz-badge zz-badge-muted">مميز</span>@endif
                     </div>
                     <div class="mt-4 flex gap-2">
-                        <a class="zz-btn-secondary w-full" href="{{ route('products.edit', $product) }}">تعديل</a>
-                        <form class="w-full" method="POST" action="{{ route('products.destroy', $product) }}">@csrf @method('DELETE')<button class="zz-btn-danger w-full">حذف</button></form>
+                        <a class="zz-btn-secondary w-full" href="{{ route('products.edit', ['product' => $product, 'page' => $products->currentPage()]) }}">تعديل</a>
+                        <form class="w-full" method="POST" action="{{ route('products.destroy', $product) }}">@csrf @method('DELETE')<input type="hidden" name="page" value="{{ $products->currentPage() }}"><button class="zz-btn-danger w-full">حذف</button></form>
                     </div>
                 </article>
             @endforeach
