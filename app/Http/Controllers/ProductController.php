@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -16,10 +17,14 @@ class ProductController extends Controller
         $restaurant = auth()->user()->restaurant;
 
         $products = $restaurant->products()
+            ->select('products.*')
+            ->join('categories', 'categories.id', '=', 'products.category_id')
             ->with('category')
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
-            ->paginate(12);
+            ->orderBy('categories.sort_order')
+            ->orderBy('products.sort_order')
+            ->orderBy('products.id')
+            ->paginate(12)
+            ->withQueryString();
 
         return view('products.index', compact('products'));
     }
@@ -58,8 +63,9 @@ class ProductController extends Controller
         $this->authorize('update', $product);
 
         $categories = auth()->user()->restaurant->categories()->where('is_active', true)->orderBy('sort_order')->get();
+        $page = (int) request()->query('page', 1);
 
-        return view('products.edit', compact('product', 'categories'));
+        return view('products.edit', compact('product', 'categories', 'page'));
     }
 
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
@@ -90,10 +96,12 @@ class ProductController extends Controller
             'is_featured' => $request->boolean('is_featured'),
         ]);
 
-        return redirect()->route('products.index')->with('success', 'تعديلات الصنف اتحفظت.');
+        $page = max(1, (int) $request->input('page', 1));
+
+        return redirect()->route('products.index', ['page' => $page])->with('success', 'تعديلات الصنف اتحفظت.');
     }
 
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(Request $request, Product $product): RedirectResponse
     {
         $this->authorize('delete', $product);
 
@@ -103,6 +111,8 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'الصنف اتمسح من المنيو.');
+        $page = max(1, (int) $request->input('page', 1));
+
+        return redirect()->route('products.index', ['page' => $page])->with('success', 'الصنف اتمسح من المنيو.');
     }
 }
