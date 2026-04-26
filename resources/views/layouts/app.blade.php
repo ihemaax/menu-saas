@@ -114,8 +114,8 @@
                         <x-icon name="menu" class="h-5 w-5"/>
                     </button>
                     <div>
-                        <p class="text-xs font-semibold text-[#b4934f]">Osirix Control Hub</p>
-                        <p class="text-sm font-bold text-[#e9d5a1]">لوحة إدارة المطعم</p>
+                        <p class="text-xs font-semibold text-[#7d725f]">Osirix Control Hub</p>
+                        <p class="text-sm font-bold text-[#2a3324]">لوحة إدارة المطعم</p>
                     </div>
                 </div>
                 <div class="text-sm text-[#bfa06b]">{{ now()->translatedFormat('d F Y') }}</div>
