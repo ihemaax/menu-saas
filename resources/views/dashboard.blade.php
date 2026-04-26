@@ -5,7 +5,7 @@
     <section class="zz-card">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="space-y-2">
-                <p class="text-sm font-semibold text-[#7a6b53]">متابعة يومية</p>
+                <p class="text-sm font-semibold text-[var(--zz-text-secondary)]">متابعة يومية</p>
                 <h1 class="zz-title">{{ $restaurant->name }}، كل اللي محتاجه لإدارة المنيو في مكان واحد</h1>
                 <p class="zz-subtitle">تابع الأصناف والأقسام، وخلّي رابط المنيو جاهز للمشاركة في ثواني.</p>
             </div>
@@ -15,11 +15,11 @@
             </div>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div class="zz-card-muted"><p class="text-xs text-[#756b58]">عدد الأقسام</p><p class="mt-1 text-3xl font-extrabold text-[#2b3526]">{{ $stats['categories_count'] }}</p></div>
-            <div class="zz-card-muted"><p class="text-xs text-[#756b58]">إجمالي المنتجات</p><p class="mt-1 text-3xl font-extrabold text-[#2b3526]">{{ $stats['products_count'] }}</p></div>
-            <div class="zz-card-muted"><p class="text-xs text-[#756b58]">المتاح للعرض</p><p class="mt-1 text-3xl font-extrabold text-[#2b3526]">{{ $stats['available_products_count'] }}</p></div>
-            <div class="zz-card-muted"><p class="text-xs text-[#756b58]">المنتجات المميزة</p><p class="mt-1 text-3xl font-extrabold text-[#2b3526]">{{ $stats['featured_products_count'] }}</p></div>
+        <div class="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="zz-card-muted p-5"><p class="text-xs text-[var(--zz-text-secondary)]">عدد الأقسام</p><p class="mt-1 text-3xl font-extrabold text-[var(--zz-text-primary)]">{{ $stats['categories_count'] }}</p></div>
+            <div class="zz-card-muted p-5"><p class="text-xs text-[var(--zz-text-secondary)]">إجمالي المنتجات</p><p class="mt-1 text-3xl font-extrabold text-[var(--zz-text-primary)]">{{ $stats['products_count'] }}</p></div>
+            <div class="zz-card-muted p-5"><p class="text-xs text-[var(--zz-text-secondary)]">المتاح للعرض</p><p class="mt-1 text-3xl font-extrabold text-[var(--zz-text-primary)]">{{ $stats['available_products_count'] }}</p></div>
+            <div class="zz-card-muted p-5"><p class="text-xs text-[var(--zz-text-secondary)]">المنتجات المميزة</p><p class="mt-1 text-3xl font-extrabold text-[var(--zz-text-primary)]">{{ $stats['featured_products_count'] }}</p></div>
         </div>
     </section>
 
@@ -30,14 +30,14 @@
                 <span class="zz-chip">تحديث لحظي</span>
             </div>
 
-            <div class="mt-4 grid gap-3 md:grid-cols-2">
-                <a class="rounded-2xl border border-[#e3dacb] p-4 transition hover:bg-[#f8f4eb]" href="{{ route('products.index') }}">
-                    <p class="font-bold text-[#2b3526]">إدارة المنتجات</p>
-                    <p class="mt-1 text-xs text-[#6e695e]">راجع الأسعار والتوفر وعدّل أي صنف بسرعة.</p>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+                <a class="rounded-2xl border border-[var(--zz-border)] bg-[var(--zz-white)] p-5 transition hover:bg-[var(--zz-beige-50)]" href="{{ route('products.index') }}">
+                    <p class="font-bold text-[var(--zz-text-primary)]">إدارة المنتجات</p>
+                    <p class="mt-1 text-xs leading-6 text-[var(--zz-text-secondary)]">راجع الأسعار والتوفر وعدّل أي صنف بسرعة.</p>
                 </a>
-                <a class="rounded-2xl border border-[#e3dacb] p-4 transition hover:bg-[#f8f4eb]" href="{{ route('settings.index') }}">
-                    <p class="font-bold text-[#2b3526]">إعدادات المنيو</p>
-                    <p class="mt-1 text-xs text-[#6e695e]">ظبط لينك المنيو، الثيم، وحالة النشر.</p>
+                <a class="rounded-2xl border border-[var(--zz-border)] bg-[var(--zz-white)] p-5 transition hover:bg-[var(--zz-beige-50)]" href="{{ route('settings.index') }}">
+                    <p class="font-bold text-[var(--zz-text-primary)]">إعدادات المنيو</p>
+                    <p class="mt-1 text-xs leading-6 text-[var(--zz-text-secondary)]">ظبط لينك المنيو، الثيم، وحالة النشر.</p>
                 </a>
             </div>
 
@@ -51,7 +51,7 @@
         <aside class="space-y-6">
             <div class="zz-card">
                 <p class="zz-section-title">لينك المنيو</p>
-                <p class="mt-1 text-xs text-[#6e695e]">انسخه أو افتحه مباشرة قدامك.</p>
+                <p class="mt-1 text-xs text-[var(--zz-text-secondary)]">انسخه أو افتحه مباشرة قدامك.</p>
                 <input id="menu-link" readonly class="zz-input" value="{{ $menuUrl }}">
                 <div class="mt-3 grid grid-cols-2 gap-2">
                     <button class="zz-btn-secondary" data-copy-target="#menu-link">انسخ اللينك</button>
@@ -60,8 +60,8 @@
             </div>
             <div class="zz-card text-center">
                 <p class="zz-section-title">QR المنيو جاهز</p>
-                <p class="mt-1 text-xs text-[#6e695e]">حمّله واطبعه وحطه على الطاولات.</p>
-                <img src="{{ route('settings.menu.qr') }}" alt="QR" class="mx-auto mt-3 w-44 rounded-2xl border border-[#e1d9ca] bg-white p-2">
+                <p class="mt-1 text-xs text-[var(--zz-text-secondary)]">حمّله واطبعه وحطه على الطاولات.</p>
+                <img src="{{ route('settings.menu.qr') }}" alt="QR" class="mx-auto mt-3 w-44 rounded-2xl border border-[var(--zz-border)] bg-white p-2">
                 <a href="{{ route('settings.menu.qr') }}" download="menu-qr.svg" class="zz-btn-secondary mt-3 w-full">تحميل QR</a>
             </div>
         </aside>
