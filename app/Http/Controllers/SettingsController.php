@@ -62,6 +62,7 @@ class SettingsController extends Controller
             $request->user()->restaurant->menuSetting->update([
                 'slug' => str($request->slug)->lower()->slug('-')->value(),
                 'is_public' => $request->boolean('is_public', true),
+                'theme' => $request->input('theme', 'classy'),
             ]);
         } catch (QueryException $exception) {
             if ((string) $exception->getCode() === '23000') {
