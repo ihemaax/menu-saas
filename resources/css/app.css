@@ -74,25 +74,25 @@
   .zz-table th {@apply px-4 py-3 text-right text-xs font-bold tracking-wide;}
   .zz-table td {@apply px-4 py-3 align-top text-[#eedab0];}
 
-  .zz-auth-shell {@apply relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_20%,#3f2b18_0%,#1e150c_32%,#100c08_65%,#0a0806_100%)];}
-  .zz-auth-noise {@apply pointer-events-none absolute inset-0 opacity-[0.07] bg-[radial-gradient(circle,_#f8dfac_1px,_transparent_1px)] [background-size:18px_18px];}
+  .zz-auth-shell {@apply relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top,#f8f3ea_0%,#f2ebdf_55%,#ece4d6_100%)];}
+  .zz-auth-noise {@apply pointer-events-none absolute inset-0 opacity-[0.05] bg-[radial-gradient(circle,_#c7bea9_1px,_transparent_1px)] [background-size:18px_18px];}
   .zz-auth-center {@apply relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-8 sm:px-6;}
-  .zz-auth-card {@apply w-full max-w-xl rounded-[32px] border border-[#7c5a2f] bg-[linear-gradient(160deg,#1f150d_0%,#151009_55%,#110d08_100%)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:p-8;}
-  .zz-auth-brand {@apply mb-6 flex items-center gap-3 border-b border-[#614726] pb-5;}
-  .zz-auth-brand-mark {@apply inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#cb9847] text-xl text-[#1c1309];}
-  .zz-auth-brand-name {@apply text-lg font-extrabold uppercase tracking-[0.16em] text-[#f0d9a7];}
-  .zz-auth-brand-sub {@apply text-xs text-[#c8b085];}
+  .zz-auth-card {@apply w-full max-w-xl rounded-[32px] border border-[#d9cfbd] bg-white p-6 shadow-[0_22px_40px_rgba(63,53,38,0.14)] sm:p-8;}
+  .zz-auth-brand {@apply mb-6 flex items-center gap-3 border-b border-[#e8dece] pb-5;}
+  .zz-auth-brand-mark {@apply inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#6f7f43] text-xl text-white;}
+  .zz-auth-brand-name {@apply text-lg font-extrabold uppercase tracking-[0.16em] text-[#2a3324];}
+  .zz-auth-brand-sub {@apply text-xs text-[#817866];}
   .zz-auth-head {@apply mb-5 space-y-2;}
-  .zz-auth-title {@apply text-2xl font-extrabold text-[#f6e2b8] sm:text-[2rem];}
-  .zz-auth-text {@apply text-sm leading-7 text-[#cdb58b];}
-  .zz-auth-alert-success {@apply mb-4 rounded-2xl border border-[#49612f] bg-[#1a2912] px-4 py-3 text-right text-sm text-[#b5dd8b];}
-  .zz-auth-alert-error {@apply mb-4 rounded-2xl border border-[#7f3830] bg-[#2b1513] px-4 py-3 text-sm text-[#ffbeb4];}
+  .zz-auth-title {@apply text-2xl font-extrabold text-[#2a3324] sm:text-[2rem];}
+  .zz-auth-text {@apply text-sm leading-7 text-[#6f6758];}
+  .zz-auth-alert-success {@apply mb-4 rounded-2xl border border-[#bfd5a0] bg-[#eef6e1] px-4 py-3 text-right text-sm text-[#3f5a21];}
+  .zz-auth-alert-error {@apply mb-4 rounded-2xl border border-[#efc5bd] bg-[#fbe9e5] px-4 py-3 text-sm text-[#8b3b2e];}
   .zz-auth-form {@apply space-y-4;}
-  .zz-auth-label {@apply mb-1 block text-sm font-bold text-[#e7cf9f];}
-  .zz-auth-input {@apply w-full rounded-2xl border border-[#76562d] bg-[#0f0b07] px-4 py-3 text-sm text-[#f9e8c6] outline-none transition placeholder:text-[#8f7346] focus:border-[#cb9847] focus:ring-2 focus:ring-[#684a22];}
-  .zz-auth-remember {@apply flex items-center gap-2 text-sm text-[#c9b186];}
-  .zz-auth-submit {@apply inline-flex w-full items-center justify-center rounded-2xl bg-[#cb9847] px-4 py-3 text-base font-extrabold text-[#1b1309] transition hover:bg-[#e0b162] focus:outline-none focus:ring-2 focus:ring-[#e8cc95];}
+  .zz-auth-label {@apply mb-1 block text-sm font-bold text-[#2f3a2f];}
+  .zz-auth-input {@apply w-full rounded-2xl border border-[#d7cfbf] bg-[#fffdfa] px-4 py-3 text-sm text-[#1f2933] outline-none transition placeholder:text-[#9b988f] focus:border-[#6f7f43] focus:ring-2 focus:ring-[#d8e0bf];}
+  .zz-auth-remember {@apply flex items-center gap-2 text-sm text-[#6f6758];}
+  .zz-auth-submit {@apply inline-flex w-full items-center justify-center rounded-2xl bg-[#6f7f43] px-4 py-3 text-base font-extrabold text-white transition hover:bg-[#5f6d38] focus:outline-none focus:ring-2 focus:ring-[#cdd8a3];}
   .zz-auth-links {@apply flex flex-wrap items-center justify-between gap-2 pt-1 text-sm;}
-  .zz-auth-links a {@apply text-[#d8b774] transition hover:text-[#f0d8a3] hover:underline;}
-  .zz-auth-single-link {@apply block pt-1 text-center text-sm text-[#d8b774] transition hover:text-[#f0d8a3] hover:underline;}
+  .zz-auth-links a {@apply text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
+  .zz-auth-single-link {@apply block pt-1 text-center text-sm text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
 }
