@@ -39,13 +39,12 @@
         .elite-info-text{display:grid;gap:1px;}
         .elite-info-label{font-size:.76rem;color:#8a8176;font-weight:800;}
         .elite-info-value{color:#312d28;}
-        .elite-categories{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
-        .elite-categories::-webkit-scrollbar{display:none;}
-        .elite-cat{text-decoration:none;min-width:92px;width:92px;text-align:center;}
-        .elite-cat-ring{width:92px;height:92px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ddd8cf 0%,#f3efe8 100%);margin:0 auto 8px;transition:.2s ease;box-shadow:0 10px 20px rgba(60,52,40,.05);}
+        .elite-categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;padding-bottom:4px;}
+        .elite-cat{text-decoration:none;min-width:0;width:auto;text-align:center;display:grid;gap:8px;align-content:start;justify-items:center;}
+        .elite-cat-ring{width:100%;max-width:92px;aspect-ratio:1/1;height:auto;border-radius:50%;padding:3px;background:linear-gradient(135deg,#ddd8cf 0%,#f3efe8 100%);margin:0 auto;transition:.2s ease;box-shadow:0 10px 20px rgba(60,52,40,.05);}
         .elite-cat-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fff;background:#f2eee7;}
         .elite-cat-inner img{width:100%;height:100%;object-fit:cover;}
-        .elite-cat-label{color:#615d55;font-size:.8rem;font-weight:900;line-height:1.35;}
+        .elite-cat-label{color:#615d55;font-size:.8rem;font-weight:900;line-height:1.35;white-space:normal;word-break:break-word;min-height:2.3em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
         .elite-cat:hover .elite-cat-ring{background:linear-gradient(135deg,#7d8d6d 0%,#b6c4a6 100%);transform:translateY(-2px);box-shadow:0 14px 24px rgba(111,127,95,.16);}
         .elite-feed{display:grid;gap:18px;}
         .elite-section{background:#fffdf9;border:1px solid #e7ddd1;border-radius:24px;box-shadow:0 10px 24px rgba(60,52,40,.05);overflow:hidden;}
@@ -87,7 +86,9 @@
             .elite-meta-row .elite-pill-count{display:none}
             .elite-pill{font-size:.72rem;padding:8px 10px}
             .elite-card-body{padding:14px}
-            .elite-cat,.elite-cat-ring{width:74px;min-width:74px;height:74px}
+            .elite-categories{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+            .elite-cat{gap:6px}
+            .elite-cat-ring{width:100%;max-width:74px}
             .elite-cat-label{font-size:.74rem}
             .elite-section-head{padding:14px 14px 8px}
             .elite-products{padding:0 14px 14px;gap:12px}
