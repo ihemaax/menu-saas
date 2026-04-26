@@ -45,8 +45,8 @@
   .zz-sidebar-header {@apply mb-6 flex min-h-[56px] items-center gap-2 rounded-2xl bg-[#f2ede2] p-2;}
   .zz-sidebar-header-collapsed {@apply justify-center;}
   .zz-brand {@apply flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-2 text-[#253126] transition hover:bg-[#ebe4d7];}
-  .zz-brand-mark {@apply inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#6f7f43] text-xs font-extrabold text-white;}
-  .zz-brand-name {@apply truncate text-lg font-extrabold;}
+  .zz-brand-mark {@apply inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#6f7f43] text-sm font-extrabold text-white;}
+  .zz-brand-name {@apply truncate text-lg font-extrabold tracking-wide;}
   .zz-sidebar-toggle {@apply h-9 w-9 items-center justify-center rounded-xl border border-[#d7cfbf] bg-white text-[#5f695f] transition hover:bg-[#f7f2e8];}
 
   .zz-stat-card {@apply rounded-2xl border border-[#e8dfd1] bg-[#f9f6f0] px-4 py-3 shadow-[0_4px_12px_rgba(36,41,34,0.04)];}
@@ -74,7 +74,25 @@
   .zz-table th {@apply px-4 py-3 text-right text-xs font-bold tracking-wide;}
   .zz-table td {@apply px-4 py-3 align-top text-[#2f3a2f];}
 
-  .zz-auth-wrap {@apply min-h-screen grid lg:grid-cols-2;}
-  .zz-auth-visual {@apply hidden lg:flex bg-gradient-to-br from-[#2a3324] via-[#43512f] to-[#795c35] text-white p-12 relative overflow-hidden;}
-  .zz-auth-panel {@apply p-6 md:p-10 flex items-center justify-center;}
+  .zz-auth-shell {@apply relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_15%_20%,#3f2b18_0%,#1e150c_32%,#100c08_65%,#0a0806_100%)];}
+  .zz-auth-noise {@apply pointer-events-none absolute inset-0 opacity-[0.07] bg-[radial-gradient(circle,_#f8dfac_1px,_transparent_1px)] [background-size:18px_18px];}
+  .zz-auth-center {@apply relative z-10 mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-8 sm:px-6;}
+  .zz-auth-card {@apply w-full max-w-xl rounded-[32px] border border-[#7c5a2f] bg-[linear-gradient(160deg,#1f150d_0%,#151009_55%,#110d08_100%)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:p-8;}
+  .zz-auth-brand {@apply mb-6 flex items-center gap-3 border-b border-[#614726] pb-5;}
+  .zz-auth-brand-mark {@apply inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#cb9847] text-xl text-[#1c1309];}
+  .zz-auth-brand-name {@apply text-lg font-extrabold uppercase tracking-[0.16em] text-[#f0d9a7];}
+  .zz-auth-brand-sub {@apply text-xs text-[#c8b085];}
+  .zz-auth-head {@apply mb-5 space-y-2;}
+  .zz-auth-title {@apply text-2xl font-extrabold text-[#f6e2b8] sm:text-[2rem];}
+  .zz-auth-text {@apply text-sm leading-7 text-[#cdb58b];}
+  .zz-auth-alert-success {@apply mb-4 rounded-2xl border border-[#49612f] bg-[#1a2912] px-4 py-3 text-right text-sm text-[#b5dd8b];}
+  .zz-auth-alert-error {@apply mb-4 rounded-2xl border border-[#7f3830] bg-[#2b1513] px-4 py-3 text-sm text-[#ffbeb4];}
+  .zz-auth-form {@apply space-y-4;}
+  .zz-auth-label {@apply mb-1 block text-sm font-bold text-[#e7cf9f];}
+  .zz-auth-input {@apply w-full rounded-2xl border border-[#76562d] bg-[#0f0b07] px-4 py-3 text-sm text-[#f9e8c6] outline-none transition placeholder:text-[#8f7346] focus:border-[#cb9847] focus:ring-2 focus:ring-[#684a22];}
+  .zz-auth-remember {@apply flex items-center gap-2 text-sm text-[#c9b186];}
+  .zz-auth-submit {@apply inline-flex w-full items-center justify-center rounded-2xl bg-[#cb9847] px-4 py-3 text-base font-extrabold text-[#1b1309] transition hover:bg-[#e0b162] focus:outline-none focus:ring-2 focus:ring-[#e8cc95];}
+  .zz-auth-links {@apply flex flex-wrap items-center justify-between gap-2 pt-1 text-sm;}
+  .zz-auth-links a {@apply text-[#d8b774] transition hover:text-[#f0d8a3] hover:underline;}
+  .zz-auth-single-link {@apply block pt-1 text-center text-sm text-[#d8b774] transition hover:text-[#f0d8a3] hover:underline;}
 }
