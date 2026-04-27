@@ -16,10 +16,12 @@ class SettingsController extends Controller
     {
         $restaurant = auth()->user()->restaurant()->with('menuSetting')->firstOrFail();
         $menuUrl = route('menu.show', $restaurant->menuSetting->slug);
+        $permanentQrUrl = $restaurant->permanentQrUrl();
 
         return view('settings.index', [
             'restaurant' => $restaurant,
             'menuUrl' => $menuUrl,
+            'permanentQrUrl' => $permanentQrUrl,
         ]);
     }
 
@@ -79,8 +81,8 @@ class SettingsController extends Controller
 
     public function qrSvg()
     {
-        $slug = auth()->user()->restaurant->menuSetting->slug;
-        $url = route('menu.show', $slug);
+        $restaurant = auth()->user()->restaurant;
+        $url = $restaurant->permanentQrUrl();
 
         return response(QrCode::format('svg')->size(360)->margin(1)->generate($url), 200)
             ->header('Content-Type', 'image/svg+xml');

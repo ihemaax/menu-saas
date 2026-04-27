@@ -48,11 +48,31 @@
             <button class="zz-btn-primary">حفظ إعدادات المنيو</button>
         </form>
 
-        <div class="mt-6 space-y-3 rounded-2xl border border-[#e3dacb] bg-[#f8f5ef] p-4">
-            <p class="text-sm font-semibold">لينك المنيو</p>
-            <input id="settings-menu-link" readonly class="zz-input" value="{{ $menuUrl }}">
-            <div class="flex gap-2"><button data-copy-target="#settings-menu-link" class="zz-btn-secondary w-full">نسخ اللينك</button><a target="_blank" href="{{ $menuUrl }}" class="zz-btn-primary w-full">فتح</a></div>
-            <img src="{{ route('settings.menu.qr') }}" class="mx-auto w-44 rounded-2xl border border-[#dfd6c6] bg-white p-2" alt="qr">
+        <div class="mt-6 space-y-4 rounded-2xl border border-[#e3dacb] bg-[#f8f5ef] p-4">
+            <div class="space-y-2">
+                <p class="text-sm font-semibold">لينك المنيو الحالي</p>
+                <input id="settings-menu-link" readonly class="zz-input" value="{{ $menuUrl }}">
+                <div class="flex gap-2">
+                    <button data-copy-target="#settings-menu-link" class="zz-btn-secondary w-full">نسخ لينك المنيو</button>
+                    <a target="_blank" href="{{ $menuUrl }}" class="zz-btn-primary w-full">فتح المنيو</a>
+                </div>
+            </div>
+
+            <div class="space-y-2 rounded-2xl border border-[#dfd6c6] bg-white p-3">
+                <p class="text-sm font-semibold">رابط QR الثابت (Permanent QR Link)</p>
+                <input id="settings-permanent-qr-link" readonly class="zz-input" value="{{ $permanentQrUrl }}">
+                <div class="flex gap-2">
+                    <button data-copy-target="#settings-permanent-qr-link" class="zz-btn-secondary w-full">نسخ رابط QR الثابت</button>
+                    <a target="_blank" href="{{ $permanentQrUrl }}" class="zz-btn-primary w-full">فتح الرابط الثابت</a>
+                </div>
+                <p class="text-xs leading-6 text-[#6e695e]">هذا الرابط ثابت ولا يتغير حتى لو تم تغيير اسم المطعم أو رابط المنيو. استخدم هذا الرابط عند طباعة QR Code للعميل.</p>
+            </div>
+
+            <div class="rounded-2xl border border-[#dfd6c6] bg-white p-3 text-center">
+                <p class="text-sm font-semibold">QR ثابت جاهز للطباعة</p>
+                <img src="{{ route('settings.menu.qr') }}" class="mx-auto mt-3 w-44 rounded-2xl border border-[#dfd6c6] bg-white p-2" alt="permanent qr">
+                <a href="{{ route('settings.menu.qr') }}" download="permanent-menu-qr.svg" class="zz-btn-secondary mt-3 w-full">تحميل QR (SVG)</a>
+            </div>
         </div>
     </section>
 </div>

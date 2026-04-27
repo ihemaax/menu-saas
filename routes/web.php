@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Owner\SuperAdminController;
+use App\Http\Controllers\PublicMenuRedirectController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -40,5 +41,6 @@ Route::middleware('auth')->group(function (): void {
 });
 
 Route::get('/menu/{slug}', [MenuController::class, 'show'])->name('menu.show');
+Route::get('/r/{code}', [PublicMenuRedirectController::class, 'redirect'])->name('public.menu.redirect');
 
 require __DIR__.'/auth.php';

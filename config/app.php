@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'menu_base_url' => env('MENU_BASE_URL', 'https://menu.osirix.online'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
