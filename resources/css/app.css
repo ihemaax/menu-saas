@@ -114,3 +114,33 @@
   .zz-auth-links a {@apply text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
   .zz-auth-single-link {@apply block pt-1 text-center text-sm text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
 }
+
+/* Admin fallback override to prevent any legacy dark theme cache */
+.zz-layout,
+.zz-main,
+.zz-page {
+  background: #f6f3ee !important;
+  color: #1f2933 !important;
+}
+
+.zz-sidebar {
+  background: #fbf8f3 !important;
+  border-left-color: #d8d1c5 !important;
+}
+
+.zz-topbar {
+  background: rgba(246, 243, 238, 0.95) !important;
+  border-bottom-color: #ddd5c8 !important;
+}
+
+.zz-card,
+.zz-subscription-banner,
+.zz-table-wrap {
+  background: #ffffff !important;
+  border-color: #ddd5c8 !important;
+}
+
+.zz-card-muted {
+  background: #f8f5ef !important;
+  border-color: #e7dfd2 !important;
+}
