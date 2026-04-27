@@ -71,7 +71,14 @@
             <div class="rounded-2xl border border-[#dfd6c6] bg-white p-3 text-center">
                 <p class="text-sm font-semibold">QR ثابت جاهز للطباعة</p>
                 <img src="{{ route('settings.menu.qr') }}" class="mx-auto mt-3 w-44 rounded-2xl border border-[#dfd6c6] bg-white p-2" alt="permanent qr">
-                <a href="{{ route('settings.menu.qr') }}" download="permanent-menu-qr.svg" class="zz-btn-secondary mt-3 w-full">تحميل QR (SVG)</a>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <a href="{{ route('settings.menu.qr') }}" download="permanent-menu-qr.svg" class="zz-btn-secondary w-full">تحميل QR (SVG)</a>
+                    <a href="{{ $qrDesignDownloadUrl }}" class="zz-btn-primary w-full">تحميل تصميم QR</a>
+                </div>
+                <a href="{{ $qrDesignPreviewUrl }}" target="_blank" class="mt-2 inline-flex text-xs font-semibold text-[#7a6844] hover:text-[#5f5035]">معاينة التصميم قبل الطباعة</a>
+                <div class="mt-3 overflow-hidden rounded-2xl border border-[#e7dece] bg-[#fbf8f2]">
+                    <iframe src="{{ $qrDesignPreviewUrl }}" title="QR print design preview" class="h-72 w-full" loading="lazy"></iframe>
+                </div>
             </div>
         </div>
     </section>
