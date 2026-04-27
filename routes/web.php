@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function (): void {
         Route::put('/settings/restaurant', [SettingsController::class, 'updateRestaurant'])->name('settings.restaurant.update');
         Route::put('/settings/menu', [SettingsController::class, 'updateMenu'])->name('settings.menu.update');
         Route::get('/settings/menu/qr.svg', [SettingsController::class, 'qrSvg'])->name('settings.menu.qr');
+        Route::get('/settings/menu/qr-design', [SettingsController::class, 'qrPrintDesignPreview'])->name('settings.menu.qr-design.preview');
+        Route::get('/settings/menu/qr-design/download', [SettingsController::class, 'qrPrintDesignDownload'])->name('settings.menu.qr-design.download');
     });
 
     Route::middleware('super.admin')->prefix('owner')->name('owner.')->group(function (): void {

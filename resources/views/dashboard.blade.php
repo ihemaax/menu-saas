@@ -58,11 +58,30 @@
                     <a target="_blank" href="{{ $menuUrl }}" class="zz-btn-primary">افتح المنيو</a>
                 </div>
             </div>
-            <div class="zz-card text-center">
-                <p class="zz-section-title">QR المنيو جاهز</p>
-                <p class="mt-1 text-xs text-[var(--zz-text-secondary)]">حمّله واطبعه وحطه على الطاولات.</p>
-                <img src="{{ route('settings.menu.qr') }}" alt="QR" class="mx-auto mt-3 w-44 rounded-2xl border border-[var(--zz-border)] bg-white p-2">
-                <a href="{{ route('settings.menu.qr') }}" download="menu-qr.svg" class="zz-btn-secondary mt-3 w-full">تحميل QR</a>
+
+            <div class="zz-card space-y-3">
+                <div>
+                    <p class="zz-section-title text-center">تصميم QR احترافي للطباعة</p>
+                    <p class="mt-1 text-center text-xs text-[var(--zz-text-secondary)]">جاهز للطباعة المباشرة بدون روابط ظاهرة أو أي Branding إضافي.</p>
+                </div>
+
+                <div class="rounded-2xl border border-[var(--zz-border)] bg-[var(--zz-beige-50)] p-3">
+                    <p class="text-xs font-semibold text-[var(--zz-text-secondary)]">رابط QR الثابت</p>
+                    <input id="dashboard-permanent-qr-link" readonly class="zz-input mt-2" value="{{ $permanentQrUrl }}">
+                    <div class="mt-2 grid grid-cols-2 gap-2">
+                        <button class="zz-btn-secondary" data-copy-target="#dashboard-permanent-qr-link">انسخ الرابط</button>
+                        <a target="_blank" href="{{ $permanentQrUrl }}" class="zz-btn-primary">افتح الرابط</a>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl border border-[var(--zz-border)] bg-white">
+                    <iframe src="{{ $qrDesignPreviewUrl }}" title="QR design preview" class="h-72 w-full" loading="lazy"></iframe>
+                </div>
+
+                <div class="grid gap-2 sm:grid-cols-2">
+                    <a href="{{ route('settings.menu.qr') }}" download="menu-qr.svg" class="zz-btn-secondary w-full">تحميل QR خام</a>
+                    <a href="{{ $qrDesignDownloadUrl }}" class="zz-btn-primary w-full">تحميل تصميم QR</a>
+                </div>
             </div>
         </aside>
     </div>

@@ -20,6 +20,9 @@ class DashboardController extends Controller
         return view('dashboard', [
             'restaurant' => $restaurant,
             'menuUrl' => route('menu.show', $restaurant->menuSetting->slug),
+            'permanentQrUrl' => $restaurant->permanentQrUrl(),
+            'qrDesignPreviewUrl' => route('settings.menu.qr-design.preview'),
+            'qrDesignDownloadUrl' => route('settings.menu.qr-design.download'),
             'stats' => $stats,
         ]);
     }
