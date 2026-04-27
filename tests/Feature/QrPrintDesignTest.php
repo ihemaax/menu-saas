@@ -36,6 +36,20 @@ class QrPrintDesignTest extends TestCase
         $response->assertHeader('Content-Disposition');
     }
 
+
+    public function test_dashboard_includes_qr_design_section(): void
+    {
+        [$user, $restaurant] = $this->createOwnerWithRestaurant();
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('تصميم QR احترافي للطباعة');
+        $response->assertSee(route('settings.menu.qr-design.download'));
+        $response->assertSee(route('settings.menu.qr-design.preview'));
+        $response->assertSee($restaurant->permanentQrUrl());
+    }
+
     private function createOwnerWithRestaurant(): array
     {
         $restaurant = Restaurant::create([
