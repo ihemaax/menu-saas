@@ -20,7 +20,7 @@
         <section class="zz-card space-y-4">
             <div>
                 <label class="zz-label">لينك المنيو المختصر</label>
-                <input name="slug" class="zz-input" value="{{ old('slug') }}" required data-slug-input data-slug-source="#restaurant-name" data-slug-status="#slug-status" data-slug-preview="#slug-preview">
+                <input name="slug" class="zz-input" value="{{ old('slug') }}" required pattern="[a-z0-9-]+" inputmode="latin" spellcheck="false" autocapitalize="off" title="اكتب الـ slug بالإنجليزي فقط (a-z, 0-9, -)" data-slug-input data-slug-source="#restaurant-name" data-slug-status="#slug-status" data-slug-preview="#slug-preview">
                 <p class="mt-2 text-xs text-[#6e695e]">ده الجزء الأخير في رابط المنيو. مثال: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.(old('slug') ?: 'your-name')) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-[#6e695e]">اكتب الاسم وإحنا هنتأكد فورًا إنه متاح.</p>
             </div>

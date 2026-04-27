@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Restaurant extends Model
 {
@@ -18,6 +19,7 @@ class Restaurant extends Model
         'logo_path',
         'banner_path',
         'description',
+        'permanent_qr_code',
         'subscription_status',
         'subscription_starts_at',
         'subscription_ends_at',
@@ -46,6 +48,36 @@ class Restaurant extends Model
     public function menuSetting(): HasOne
     {
         return $this->hasOne(MenuSetting::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Restaurant $restaurant): void {
+            if (! empty($restaurant->permanent_qr_code)) {
+                return;
+            }
+
+            $restaurant->permanent_qr_code = static::generateUniquePermanentQrCode();
+        });
+    }
+
+    public static function generateUniquePermanentQrCode(): string
+    {
+        do {
+            $code = 'rest_'.Str::lower(Str::random(10));
+            $exists = static::query()
+                ->where('permanent_qr_code', $code)
+                ->exists();
+        } while ($exists);
+
+        return $code;
+    }
+
+    public function permanentQrUrl(): string
+    {
+        $baseUrl = rtrim((string) config('app.menu_base_url', 'https://menu.osirix.online'), '/');
+
+        return $baseUrl.'/r/'.$this->permanent_qr_code;
     }
 
     public function effectiveSubscriptionStatus(): string

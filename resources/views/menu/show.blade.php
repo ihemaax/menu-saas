@@ -69,6 +69,10 @@
         .elite-price-value{font-size:1.08rem;font-weight:900;}
         .elite-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:#f5f0e8;color:#6f7f5f;font-size:.75rem;font-weight:900;}
         .elite-empty{background:#fffdf9;border:1px solid #e7ddd1;border-radius:22px;box-shadow:0 10px 24px rgba(60,52,40,.05);padding:28px 18px;text-align:center;color:#6f6a61;font-weight:800;}
+        .menu-credit-wrapper{direction:ltr !important;unicode-bidi:isolate !important;text-align:center;margin-top:28px;padding:0 14px;}
+        .menu-credit-badge{direction:ltr !important;unicode-bidi:isolate !important;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-align:center;white-space:nowrap;text-decoration:none;padding:10px 18px;border-radius:999px;background:linear-gradient(135deg,#f7f2ea 0%,#ece3d6 100%);border:1px solid #e4d9ca;color:#556a3f;font-size:.88rem;font-weight:900;box-shadow:0 10px 20px rgba(60,52,40,.08);transition:transform .2s ease,box-shadow .2s ease,color .2s ease;}
+        .menu-credit-badge:hover{transform:translateY(-1px);box-shadow:0 14px 24px rgba(60,52,40,.12);color:#3f532c;}
+        .menu-credit-badge bdi{direction:ltr !important;unicode-bidi:isolate !important;display:inline-block;}
         @media (max-width: 991.98px){.elite-layout{grid-template-columns:1fr}.elite-sidebar{order:2}.elite-main{order:1}}
         @media (max-width: 767.98px){
             .elite-home{padding-bottom:28px}
@@ -105,6 +109,8 @@
             .elite-price-label{font-size:.66rem}
             .elite-price-value{font-size:.88rem}
             .elite-badge{padding:7px 10px;font-size:.70rem;border-radius:12px}
+            .menu-credit-wrapper{margin-top:22px}
+            .menu-credit-badge{font-size:.76rem;padding:9px 12px}
         }
     </style>
 </head>
@@ -232,6 +238,8 @@
             </div>
         </main>
     </div>
+
+    @include('menu.partials.powered-by')
 </div>
 </body>
 </html>
