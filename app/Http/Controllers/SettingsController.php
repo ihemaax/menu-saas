@@ -109,9 +109,11 @@ class SettingsController extends Controller
     private function buildQrPrintDesignData(): array
     {
         $restaurant = auth()->user()->restaurant;
-        $qrDataUri = 'data:image/png;base64,'.base64_encode(
-            QrCode::format('png')->size(1200)->margin(3)->errorCorrection('H')->generate($restaurant->permanentQrUrl())
-        );
+        $qrSvg = QrCode::format('svg')
+            ->size(920)
+            ->margin(2)
+            ->errorCorrection('H')
+            ->generate($restaurant->permanentQrUrl());
 
         $logoDataUri = null;
 
@@ -128,7 +130,7 @@ class SettingsController extends Controller
             'restaurantName' => $restaurantName,
             'ctaText' => $nameHasArabic ? 'امسح لعرض المنيو' : 'Scan to View Menu',
             'helperText' => $nameHasArabic ? 'استخدم كاميرا الموبايل للوصول السريع' : 'Use your phone camera for instant access',
-            'qrDataUri' => $qrDataUri,
+            'qrSvg' => $qrSvg,
             'logoDataUri' => $logoDataUri,
             'isRtl' => $nameHasArabic,
         ];

@@ -100,8 +100,14 @@
         .qr {
             width: 100%;
             height: 100%;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
+            display: grid;
+            place-items: center;
+        }
+
+        .qr svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         .helper {
@@ -138,7 +144,7 @@
             <p class="cta">{{ $ctaText }}</p>
 
             <div class="qr-wrap" aria-label="Menu QR code">
-                <img src="{{ $qrDataUri }}" alt="Menu QR" class="qr">
+                <div class="qr" role="img" aria-label="Menu QR">{!! $qrSvg !!}</div>
             </div>
 
             <p class="helper">{{ $helperText }}</p>
