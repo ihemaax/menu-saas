@@ -30,7 +30,7 @@
             @csrf @method('PUT')
             <div>
                 <label class="zz-label">Slug المنيو</label>
-                <input name="slug" class="zz-input" value="{{ old('slug', $restaurant->menuSetting->slug) }}" required data-slug-input data-slug-status="#slug-status" data-slug-preview="#slug-preview">
+                <input name="slug" class="zz-input" value="{{ old('slug', $restaurant->menuSetting->slug) }}" required pattern="[a-z0-9-]+" inputmode="latin" spellcheck="false" autocapitalize="off" title="اكتب الـ slug بالإنجليزي فقط (a-z, 0-9, -)" data-slug-input data-slug-status="#slug-status" data-slug-preview="#slug-preview">
                 <p class="mt-2 text-xs text-[#6e695e]">الرابط النهائي: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
                 <p id="slug-status" class="mt-1 text-xs text-[#6e695e]">أي تعديل بيتراجع فورًا.</p>
             </div>

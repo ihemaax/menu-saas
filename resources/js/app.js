@@ -44,13 +44,20 @@ slugInputs.forEach((input) => {
 
   input.addEventListener('input', () => {
     input.dataset.userEdited = '1';
-    const slug = normalize(input.value);
+    const rawValue = input.value;
+    const slug = normalize(rawValue);
     input.value = slug;
 
     if (previewEl) previewEl.textContent = `${window.location.origin}/menu/${slug || 'اسم-مطعمك'}`;
     if (!statusEl) return;
 
     clearTimeout(timer);
+    if (rawValue !== slug && /[^a-z0-9\s-]/i.test(rawValue)) {
+      statusEl.textContent = 'الـ slug لازم يكون بالإنجليزي فقط (a-z, 0-9, -).';
+      statusEl.className = 'text-xs text-rose-600';
+      return;
+    }
+
     if (slug.length < 3) {
       statusEl.textContent = 'اكتب 3 حروف أو أكتر.';
       statusEl.className = 'text-xs text-amber-600';

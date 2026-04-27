@@ -42,13 +42,10 @@
         .bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
         .price{font-size:1.1rem;font-weight:900;color:var(--accent)}
         .badge{background:#e9f2e6;color:#35592f;padding:6px 10px;border-radius:999px;font-weight:800;font-size:.75rem}
-        .osirix-credit{margin:18px 0 6px;text-align:center}
-        .osirix-credit-text{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:#f6f8f2;border:1px solid #d6e2d2;color:#4a5f4a;font-size:.86rem;font-weight:800;box-shadow:0 8px 20px rgba(30,52,36,.08)}
-        .osirix-credit-ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
-        .osirix-credit-link{color:#35592f;text-decoration:none;font-weight:900;position:relative;transition:color .2s ease;direction:ltr;unicode-bidi:isolate}
-        .osirix-credit-link::after{content:"";position:absolute;inset-inline:0;bottom:-2px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:center;transition:transform .2s ease}
-        .osirix-credit-link:hover{color:#274523}
-        .osirix-credit-link:hover::after{transform:scaleX(1)}
+        .menu-credit-wrapper{direction:ltr !important;unicode-bidi:isolate !important;text-align:center;margin:18px 0 6px}
+        .menu-credit-badge{direction:ltr !important;unicode-bidi:isolate !important;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-align:center;white-space:nowrap;text-decoration:none;padding:9px 16px;border-radius:999px;background:#f6f8f2;border:1px solid #d6e2d2;color:#35592f;font-size:.86rem;font-weight:900;box-shadow:0 8px 20px rgba(30,52,36,.08);transition:transform .2s ease,box-shadow .2s ease,color .2s ease}
+        .menu-credit-badge:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(30,52,36,.12);color:#274523}
+        .menu-credit-badge bdi{direction:ltr !important;unicode-bidi:isolate !important;display:inline-block}
         .mobile-catbar{display:none}
         @media (max-width:768px){
             .wrap{padding:10px}.hero-body{grid-template-columns:1fr;margin-top:-45px;padding:12px}.logo{width:118px;height:118px;margin:0 auto}
@@ -56,8 +53,8 @@
             .cat{min-width:86px;flex-basis:86px}.cat-img{width:72px;height:72px}
             .cats-panel{display:none}
             .wrap{padding-bottom:98px}
-            .osirix-credit{margin:16px 0 2px}
-            .osirix-credit-text{font-size:.76rem;padding:8px 12px}
+            .menu-credit-wrapper{margin:16px 0 2px}
+            .menu-credit-badge{font-size:.76rem;padding:8px 12px}
             .mobile-catbar{display:flex;position:fixed;left:50%;transform:translateX(-50%);width:min(430px,calc(100vw - 16px));bottom:10px;z-index:60;gap:8px;overflow-x:auto;padding:7px 9px;border-radius:999px;background:rgba(16,29,20,.74);backdrop-filter:blur(12px);border:1px solid rgba(226,240,221,.2);box-shadow:0 10px 28px rgba(0,0,0,.2);scroll-snap-type:x mandatory}
             .mobile-catbar::-webkit-scrollbar{display:none}
             .mobile-cat-link{min-width:74px;flex:0 0 74px;text-decoration:none;color:#eef8eb;background:transparent;border:none;border-radius:12px;padding:2px 2px 0;display:grid;gap:3px;justify-items:center;scroll-snap-align:start}
