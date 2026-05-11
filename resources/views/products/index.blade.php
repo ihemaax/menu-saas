@@ -29,6 +29,15 @@
                         <span class="zz-badge {{ $product->is_available ? 'zz-badge-active' : 'zz-badge-muted' }}">{{ $product->is_available ? 'متاح للطلب' : 'مخفي' }}</span>
                         @if($product->is_featured)<span class="zz-badge zz-badge-muted">مميز</span>@endif
                     </div>
+                    <form method="POST" action="{{ route('products.image.update', $product) }}" enctype="multipart/form-data" class="mt-4">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="page" value="{{ $products->currentPage() }}">
+                        <input id="product-image-{{ $product->id }}" type="file" name="image" accept="image/jpeg,image/png,image/webp" class="sr-only" onchange="this.form.submit()">
+                        <label for="product-image-{{ $product->id }}" class="zz-btn-secondary flex w-full cursor-pointer items-center justify-center">
+                            {{ $product->image_path ? 'تغيير الصورة' : 'إضافة صورة' }}
+                        </label>
+                    </form>
                     <div class="mt-4 flex gap-2">
                         <a class="zz-btn-secondary w-full" href="{{ route('products.edit', ['product' => $product, 'page' => $products->currentPage()]) }}">تعديل</a>
                         <form class="w-full" method="POST" action="{{ route('products.destroy', $product) }}">@csrf @method('DELETE')<input type="hidden" name="page" value="{{ $products->currentPage() }}"><button class="zz-btn-danger w-full">حذف</button></form>

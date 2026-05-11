@@ -40,6 +40,7 @@
                 <select name="theme" class="zz-input" required>
                     <option value="classy" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'classy')>Classic (الأساسي)</option>
                     <option value="tree" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'tree')>Tree Essence (جديد)</option>
+                    <option value="sipchill" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'sipchill')>Sipchill</option>
                 </select>
                 <p class="mt-2 text-xs text-[#6e695e]">تقدر تبدّل بين الثيم الأساسي والثيم الجديد في أي وقت.</p>
             </div>

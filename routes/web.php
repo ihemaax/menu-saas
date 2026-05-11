@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
         Route::resource('categories', CategoryController::class)->except('show');
+        Route::patch('/products/{product}/image', [ProductController::class, 'updateImage'])->name('products.image.update');
         Route::resource('products', ProductController::class)->except('show');
 
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
