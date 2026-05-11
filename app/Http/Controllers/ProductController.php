@@ -102,6 +102,33 @@ class ProductController extends Controller
         return redirect()->route('products.index', ['page' => $page])->with('success', 'تعديلات الصنف اتحفظت.');
     }
 
+    public function updateImage(Request $request, Product $product): RedirectResponse
+    {
+        $this->authorize('update', $product);
+
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+        ], [
+            'image.required' => 'اختار صورة المنتج أولاً.',
+            'image.image' => 'الملف المختار لازم يكون صورة صحيحة.',
+            'image.mimes' => 'صيغة الصورة لازم تكون jpg أو jpeg أو png أو webp.',
+            'image.max' => 'حجم الصورة لا يزيد عن 4 ميجابايت.',
+        ]);
+
+        $oldImagePath = $product->image_path;
+        $newImagePath = $request->file('image')->store('products/images', 'public');
+
+        $product->update([
+            'image_path' => $newImagePath,
+        ]);
+
+        if ($oldImagePath) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
+
+        return redirect()->back()->with('success', 'صورة المنتج اتحدثت بنجاح.');
+    }
+
     public function destroy(Request $request, Product $product): RedirectResponse
     {
         $this->authorize('delete', $product);
