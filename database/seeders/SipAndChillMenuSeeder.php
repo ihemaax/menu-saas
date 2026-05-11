@@ -17,54 +17,51 @@ class SipAndChillMenuSeeder extends Seeder
     {
         $user = User::query()
             ->where('email', self::TARGET_EMAIL)
-            ->firstOrFail();
+            ->first();
 
-        if ($user->restaurant_id === null) {
-            throw new \RuntimeException('User '.self::TARGET_EMAIL.' is not linked to a restaurant.');
+        if ($user === null) {
+            throw new \RuntimeException('Target user '.self::TARGET_EMAIL.' was not found.');
         }
 
-        $restaurant = $user->restaurant()->firstOrFail();
+        if ($user->restaurant_id === null) {
+            throw new \RuntimeException('Target user '.self::TARGET_EMAIL.' is not linked to a restaurant.');
+        }
+
+        $restaurant = $user->restaurant()->first();
+
+        if ($restaurant === null) {
+            throw new \RuntimeException('Restaurant #'.$user->restaurant_id.' linked to '.self::TARGET_EMAIL.' was not found.');
+        }
+
         $stats = [
+            'categories_deleted' => 0,
+            'products_deleted' => 0,
             'categories_created' => 0,
-            'categories_updated' => 0,
             'products_created' => 0,
-            'products_updated' => 0,
-            'duplicate_products_removed' => 0,
         ];
 
         DB::transaction(function () use ($restaurant, &$stats): void {
-            foreach ($this->menuData() as $categoryIndex => $categoryData) {
-                $category = Category::query()
-                    ->where('restaurant_id', $restaurant->id)
-                    ->where('name_ar', $categoryData['name'])
-                    ->orderBy('id')
-                    ->first();
+            $stats['products_deleted'] = Product::query()
+                ->where('restaurant_id', $restaurant->id)
+                ->delete();
 
-                $categoryPayload = [
+            $stats['categories_deleted'] = Category::query()
+                ->where('restaurant_id', $restaurant->id)
+                ->delete();
+
+            foreach ($this->menuData() as $categoryIndex => $categoryData) {
+                $category = Category::query()->create([
                     'restaurant_id' => $restaurant->id,
                     'name_ar' => $categoryData['name'],
-                    'name_en' => null,
+                    'name_en' => $categoryData['name'],
                     'sort_order' => $categoryIndex + 1,
                     'is_active' => true,
-                ];
+                ]);
 
-                if ($category === null) {
-                    $category = Category::query()->create($categoryPayload);
-                    $stats['categories_created']++;
-                } else {
-                    $category->fill($categoryPayload)->save();
-                    $stats['categories_updated']++;
-                }
+                $stats['categories_created']++;
 
                 foreach ($categoryData['products'] as $productIndex => [$productName, $price]) {
-                    $duplicates = Product::query()
-                        ->where('restaurant_id', $restaurant->id)
-                        ->where('category_id', $category->id)
-                        ->where('name', $productName)
-                        ->orderBy('id')
-                        ->get();
-
-                    $productPayload = [
+                    Product::query()->create([
                         'restaurant_id' => $restaurant->id,
                         'category_id' => $category->id,
                         'name' => $productName,
@@ -74,70 +71,35 @@ class SipAndChillMenuSeeder extends Seeder
                         'is_available' => true,
                         'is_featured' => false,
                         'sort_order' => $productIndex + 1,
-                    ];
+                    ]);
 
-                    if ($duplicates->isEmpty()) {
-                        Product::query()->create($productPayload);
-                        $stats['products_created']++;
-
-                        continue;
-                    }
-
-                    $product = $duplicates->first();
-                    $product->fill($productPayload)->save();
-                    $stats['products_updated']++;
-
-                    $duplicateIds = $duplicates->skip(1)->pluck('id');
-
-                    if ($duplicateIds->isNotEmpty()) {
-                        $stats['duplicate_products_removed'] += Product::query()
-                            ->where('restaurant_id', $restaurant->id)
-                            ->whereIn('id', $duplicateIds)
-                            ->delete();
-                    }
+                    $stats['products_created']++;
                 }
             }
         });
 
-        $this->assertNoDuplicateProductsForTargetRestaurant((int) $restaurant->id);
+        $this->assertFinalMenuCounts((int) $restaurant->id);
         $this->reportSummary((int) $restaurant->id, $stats);
     }
 
     /**
-     * @param  array{categories_created: int, categories_updated: int, products_created: int, products_updated: int, duplicate_products_removed: int}  $stats
+     * @param  array{categories_deleted: int, products_deleted: int, categories_created: int, products_created: int}  $stats
      */
     private function reportSummary(int $restaurantId, array $stats): void
     {
-        $categoryNames = array_column($this->menuData(), 'name');
-        $expectedProductCount = array_sum(array_map(
-            static fn (array $category): int => count($category['products']),
-            $this->menuData(),
-        ));
-
-        $categoryCount = Category::query()
-            ->where('restaurant_id', $restaurantId)
-            ->whereIn('name_ar', $categoryNames)
-            ->count();
-
-        $productCount = Product::query()
-            ->where('restaurant_id', $restaurantId)
-            ->whereIn('category_id', Category::query()
-                ->select('id')
-                ->where('restaurant_id', $restaurantId)
-                ->whereIn('name_ar', $categoryNames))
-            ->count();
-
         $menuSetting = MenuSetting::query()
             ->where('restaurant_id', $restaurantId)
             ->first();
 
-        $this->command?->info('Sip & Chill menu import completed for '.self::TARGET_EMAIL.'.');
-        $this->command?->info("Categories created: {$stats['categories_created']}; updated: {$stats['categories_updated']}; verified menu categories: {$categoryCount}/".count($categoryNames).'.');
-        $this->command?->info("Products created: {$stats['products_created']}; updated: {$stats['products_updated']}; duplicate products removed: {$stats['duplicate_products_removed']}; verified menu products: {$productCount}/{$expectedProductCount}.");
-
-        if ($categoryCount !== count($categoryNames) || $productCount !== $expectedProductCount) {
-            throw new \RuntimeException('Imported menu verification failed for '.self::TARGET_EMAIL.'.');
-        }
+        $this->command?->info('Sip & Chill menu rebuild completed.');
+        $this->command?->info('Email: '.self::TARGET_EMAIL);
+        $this->command?->info('Restaurant ID: '.$restaurantId);
+        $this->command?->info('Categories deleted: '.$stats['categories_deleted']);
+        $this->command?->info('Products deleted: '.$stats['products_deleted']);
+        $this->command?->info('Categories created: '.$stats['categories_created']);
+        $this->command?->info('Products created: '.$stats['products_created']);
+        $this->command?->info('Final verified categories: '.count($this->menuData()));
+        $this->command?->info('Final verified products: '.$this->expectedProductCount());
 
         if ($menuSetting === null) {
             $this->command?->warn('No menu settings record exists for this restaurant, so the public menu URL could not be verified.');
@@ -146,7 +108,7 @@ class SipAndChillMenuSeeder extends Seeder
         }
 
         if (! $menuSetting->is_public || ! $menuSetting->restaurant?->isSubscriptionActive()) {
-            $this->command?->warn('The products were imported, but the menu is not currently public with an active subscription.');
+            $this->command?->warn('The menu was rebuilt, but the public menu is not currently public with an active subscription.');
 
             return;
         }
@@ -154,18 +116,30 @@ class SipAndChillMenuSeeder extends Seeder
         $this->command?->info('Public menu visibility verified at route /menu/'.$menuSetting->slug.'.');
     }
 
-    private function assertNoDuplicateProductsForTargetRestaurant(int $restaurantId): void
+    private function assertFinalMenuCounts(int $restaurantId): void
     {
-        $duplicates = Product::query()
-            ->select('category_id', 'name', DB::raw('COUNT(*) as duplicate_count'))
+        $categoryCount = Category::query()
             ->where('restaurant_id', $restaurantId)
-            ->groupBy('category_id', 'name')
-            ->having('duplicate_count', '>', 1)
-            ->exists();
+            ->count();
 
-        if ($duplicates) {
-            throw new \RuntimeException('Duplicate products still exist for '.self::TARGET_EMAIL.'.');
+        $productCount = Product::query()
+            ->where('restaurant_id', $restaurantId)
+            ->count();
+
+        if ($categoryCount !== count($this->menuData()) || $productCount !== $this->expectedProductCount()) {
+            throw new \RuntimeException(
+                'Final Sip & Chill menu verification failed for '.self::TARGET_EMAIL
+                .". Expected 22 categories and 203 products, found {$categoryCount} categories and {$productCount} products."
+            );
         }
+    }
+
+    private function expectedProductCount(): int
+    {
+        return array_sum(array_map(
+            static fn (array $category): int => count($category['products']),
+            $this->menuData(),
+        ));
     }
 
     /**
@@ -175,316 +149,316 @@ class SipAndChillMenuSeeder extends Seeder
     {
         return [
             [
-                'name' => 'المشروبات الساخنة',
+                'name' => 'Hot Drinks',
                 'products' => [
-                    ['شاي', 45],
-                    ['شاي أخضر', 45],
-                    ['ينسون', 45],
-                    ['ميكس أعشاب', 45],
-                    ['شاي مغربي', 55],
-                    ['شاي زردة', 55],
-                    ['شاي بلبن', 60],
-                    ['شاي كرك', 100],
-                    ['سحلب عادي', 75],
-                    ['سحلب مميز', 110],
-                    ['حمص', 85],
-                    ['هوت شوكولاتة مارشميلو', 85],
-                    ['وايت شوكولاتة', 100],
-                    ['هوت أوريو', 90],
-                    ['كراميل نوتيلا كوفي', 80],
-                    ['أفوجاتو كوفي', 80],
-                    ['برتقال مغلي', 60],
-                    ['هوت سيدر', 85],
-                    ['قهوة تركي سنجل', 40],
-                    ['قهوة تركي دبل', 60],
-                    ['إسبرسو سنجل', 40],
-                    ['إسبرسو دبل', 60],
-                    ['ميكاتو سنجل', 55],
-                    ['ميكاتو دبل', 75],
-                    ['أمريكان كوفي', 70],
-                    ['قهوة فرنساوي', 70],
-                    ['قهوة بندق', 70],
-                    ['كورتادو', 60],
-                    ['نسكافيه', 70],
-                    ['لاتيه', 70],
-                    ['كابتشينو', 70],
-                    ['سبانش لاتيه', 80],
-                    ['لاتيه لوتس', 80],
-                    ['لاتيه كريم بروليه', 110],
-                    ['ماتشا لاتيه', 95],
-                    ['موكا', 85],
+                    ['Tea - شاي', 45],
+                    ['Green Tea - شاي أخضر', 45],
+                    ['Anise Tea - ينسون', 45],
+                    ['Herbal Mix - ميكس أعشاب', 45],
+                    ['Moroccan Tea - شاي مغربي', 55],
+                    ['Zarda Tea - شاي زردة', 55],
+                    ['Milk Tea - شاي بلبن', 60],
+                    ['Karak Tea - شاي كرك', 100],
+                    ['Classic Sahlab - سحلب عادي', 75],
+                    ['Special Sahlab - سحلب مميز', 110],
+                    ['Hummus Drink - حمص', 85],
+                    ['Hot Chocolate Marshmallow - هوت شوكولاتة مارشميلو', 85],
+                    ['White Chocolate - وايت شوكولاتة', 100],
+                    ['Hot Oreo - هوت أوريو', 90],
+                    ['Caramel Nutella Coffee - كراميل نوتيلا كوفي', 80],
+                    ['Affogato Coffee - أفوجاتو كوفي', 80],
+                    ['Boiled Orange - برتقال مغلي', 60],
+                    ['Hot Cider - هوت سيدر', 85],
+                    ['Turkish Coffee Single - قهوة تركي سنجل', 40],
+                    ['Turkish Coffee Double - قهوة تركي دبل', 60],
+                    ['Espresso Single - إسبرسو سنجل', 40],
+                    ['Espresso Double - إسبرسو دبل', 60],
+                    ['Macchiato Single - ميكاتو سنجل', 55],
+                    ['Macchiato Double - ميكاتو دبل', 75],
+                    ['American Coffee - أمريكان كوفي', 70],
+                    ['French Coffee - قهوة فرنساوي', 70],
+                    ['Hazelnut Coffee - قهوة بندق', 70],
+                    ['Cortado - كورتادو', 60],
+                    ['Nescafe - نسكافيه', 70],
+                    ['Latte - لاتيه', 70],
+                    ['Cappuccino - كابتشينو', 70],
+                    ['Spanish Latte - سبانش لاتيه', 80],
+                    ['Lotus Latte - لاتيه لوتس', 80],
+                    ['Creme Brulee Latte - لاتيه كريم بروليه', 110],
+                    ['Matcha Latte - ماتشا لاتيه', 95],
+                    ['Mocha - موكا', 85],
                 ],
             ],
             [
-                'name' => 'آيس كوفي',
+                'name' => 'Iced Coffee',
                 'products' => [
-                    ['آيس لاتيه', 85],
-                    ['آيس كابتشينو', 85],
-                    ['آيس شوكولاتة', 110],
-                    ['آيس ماتشا لاتيه', 110],
-                    ['آيس بوبا لاتيه', 110],
-                    ['آيس أمريكانو', 85],
-                    ['آيس بلو لاتيه', 95],
-                    ['آيس موكا', 100],
-                    ['آيس سبانش لاتيه', 115],
-                    ['آيس سبانش لوتس', 120],
-                    ['فرابيه', 115],
+                    ['Iced Latte - آيس لاتيه', 85],
+                    ['Iced Cappuccino - آيس كابتشينو', 85],
+                    ['Iced Chocolate - آيس شوكولاتة', 110],
+                    ['Iced Matcha Latte - آيس ماتشا لاتيه', 110],
+                    ['Iced Boba Latte - آيس بوبا لاتيه', 110],
+                    ['Iced Americano - آيس أمريكانو', 85],
+                    ['Iced Blue Latte - آيس بلو لاتيه', 95],
+                    ['Iced Mocha - آيس موكا', 100],
+                    ['Iced Spanish Latte - آيس سبانش لاتيه', 115],
+                    ['Iced Spanish Lotus - آيس سبانش لوتس', 120],
+                    ['Frappe - فرابيه', 115],
                 ],
             ],
             [
-                'name' => 'موكتيل',
+                'name' => 'Mocktails',
                 'products' => [
-                    ['موخيتو', 105],
-                    ['بلو كروساو', 110],
-                    ['لافرز سيب', 130],
-                    ['بينا كولادا', 115],
-                    ['جرين لاجون', 105],
-                    ['صن شاين', 105],
-                    ['سيب أند تشيل', 140],
-                    ['هواي كوكتيل', 105],
-                    ['تروبيكال كوكتيل', 120],
-                    ['سين كوكتيل', 145],
-                    ['تشيل كوكتيل', 130],
-                    ['سيب أند تشيل كوكتيل', 145],
-                    ['سيب كوفي كوكتيل', 115],
+                    ['Mojito - موخيتو', 105],
+                    ['Blue Curacao - بلو كروساو', 110],
+                    ['Lovers Sip - لافرز سيب', 130],
+                    ['Pina Colada - بينا كولادا', 115],
+                    ['Green Lagoon - جرين لاجون', 105],
+                    ['Sunshine - صن شاين', 105],
+                    ['Sip and Chill - سيب أند تشيل', 140],
+                    ['Hawaii Cocktail - هواي كوكتيل', 105],
+                    ['Tropical Cocktail - تروبيكال كوكتيل', 120],
+                    ['Sin Cocktail - سين كوكتيل', 145],
+                    ['Chill Cocktail - تشيل كوكتيل', 130],
+                    ['Sip and Chill Cocktail - سيب أند تشيل كوكتيل', 145],
+                    ['Sip Coffee Cocktail - سيب كوفي كوكتيل', 115],
                 ],
             ],
             [
-                'name' => 'عصائر فريش',
+                'name' => 'Fresh Juices',
                 'products' => [
-                    ['مانجو', 85],
-                    ['برتقال', 75],
-                    ['جوافة', 75],
-                    ['فراولة', 85],
-                    ['ليمون نعناع', 65],
-                    ['ليمون فرنساوي', 70],
-                    ['أفوكادو', 165],
-                    ['بلح بلبن', 110],
-                    ['بينك ليمون', 70],
-                    ['بطيخ', 85],
-                    ['موز بلبن', 85],
+                    ['Mango - مانجو', 85],
+                    ['Orange - برتقال', 75],
+                    ['Guava - جوافة', 75],
+                    ['Strawberry - فراولة', 85],
+                    ['Lemon Mint - ليمون نعناع', 65],
+                    ['French Lemon - ليمون فرنساوي', 70],
+                    ['Avocado - أفوكادو', 165],
+                    ['Dates with Milk - بلح بلبن', 110],
+                    ['Pink Lemon - بينك ليمون', 70],
+                    ['Watermelon - بطيخ', 85],
+                    ['Banana with Milk - موز بلبن', 85],
                 ],
             ],
             [
-                'name' => 'سموذي',
+                'name' => 'Smoothies',
                 'products' => [
-                    ['سموذي مانجو', 85],
-                    ['سموذي فراولة', 85],
-                    ['سموذي مانجو كيوي', 140],
-                    ['سموذي أناناس', 120],
-                    ['سموذي كيوي', 140],
-                    ['سموذي تفاح', 120],
-                    ['سموذي باشون', 85],
-                    ['سموذي خوخ', 85],
-                    ['سموذي ليمون نعناع', 75],
-                    ['سموذي بطيخ', 85],
+                    ['Mango Smoothie - سموذي مانجو', 85],
+                    ['Strawberry Smoothie - سموذي فراولة', 85],
+                    ['Mango Kiwi Smoothie - سموذي مانجو كيوي', 140],
+                    ['Pineapple Smoothie - سموذي أناناس', 120],
+                    ['Kiwi Smoothie - سموذي كيوي', 140],
+                    ['Apple Smoothie - سموذي تفاح', 120],
+                    ['Passion Smoothie - سموذي باشون', 85],
+                    ['Peach Smoothie - سموذي خوخ', 85],
+                    ['Lemon Mint Smoothie - سموذي ليمون نعناع', 75],
+                    ['Watermelon Smoothie - سموذي بطيخ', 85],
                 ],
             ],
             [
-                'name' => 'ميلك شيك',
+                'name' => 'Milkshakes',
                 'products' => [
-                    ['ميلك شيك أوريو', 145],
-                    ['ميلك شيك كيت كات', 170],
-                    ['ميلك شيك كيندر', 155],
-                    ['ميلك شيك سنيكرز', 155],
-                    ['ميلك شيك براونيز', 170],
-                    ['ميلك شيك فانيلا', 135],
-                    ['ميلك شيك شوكولاتة', 135],
-                    ['ميلك شيك مانجو', 135],
-                    ['ميلك شيك فراولة', 135],
-                    ['ميلك شيك قرفة', 140],
-                    ['ميلك شيك لبان', 140],
-                    ['ميلك شيك لوتس', 180],
-                    ['ميلك شيك فستق', 190],
-                    ['ميلك شيك تشيز كيك', 195],
+                    ['Oreo Milkshake - ميلك شيك أوريو', 145],
+                    ['KitKat Milkshake - ميلك شيك كيت كات', 170],
+                    ['Kinder Milkshake - ميلك شيك كيندر', 155],
+                    ['Snickers Milkshake - ميلك شيك سنيكرز', 155],
+                    ['Brownies Milkshake - ميلك شيك براونيز', 170],
+                    ['Vanilla Milkshake - ميلك شيك فانيلا', 135],
+                    ['Chocolate Milkshake - ميلك شيك شوكولاتة', 135],
+                    ['Mango Milkshake - ميلك شيك مانجو', 135],
+                    ['Strawberry Milkshake - ميلك شيك فراولة', 135],
+                    ['Cinnamon Milkshake - ميلك شيك قرفة', 140],
+                    ['Bubble Gum Milkshake - ميلك شيك لبان', 140],
+                    ['Lotus Milkshake - ميلك شيك لوتس', 180],
+                    ['Pistachio Milkshake - ميلك شيك فستق', 190],
+                    ['Cheesecake Milkshake - ميلك شيك تشيز كيك', 195],
                 ],
             ],
             [
-                'name' => 'الحلويات',
+                'name' => 'Desserts',
                 'products' => [
-                    ['وافل', 180],
-                    ['ميني بان كيك', 180],
-                    ['كريب كلاسيك', 120],
-                    ['آيس كريب رول', 160],
-                    ['آيس ميكس وافل', 220],
-                    ['كريب براونيز', 220],
-                    ['أم علي', 140],
-                    ['مولتن كيك', 140],
-                    ['براونيز', 120],
-                    ['تشيز كيك', 120],
-                    ['تيراميسو', 120],
-                    ['كوكيز', 150],
-                    ['كرواسون Sip', 190],
-                    ['سويت كرواسون', 160],
-                    ['بطاطا Sip', 140],
-                    ['بوكس الحلى Sip & Chill', 250],
-                    ['شوكولاتة مادنس', 120],
-                    ['أوريو مادنس', 120],
-                    ['لوتس مادنس', 150],
-                    ['تشيز مادنس', 180],
-                    ['فروت سالاد', 120],
-                    ['فرنش توست', 130],
+                    ['Waffle - وافل', 180],
+                    ['Mini Pancake - ميني بان كيك', 180],
+                    ['Classic Crepe - كريب كلاسيك', 120],
+                    ['Ice Crepe Roll - آيس كريب رول', 160],
+                    ['Ice Mix Waffle - آيس ميكس وافل', 220],
+                    ['Brownies Crepe - كريب براونيز', 220],
+                    ['Om Ali - أم علي', 140],
+                    ['Molten Cake - مولتن كيك', 140],
+                    ['Brownies - براونيز', 120],
+                    ['Cheesecake - تشيز كيك', 120],
+                    ['Tiramisu - تيراميسو', 120],
+                    ['Cookies - كوكيز', 150],
+                    ['Sip Croissant - كرواسون Sip', 190],
+                    ['Sweet Croissant - سويت كرواسون', 160],
+                    ['Sip Sweet Potato - بطاطا Sip', 140],
+                    ['Sip and Chill Dessert Box - بوكس الحلى Sip & Chill', 250],
+                    ['Chocolate Madness - شوكولاتة مادنس', 120],
+                    ['Oreo Madness - أوريو مادنس', 120],
+                    ['Lotus Madness - لوتس مادنس', 150],
+                    ['Cheese Madness - تشيز مادنس', 180],
+                    ['Fruit Salad - فروت سالاد', 120],
+                    ['French Toast - فرنش توست', 130],
                 ],
             ],
             [
-                'name' => 'الفطار',
+                'name' => 'Breakfast',
                 'products' => [
-                    ['أومليت سادة', 120],
-                    ['أومليت إسباني', 140],
-                    ['أومليت جبنة', 130],
-                    ['تركي أند تشيز أومليت', 148],
-                    ['أمريكان بريكفاست', 230],
-                    ['بلدي بريكفاست', 220],
-                    ['كونتيننتال بريكفاست', 195],
-                    ['كريب بريكفاست', 210],
-                    ['وافل بريكفاست', 220],
-                    ['كرواسان مشكل', 120],
-                    ['كرواسان سادة', 90],
-                    ['كرواسان جبنة', 110],
-                    ['أورينتال بريكفاست', 185],
+                    ['Plain Omelette - أومليت سادة', 120],
+                    ['Spanish Omelette - أومليت إسباني', 140],
+                    ['Cheese Omelette - أومليت جبنة', 130],
+                    ['Turkey and Cheese Omelette - تركي أند تشيز أومليت', 148],
+                    ['American Breakfast - أمريكان بريكفاست', 230],
+                    ['Baladi Breakfast - بلدي بريكفاست', 220],
+                    ['Continental Breakfast - كونتيننتال بريكفاست', 195],
+                    ['Breakfast Crepe - كريب بريكفاست', 210],
+                    ['Breakfast Waffle - وافل بريكفاست', 220],
+                    ['Mixed Croissant - كرواسان مشكل', 120],
+                    ['Plain Croissant - كرواسان سادة', 90],
+                    ['Cheese Croissant - كرواسان جبنة', 110],
+                    ['Oriental Breakfast - أورينتال بريكفاست', 185],
                 ],
             ],
             [
-                'name' => 'السندوتشات',
+                'name' => 'Sandwiches',
                 'products' => [
-                    ['دجاج تورتيلا مقرمش', 225],
-                    ['فيلادلفيا ستيك', 185],
-                    ['دجاج إسكالوب', 235],
-                    ['دجاج مشروم', 250],
+                    ['Crispy Chicken Tortilla - دجاج تورتيلا مقرمش', 225],
+                    ['Philadelphia Steak - فيلادلفيا ستيك', 185],
+                    ['Chicken Escalope - دجاج إسكالوب', 235],
+                    ['Chicken Mushroom - دجاج مشروم', 250],
                 ],
             ],
             [
-                'name' => 'السندوتشات الباردة',
+                'name' => 'Cold Sandwiches',
                 'products' => [
-                    ['كلوب ساندوتش', 225],
-                    ['تركي وجبن ساندوتش', 185],
-                    ['تونة ساندوتش', 235],
-                    ['سالمون مدخن شيباتا', 250],
+                    ['Club Sandwich - كلوب ساندوتش', 225],
+                    ['Turkey and Cheese Sandwich - تركي وجبن ساندوتش', 185],
+                    ['Tuna Sandwich - تونة ساندوتش', 235],
+                    ['Smoked Salmon Ciabatta - سالمون مدخن شيباتا', 250],
                 ],
             ],
             [
-                'name' => 'البرجر',
+                'name' => 'Burgers',
                 'products' => [
-                    ['إيطالي موزاريلا برجر', 270],
-                    ['بيكون برجر', 260],
-                    ['بيف برجر', 245],
-                    ['مشروم برجر', 246],
-                    ['ميكس تشيز برجر', 235],
+                    ['Italian Mozzarella Burger - إيطالي موزاريلا برجر', 270],
+                    ['Bacon Burger - بيكون برجر', 260],
+                    ['Beef Burger - بيف برجر', 245],
+                    ['Mushroom Burger - مشروم برجر', 246],
+                    ['Mix Cheese Burger - ميكس تشيز برجر', 235],
                 ],
             ],
             [
-                'name' => 'البيتزا',
+                'name' => 'Pizza',
                 'products' => [
-                    ['مارجريتا', 225],
-                    ['خضار بيتزا', 248],
-                    ['بيبروني بيتزا', 249],
-                    ['فور تشيز بيتزا', 240],
-                    ['بي بي كيو تشيكن بيتزا', 239],
-                    ['رانش تشيكن بيتزا', 244],
-                    ['سوبر سوبريم بيتزا', 249],
+                    ['Margherita Pizza - مارجريتا', 225],
+                    ['Vegetables Pizza - خضار بيتزا', 248],
+                    ['Pepperoni Pizza - بيبروني بيتزا', 249],
+                    ['Four Cheese Pizza - فور تشيز بيتزا', 240],
+                    ['BBQ Chicken Pizza - بي بي كيو تشيكن بيتزا', 239],
+                    ['Ranch Chicken Pizza - رانش تشيكن بيتزا', 244],
+                    ['Super Supreme Pizza - سوبر سوبريم بيتزا', 249],
                 ],
             ],
             [
-                'name' => 'الشوربة',
+                'name' => 'Soups',
                 'products' => [
-                    ['شوربة عدس', 115],
-                    ['شوربة مشروم', 110],
-                    ['شوربة دجاج', 120],
-                    ['شوربة فواكه البحر', 145],
+                    ['Lentil Soup - شوربة عدس', 115],
+                    ['Mushroom Soup - شوربة مشروم', 110],
+                    ['Chicken Soup - شوربة دجاج', 120],
+                    ['Seafood Soup - شوربة فواكه البحر', 145],
                 ],
             ],
             [
-                'name' => 'المقبلات',
+                'name' => 'Appetizers',
                 'products' => [
-                    ['دجاج مقرمش', 225],
-                    ['موزاريلا مقلية', 185],
-                    ['دجاج إسكالوب', 235],
-                    ['دجاج مشروم', 250],
+                    ['Crispy Chicken - دجاج مقرمش', 225],
+                    ['Fried Mozzarella - موزاريلا مقلية', 185],
+                    ['Chicken Escalope - دجاج إسكالوب', 235],
+                    ['Chicken Mushroom - دجاج مشروم', 250],
                 ],
             ],
             [
-                'name' => 'السلطات',
+                'name' => 'Salads',
                 'products' => [
-                    ['سلطة تفاح', 240],
-                    ['سلطة مشروم', 220],
-                    ['كابريزي سالاد', 245],
-                    ['جريك سالاد', 215],
-                    ['تشيكن سيزر سالاد', 235],
-                    ['سلطة تونة فرنسي', 235],
-                    ['سلطة دجاج مكسيكي', 260],
-                    ['شيف سالاد', 240],
-                    ['جريل سالمون سالاد', 290],
+                    ['Apple Salad - سلطة تفاح', 240],
+                    ['Mushroom Salad - سلطة مشروم', 220],
+                    ['Caprese Salad - كابريزي سالاد', 245],
+                    ['Greek Salad - جريك سالاد', 215],
+                    ['Chicken Caesar Salad - تشيكن سيزر سالاد', 235],
+                    ['French Tuna Salad - سلطة تونة فرنسي', 235],
+                    ['Mexican Chicken Salad - سلطة دجاج مكسيكي', 260],
+                    ['Chef Salad - شيف سالاد', 240],
+                    ['Grilled Salmon Salad - جريل سالمون سالاد', 290],
                 ],
             ],
             [
-                'name' => 'أطباق اللحوم',
+                'name' => 'Meat Dishes',
                 'products' => [
-                    ['بيف ستراجنوف', 385],
-                    ['إسكالوب لحم', 435],
-                    ['إسكالوب بارميزان', 440],
-                    ['فيليه مشوي', 390],
+                    ['Beef Stroganoff - بيف ستراجنوف', 385],
+                    ['Meat Escalope - إسكالوب لحم', 435],
+                    ['Parmesan Escalope - إسكالوب بارميزان', 440],
+                    ['Grilled Fillet - فيليه مشوي', 390],
                 ],
             ],
             [
-                'name' => 'أطباق الدجاج',
+                'name' => 'Chicken Dishes',
                 'products' => [
-                    ['رول الدجاج المقلي', 390],
-                    ['الصدر المشوي', 350],
-                    ['الدجاج الإيطالي المقرمش', 350],
-                    ['دجاج ميلانو', 360],
-                    ['الدجاج الفرنسي', 365],
-                    ['الدجاج الإيطالي', 380],
-                    ['الدجاج البارميزان', 370],
-                    ['الدجاج الإسكالوب', 365],
-                    ['دجاج مسحب مشوي', 390],
+                    ['Fried Chicken Roll - رول الدجاج المقلي', 390],
+                    ['Grilled Chicken Breast - الصدر المشوي', 350],
+                    ['Italian Crispy Chicken - الدجاج الإيطالي المقرمش', 350],
+                    ['Chicken Milano - دجاج ميلانو', 360],
+                    ['French Chicken - الدجاج الفرنسي', 365],
+                    ['Italian Chicken - الدجاج الإيطالي', 380],
+                    ['Chicken Parmesan - الدجاج البارميزان', 370],
+                    ['Chicken Escalope - الدجاج الإسكالوب', 365],
+                    ['Grilled Boneless Chicken - دجاج مسحب مشوي', 390],
                 ],
             ],
             [
-                'name' => 'المكسيكي',
+                'name' => 'Mexican',
                 'products' => [
-                    ['فاهيتا دجاج', 370],
-                    ['فاهيتا لحم', 490],
-                    ['فاهيتا كومبو', 570],
-                    ['فاهيتا سي فود', 500],
-                    ['فاهيتا جمبري', 450],
+                    ['Chicken Fajita - فاهيتا دجاج', 370],
+                    ['Beef Fajita - فاهيتا لحم', 490],
+                    ['Combo Fajita - فاهيتا كومبو', 570],
+                    ['Seafood Fajita - فاهيتا سي فود', 500],
+                    ['Shrimp Fajita - فاهيتا جمبري', 450],
                 ],
             ],
             [
-                'name' => 'المكرونات',
+                'name' => 'Pasta',
                 'products' => [
-                    ['بينا أرابياتا', 190],
-                    ['اسباجتي بولونيز', 240],
-                    ['بيستو باستا دجاج', 240],
-                    ['بيف ستراجنوف باستا', 380],
-                    ['ألفريدو', 240],
-                    ['تشيكن نيجرسكو', 250],
-                    ['سي فود باستا', 280],
-                    ['مكس تشيز باستا', 250],
+                    ['Penne Arrabbiata - بينا أرابياتا', 190],
+                    ['Spaghetti Bolognese - اسباجتي بولونيز', 240],
+                    ['Chicken Pesto Pasta - بيستو باستا دجاج', 240],
+                    ['Beef Stroganoff Pasta - بيف ستراجنوف باستا', 380],
+                    ['Alfredo Pasta - ألفريدو', 240],
+                    ['Chicken Negresco - تشيكن نيجرسكو', 250],
+                    ['Seafood Pasta - سي فود باستا', 280],
+                    ['Mix Cheese Pasta - مكس تشيز باستا', 250],
                 ],
             ],
             [
-                'name' => 'آيس كريم',
+                'name' => 'Ice Cream',
                 'products' => [
-                    ['1 بولة', 40],
-                    ['2 بولة', 65],
-                    ['3 بولة', 80],
-                    ['Sip & Chill', 110],
+                    ['1 Scoop - 1 بولة', 40],
+                    ['2 Scoops - 2 بولة', 65],
+                    ['3 Scoops - 3 بولة', 80],
+                    ['Sip and Chill Ice Cream - Sip & Chill', 110],
                 ],
             ],
             [
-                'name' => 'مشروبات غازية',
+                'name' => 'Soft Drinks',
                 'products' => [
-                    ['بيبسي / سفن / دايت', 45],
-                    ['ريدبول', 90],
-                    ['مياه', 25],
+                    ['Pepsi / 7Up / Diet - بيبسي / سفن / دايت', 45],
+                    ['Red Bull - ريدبول', 90],
+                    ['Water - مياه', 25],
                 ],
             ],
             [
-                'name' => 'الشيشة',
+                'name' => 'Shisha',
                 'products' => [
-                    ['شيشة عادي', 45],
-                    ['شيشة فواكه', 175],
-                    ['شيشة أعشاب', 25],
+                    ['Regular Shisha - شيشة عادي', 45],
+                    ['Fruit Shisha - شيشة فواكه', 175],
+                    ['Herbal Shisha - شيشة أعشاب', 25],
                 ],
             ],
         ];
