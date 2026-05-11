@@ -25,8 +25,12 @@ class MenuController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $theme = in_array($menuSetting->theme, ['classy', 'tree'], true) ? $menuSetting->theme : 'classy';
-        $view = $theme === 'tree' ? 'menu.tree' : 'menu.show';
+        $theme = in_array($menuSetting->theme, ['classy', 'tree', 'sipchill'], true) ? $menuSetting->theme : 'classy';
+        $view = match ($theme) {
+            'tree' => 'menu.tree',
+            'sipchill' => 'menu.sipchill',
+            default => 'menu.show',
+        };
 
         return view($view, compact('restaurant', 'categories', 'menuSetting'));
     }
