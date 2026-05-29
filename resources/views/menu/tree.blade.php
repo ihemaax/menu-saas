@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $restaurant->name }} | المنيو</title>
+    <!-- Dynamic Favicon (Restaurant Logo) -->
+    <link rel="icon" href="{{ $restaurant->logo_path ? asset('storage/'.$restaurant->logo_path) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=300&auto=format&fit=crop' }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600,700,800,900&display=swap" rel="stylesheet" />
     <style>

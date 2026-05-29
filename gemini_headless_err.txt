@@ -1,0 +1,9 @@
+[15880:10472:0526/075846.959:ERROR:services\device\public\cpp\geolocation\system_geolocation_source_win.cc:111] Failed to get IAppCapability statics: Class not registered (0x80040154)
+Created TensorFlow Lite XNNPACK delegate for CPU.
+[15880:14960:0526/075849.867:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.
+[15880:14960:0526/075849.868:ERROR:chrome\browser\web_applications\os_integration\os_integration_manager.cc:258] Can't perform OS integration while the browser is shutting down.

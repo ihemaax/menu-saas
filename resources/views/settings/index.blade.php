@@ -41,6 +41,8 @@
                     <option value="classy" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'classy')>Classic (الأساسي)</option>
                     <option value="tree" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'tree')>Tree Essence (جديد)</option>
                     <option value="sipchill" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'sipchill')>Sipchill</option>
+                    <option value="ng" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'ng')>NG Theme (جديد)</option>
+                    <option value="paper" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'paper')>Paper (ديزاين كلاسيك)</option>
                 </select>
                 <p class="mt-2 text-xs text-[#6e695e]">تقدر تبدّل بين الثيم الأساسي والثيم الجديد في أي وقت.</p>
             </div>

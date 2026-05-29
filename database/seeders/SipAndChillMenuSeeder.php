@@ -34,46 +34,51 @@ class SipAndChillMenuSeeder extends Seeder
         }
 
         $stats = [
-            'categories_deleted' => 0,
-            'products_deleted' => 0,
-            'categories_created' => 0,
-            'products_created' => 0,
+            'categories_touched' => 0,
+            'products_touched' => 0,
         ];
 
         DB::transaction(function () use ($restaurant, &$stats): void {
-            $stats['products_deleted'] = Product::query()
-                ->where('restaurant_id', $restaurant->id)
-                ->delete();
-
-            $stats['categories_deleted'] = Category::query()
-                ->where('restaurant_id', $restaurant->id)
-                ->delete();
-
             foreach ($this->menuData() as $categoryIndex => $categoryData) {
-                $category = Category::query()->create([
-                    'restaurant_id' => $restaurant->id,
-                    'name_ar' => $categoryData['name'],
-                    'name_en' => $categoryData['name'],
-                    'sort_order' => $categoryIndex + 1,
-                    'is_active' => true,
-                ]);
+                $category = Category::query()->withTrashed()->updateOrCreate(
+                    [
+                        'restaurant_id' => $restaurant->id,
+                        'name_ar' => $categoryData['name'],
+                    ],
+                    [
+                        'name_en' => $categoryData['name'],
+                        'sort_order' => $categoryIndex + 1,
+                        'is_active' => true,
+                    ]
+                );
 
-                $stats['categories_created']++;
+                if ($category->trashed()) {
+                    $category->restore();
+                }
+
+                $stats['categories_touched']++;
 
                 foreach ($categoryData['products'] as $productIndex => [$productName, $price]) {
-                    Product::query()->create([
-                        'restaurant_id' => $restaurant->id,
-                        'category_id' => $category->id,
-                        'name' => $productName,
-                        'description' => null,
-                        'price' => $price,
-                        'image_path' => null,
-                        'is_available' => true,
-                        'is_featured' => false,
-                        'sort_order' => $productIndex + 1,
-                    ]);
+                    $product = Product::query()->withTrashed()->updateOrCreate(
+                        [
+                            'restaurant_id' => $restaurant->id,
+                            'category_id' => $category->id,
+                            'name' => $productName,
+                        ],
+                        [
+                            'description' => null,
+                            'price' => $price,
+                            'is_available' => true,
+                            'is_featured' => false,
+                            'sort_order' => $productIndex + 1,
+                        ]
+                    );
 
-                    $stats['products_created']++;
+                    if ($product->trashed()) {
+                        $product->restore();
+                    }
+
+                    $stats['products_touched']++;
                 }
             }
         });
@@ -83,7 +88,7 @@ class SipAndChillMenuSeeder extends Seeder
     }
 
     /**
-     * @param  array{categories_deleted: int, products_deleted: int, categories_created: int, products_created: int}  $stats
+     * @param  array{categories_touched: int, products_touched: int}  $stats
      */
     private function reportSummary(int $restaurantId, array $stats): void
     {
@@ -91,15 +96,11 @@ class SipAndChillMenuSeeder extends Seeder
             ->where('restaurant_id', $restaurantId)
             ->first();
 
-        $this->command?->info('Sip & Chill menu rebuild completed.');
+        $this->command?->info('Sip & Chill menu sync completed.');
         $this->command?->info('Email: '.self::TARGET_EMAIL);
         $this->command?->info('Restaurant ID: '.$restaurantId);
-        $this->command?->info('Categories deleted: '.$stats['categories_deleted']);
-        $this->command?->info('Products deleted: '.$stats['products_deleted']);
-        $this->command?->info('Categories created: '.$stats['categories_created']);
-        $this->command?->info('Products created: '.$stats['products_created']);
-        $this->command?->info('Final verified categories: '.count($this->menuData()));
-        $this->command?->info('Final verified products: '.$this->expectedProductCount());
+        $this->command?->info('Categories added or updated: '.$stats['categories_touched']);
+        $this->command?->info('Products added or updated: '.$stats['products_touched']);
 
         if ($menuSetting === null) {
             $this->command?->warn('No menu settings record exists for this restaurant, so the public menu URL could not be verified.');
@@ -108,7 +109,7 @@ class SipAndChillMenuSeeder extends Seeder
         }
 
         if (! $menuSetting->is_public || ! $menuSetting->restaurant?->isSubscriptionActive()) {
-            $this->command?->warn('The menu was rebuilt, but the public menu is not currently public with an active subscription.');
+            $this->command?->warn('The menu was synced, but the public menu is not currently public with an active subscription.');
 
             return;
         }
@@ -126,10 +127,10 @@ class SipAndChillMenuSeeder extends Seeder
             ->where('restaurant_id', $restaurantId)
             ->count();
 
-        if ($categoryCount !== count($this->menuData()) || $productCount !== $this->expectedProductCount()) {
+        if ($categoryCount < count($this->menuData()) || $productCount < $this->expectedProductCount()) {
             throw new \RuntimeException(
                 'Final Sip & Chill menu verification failed for '.self::TARGET_EMAIL
-                .". Expected 22 categories and 203 products, found {$categoryCount} categories and {$productCount} products."
+                .". Expected at least 22 categories and 203 products, found {$categoryCount} categories and {$productCount} products."
             );
         }
     }

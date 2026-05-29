@@ -19,7 +19,7 @@ class UpdateMenuSettingsRequest extends FormRequest
         return [
             'slug' => ['required', 'string', 'min:3', 'max:60', 'regex:/^[a-z0-9-]+$/', Rule::unique('menu_settings', 'slug')->ignore($menuSettingId)],
             'is_public' => ['nullable', 'boolean'],
-            'theme' => ['required', 'string', Rule::in(['classy', 'tree', 'sipchill'])],
+            'theme' => ['required', 'string', Rule::in(['classy', 'tree', 'sipchill', 'ng', 'paper'])],
         ];
     }
 

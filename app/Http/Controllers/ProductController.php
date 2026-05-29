@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -20,6 +21,10 @@ class ProductController extends Controller
             ->where('products.restaurant_id', $restaurant->id)
             ->select('products.*')
             ->join('categories', 'categories.id', '=', 'products.category_id')
+            ->when(
+                Schema::hasColumn('categories', 'deleted_at'),
+                fn ($query) => $query->whereNull('categories.deleted_at')
+            )
             ->with('category')
             ->orderBy('categories.sort_order')
             ->orderBy('products.sort_order')
@@ -132,10 +137,6 @@ class ProductController extends Controller
     public function destroy(Request $request, Product $product): RedirectResponse
     {
         $this->authorize('delete', $product);
-
-        if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
-        }
 
         $product->delete();
 

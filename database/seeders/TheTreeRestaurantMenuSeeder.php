@@ -27,35 +27,47 @@ class TheTreeRestaurantMenuSeeder extends Seeder
         }
 
         DB::transaction(function () use ($restaurant): void {
-            Product::query()->where('restaurant_id', $restaurant->id)->delete();
-            Category::query()->where('restaurant_id', $restaurant->id)->delete();
-
             $categoryOrder = 1;
 
             foreach ($this->menuData() as $mainGroup => $categories) {
                 foreach ($categories as $categoryName => $products) {
-                    $category = Category::query()->create([
-                        'restaurant_id' => $restaurant->id,
-                        'name_ar' => $categoryName,
-                        'name_en' => $mainGroup,
-                        'sort_order' => $categoryOrder++,
-                        'is_active' => true,
-                    ]);
+                    $category = Category::query()->withTrashed()->updateOrCreate(
+                        [
+                            'restaurant_id' => $restaurant->id,
+                            'name_ar' => $categoryName,
+                        ],
+                        [
+                            'name_en' => $mainGroup,
+                            'sort_order' => $categoryOrder++,
+                            'is_active' => true,
+                        ]
+                    );
+
+                    if ($category->trashed()) {
+                        $category->restore();
+                    }
 
                     $productOrder = 1;
 
                     foreach ($products as [$productName, $price]) {
-                        Product::query()->create([
-                            'restaurant_id' => $restaurant->id,
-                            'category_id' => $category->id,
-                            'name' => $productName,
-                            'description' => null,
-                            'price' => $price ?? 0,
-                            'image_path' => null,
-                            'is_available' => true,
-                            'is_featured' => false,
-                            'sort_order' => $productOrder++,
-                        ]);
+                        $product = Product::query()->withTrashed()->updateOrCreate(
+                            [
+                                'restaurant_id' => $restaurant->id,
+                                'category_id' => $category->id,
+                                'name' => $productName,
+                            ],
+                            [
+                                'description' => null,
+                                'price' => $price ?? 0,
+                                'is_available' => true,
+                                'is_featured' => false,
+                                'sort_order' => $productOrder++,
+                            ]
+                        );
+
+                        if ($product->trashed()) {
+                            $product->restore();
+                        }
                     }
                 }
             }
