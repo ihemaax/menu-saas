@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="elite-products">
                                     @foreach($category->products as $item)
-                                        <article class="elite-product">
+                                        <article class="elite-product" id="osirix-product-{{ $item->id }}">
                                             <div class="elite-product-media">
                                                 <img src="{{ $item->image_path ? asset('storage/'.$item->image_path) : 'https://via.placeholder.com/600x400?text=Food' }}" alt="{{ $item->name }}" class="elite-product-image">
                                                 <span class="elite-product-badge">{{ $item->is_featured ? 'مميز' : 'متاح' }}</span>
@@ -225,7 +225,7 @@
                                                 <div class="elite-product-bottom">
                                                     <div>
                                                         <div class="elite-price-label">السعر</div>
-                                                        <div class="elite-price-value">{{ number_format($item->price, 2) }} ج.م</div>
+                                                        <div class="elite-price-value">@include('menu.partials.product-price', ['product' => $item])</div>
                                                     </div>
                                                     @if($item->is_featured)<span class="elite-badge">مميز</span>@endif
                                                 </div>
@@ -244,6 +244,7 @@
     </div>
 
     @include('menu.partials.powered-by')
+    @include('menu.partials.ai-assistant')
 </div>
 </body>
 </html>

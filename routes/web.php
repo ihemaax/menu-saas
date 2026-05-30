@@ -2,12 +2,13 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MenuAiAssistantController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Owner\SuperAdminController;
-use App\Http\Controllers\PublicMenuRedirectController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicMenuRedirectController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function (): void {
 });
 
 Route::get('/menu/{slug}', [MenuController::class, 'show'])->name('menu.show');
+Route::post('/menu/{slug}/ai/ask', MenuAiAssistantController::class)
+    ->middleware('throttle:10,1')
+    ->name('menu.ai.ask');
 Route::get('/r/{code}', [PublicMenuRedirectController::class, 'redirect'])->name('public.menu.redirect');
 
 require __DIR__.'/auth.php';

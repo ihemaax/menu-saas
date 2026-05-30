@@ -109,13 +109,13 @@
                 </div>
                 <div class="items">
                     @foreach($category->products as $item)
-                        <article class="item">
+                        <article class="item" id="osirix-product-{{ $item->id }}">
                             <img src="{{ $item->image_path ? asset('storage/'.$item->image_path) : 'https://via.placeholder.com/500x350?text=Food' }}" alt="{{ $item->name }}">
                             <div class="item-body">
                                 <h4 class="name">{{ $item->name }}</h4>
                                 @if($item->description)<p class="desc">{{ $item->description }}</p>@endif
                                 <div class="bottom">
-                                    <span class="price">{{ number_format($item->price, 2) }} ج.م</span>
+                                    <span class="price">@include('menu.partials.product-price', ['product' => $item])</span>
                                     @if($item->is_featured)<span class="badge">مميز</span>@endif
                                 </div>
                             </div>
@@ -127,6 +127,7 @@
     @endforeach
 
     @include('menu.partials.powered-by')
+    @include('menu.partials.ai-assistant')
 
     <nav class="mobile-catbar" aria-label="التصنيفات">
         @foreach($categories as $category)

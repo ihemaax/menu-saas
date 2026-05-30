@@ -42,7 +42,14 @@
                                 <h3 class="truncate text-xl font-black text-[#12221d]">{{ $product->name }}</h3>
                                 <p class="mt-1 text-sm font-bold text-[#68766d]">{{ $product->category->name_ar }}</p>
                             </div>
-                            <strong class="shrink-0 rounded-2xl bg-[#eef8f6] px-3 py-2 text-sm font-black text-[#2f7f79]">{{ number_format($product->price, 2) }}</strong>
+                            <div class="shrink-0 rounded-2xl bg-[#eef8f6] px-3 py-2 text-sm font-black text-[#2f7f79]">
+                                @if($product->hasDiscount())
+                                    <span class="block text-xs text-[#68766d] line-through">{{ number_format($product->price, 2) }}</span>
+                                    <strong class="block text-[#d55441]">{{ number_format($product->discount_price, 2) }}</strong>
+                                @else
+                                    <strong>{{ number_format($product->price, 2) }}</strong>
+                                @endif
+                            </div>
                         </div>
 
                         <p class="mt-3 line-clamp-2 min-h-[3.5rem] text-sm font-semibold leading-7 text-[#68766d]">{{ $product->description ?: 'مفيش وصف مكتوب للصنف ده حالياً.' }}</p>

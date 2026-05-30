@@ -631,7 +631,7 @@
                                 $arabicName = trim($nameParts[0]);
                                 $englishName = isset($nameParts[1]) ? trim($nameParts[1]) : '';
                             @endphp
-                            <div class="product-item" data-product-name="{{ $item->name }}" data-product-desc="{{ $item->description }}" data-product-price="{{ number_format($item->price, 2) }} ج.م" data-product-image="">
+                            <div class="product-item" id="osirix-product-{{ $item->id }}" data-product-name="{{ $item->name }}" data-product-desc="{{ $item->description }}" data-product-price="{{ number_format($item->displayPrice(), 2) }} ج.م" data-product-image="">
                                 <div class="product-details">
                                     <h4 class="product-name-ar">{{ $arabicName }}</h4>
                                     @if($englishName)
@@ -643,7 +643,7 @@
                                 </div>
                                 
                                 <div class="product-price-box">
-                                    <span class="product-price">{{ number_format($item->price, 0) }} LE</span>
+                                    <span class="product-price">@include('menu.partials.product-price', ['product' => $item, 'decimals' => 0])</span>
                                 </div>
                             </div>
                         @endforeach
@@ -676,7 +676,7 @@
     @endforeach
 </nav>
 
-
+@include('menu.partials.ai-assistant')
 
 <script>
     // Theme Toggle Functionality

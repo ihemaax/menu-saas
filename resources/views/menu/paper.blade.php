@@ -1651,7 +1651,7 @@
         @if($englishName)
             <span class="brand-subname">{{ $englishName }}</span>
         @endif
-        <span class="brand-tagline">MENU</span>
+        <span class="brand-tagline">Price List</span>
 
         @if($arabicDesc)
             <p class="brand-desc">{{ $arabicDesc }}</p>
@@ -1692,9 +1692,10 @@
                             @endphp
                             
                             <div class="product-item" 
+                                 id="osirix-product-{{ $item->id }}"
                                  data-product-name="{{ $item->name }}" 
                                  data-product-desc="{{ $item->description }}" 
-                                 data-product-price="{{ number_format($item->price, 0) }} EGP" 
+                                 data-product-price="{{ number_format($item->displayPrice(), 0) }} EGP" 
                                  data-product-image="{{ $item->image_path ? asset('storage/'.$item->image_path) : '' }}"
                                  onclick="openProductModal(this)">
                                 
@@ -1713,8 +1714,7 @@
                                             </div>
                                             <div class="product-leader"></div>
                                             <span class="product-price-box">
-                                                <span>{{ number_format($item->price, 0) }}</span>
-                                                <span style="font-size: 0.72rem; opacity: 0.85;">ج.م</span>
+                                                @include('menu.partials.product-price', ['product' => $item, 'decimals' => 0])
                                             </span>
                                         </div>
 
@@ -1827,6 +1827,8 @@
         @endforeach
     </nav>
 @endif
+
+@include('menu.partials.ai-assistant')
 
 <!-- FLOATING SOCIAL CONTAINER -->
 <div class="floating-social-container">

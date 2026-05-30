@@ -17,6 +17,7 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'discount_price',
         'image_path',
         'is_available',
         'is_featured',
@@ -25,9 +26,20 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'discount_price' => 'decimal:2',
         'is_available' => 'boolean',
         'is_featured' => 'boolean',
     ];
+
+    public function hasDiscount(): bool
+    {
+        return $this->discount_price !== null && (float) $this->discount_price < (float) $this->price;
+    }
+
+    public function displayPrice(): string
+    {
+        return $this->hasDiscount() ? (string) $this->discount_price : (string) $this->price;
+    }
 
     public function restaurant(): BelongsTo
     {

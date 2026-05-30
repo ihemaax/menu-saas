@@ -24,10 +24,18 @@
         <textarea class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition placeholder:text-[#9ba49a] focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="description" rows="4" placeholder="اكتب المكونات أو الحجم أو أي تفاصيل تهم العميل">{{ old('description', $product?->description) }}</textarea>
     </div>
 
-    <div class="grid gap-5 sm:grid-cols-2">
+    <div class="grid gap-5 sm:grid-cols-3">
         <div>
             <label class="mb-2 block text-sm font-black text-[#12221d]">السعر</label>
             <input type="number" step="0.01" min="0" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="price" value="{{ old('price', $product?->price) }}" required>
+        </div>
+        <div>
+            <label class="mb-2 block text-sm font-black text-[#12221d]">السعر بعد الخصم</label>
+            <input type="number" step="0.01" min="0" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition placeholder:text-[#9ba49a] focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="discount_price" value="{{ old('discount_price', $product?->discount_price) }}" placeholder="اختياري">
+            <p class="mt-2 text-xs font-bold text-[#68766d]">اتركه فاضي لو مفيش خصم.</p>
+            @error('discount_price')
+                <p class="mt-2 text-xs font-black text-[#b84d3a]">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <label class="mb-2 block text-sm font-black text-[#12221d]">ترتيب الظهور</label>

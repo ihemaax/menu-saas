@@ -99,7 +99,7 @@
                     </div>
                     <div class="products">
                         @foreach($category->products as $item)
-                            <article class="product">
+                            <article class="product" id="osirix-product-{{ $item->id }}">
                                 <div class="media">
                                     @if($item->image_path)
                                         <img src="{{ asset('storage/'.$item->image_path) }}" alt="{{ $item->name }}">
@@ -113,7 +113,7 @@
                                     @if($item->description)<p class="product-desc">{{ $item->description }}</p>@endif
                                     <span class="product-category">{{ $category->name_ar }}</span>
                                 </div>
-                                <span class="price">EGP {{ number_format($item->price, 2) }}</span>
+                                <span class="price">@include('menu.partials.product-price', ['product' => $item])</span>
                             </article>
                         @endforeach
                     </div>
@@ -125,6 +125,7 @@
     </main>
 
     @include('menu.partials.powered-by')
+    @include('menu.partials.ai-assistant')
 </div>
 <script>
     (() => {
