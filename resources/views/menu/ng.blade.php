@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $restaurant->name }} | المنيو</title>
+    <title>{{ $seoTitle ?? $restaurant->name.' | المنيو' }}</title>
+    @include('partials.seo')
+    @include('partials.menu-structured-data')
     
     <!-- Dynamic Favicon (Restaurant Logo) -->
     <link rel="icon" href="{{ $restaurant->logo_path ? asset('storage/'.$restaurant->logo_path) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=300&auto=format&fit=crop' }}" type="image/x-icon">

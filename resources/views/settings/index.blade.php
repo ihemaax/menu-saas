@@ -1,89 +1,153 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="grid gap-6 lg:grid-cols-2">
-    <section class="zz-card">
-        <h2 class="zz-section-title">بيانات المطعم</h2>
-        <p class="zz-subtitle mt-1">دي المعلومات اللي بتظهر للعميل في المنيو.</p>
-
-        <form method="POST" action="{{ route('settings.restaurant.update') }}" enctype="multipart/form-data" class="mt-5 space-y-4">
-            @csrf @method('PUT')
-            <div><label class="zz-label">اسم المطعم</label><input class="zz-input" name="name" value="{{ old('name', $restaurant->name) }}" required></div>
-            <div><label class="zz-label">رقم الموبايل</label><input class="zz-input" name="phone" value="{{ old('phone', $restaurant->phone) }}" placeholder="مثال: 0100XXXXXXX"></div>
-            <div><label class="zz-label">عنوان المطعم</label><input class="zz-input" name="address" value="{{ old('address', $restaurant->address) }}" placeholder="مثال: 15 ش البحر، سيدي بشر، الإسكندرية"></div>
-            <div><label class="zz-label">وصف مختصر</label><textarea class="zz-input" name="description" rows="3" placeholder="اكتب نبذة بسيطة عن المطعم">{{ old('description', $restaurant->description) }}</textarea></div>
-            <div><label class="zz-label">اللوجو</label><input type="file" class="zz-input" name="logo" accept="image/*"></div>
-            <div><label class="zz-label">صورة الغلاف</label><input type="file" class="zz-input" name="banner" accept="image/*"></div>
-            <div class="grid gap-3 sm:grid-cols-2">
-                @if($restaurant->logo_path)<img src="{{ asset('storage/'.$restaurant->logo_path) }}" class="h-20 w-20 rounded-full object-cover" alt="logo">@endif
-                @if($restaurant->banner_path)<img src="{{ asset('storage/'.$restaurant->banner_path) }}" class="h-20 w-full rounded-xl object-cover" alt="banner">@endif
+<div class="space-y-6">
+    <section class="rounded-[30px] border border-[#dce4d8] bg-white p-5 shadow-[0_16px_38px_rgba(33,43,37,0.06)] sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-xs font-black text-[#2f7f79]">إعدادات المكان</p>
+                <h1 class="mt-1 text-3xl font-black text-[#12221d]">ظبط شكل وبيانات المنيو</h1>
+                <p class="mt-2 max-w-2xl text-sm font-semibold leading-7 text-[#68766d]">البيانات اللي هنا هي اللي العميل بيشوفها. خليك واضح في الاسم والصورة واللينك.</p>
             </div>
-            <button class="zz-btn-primary">حفظ التعديلات</button>
-        </form>
+            <a target="_blank" href="{{ $menuUrl }}" class="inline-flex items-center justify-center rounded-2xl bg-[#12221d] px-5 py-3 text-sm font-black text-white transition hover:bg-[#1f3a33]">افتح المنيو</a>
+        </div>
     </section>
 
-    <section class="zz-card">
-        <h2 class="zz-section-title">إعدادات المنيو</h2>
-        <p class="zz-subtitle mt-1">ظبط الرابط، شكل العرض، وحالة إتاحة المنيو.</p>
+    <div class="grid gap-6 xl:grid-cols-[1fr_420px]">
+        <section class="space-y-6">
+            <div class="rounded-[30px] border border-[#dce4d8] bg-white p-5 shadow-[0_16px_38px_rgba(33,43,37,0.06)] sm:p-6">
+                <div class="mb-5">
+                    <p class="text-xs font-black text-[#d55441]">بيانات المكان</p>
+                    <h2 class="mt-1 text-2xl font-black text-[#12221d]">الاسم والصور اللي بتظهر للعميل</h2>
+                </div>
 
-        <form method="POST" action="{{ route('settings.menu.update') }}" class="mt-5 space-y-4">
-            @csrf @method('PUT')
-            <div>
-                <label class="zz-label">Slug المنيو</label>
-                <input name="slug" class="zz-input" value="{{ old('slug', $restaurant->menuSetting->slug) }}" required pattern="[a-z0-9-]+" inputmode="latin" spellcheck="false" autocapitalize="off" title="اكتب الـ slug بالإنجليزي فقط (a-z, 0-9, -)" data-slug-input data-slug-status="#slug-status" data-slug-preview="#slug-preview">
-                <p class="mt-2 text-xs text-[#6e695e]">الرابط النهائي: <span id="slug-preview" class="font-semibold">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
-                <p id="slug-status" class="mt-1 text-xs text-[#6e695e]">أي تعديل بيتراجع فورًا.</p>
+                <form method="POST" action="{{ route('settings.restaurant.update') }}" enctype="multipart/form-data" class="space-y-5">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid gap-5 lg:grid-cols-2">
+                        <div>
+                            <label class="mb-2 block text-sm font-black text-[#12221d]">اسم المكان</label>
+                            <input class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="name" value="{{ old('name', $restaurant->name) }}" required>
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-black text-[#12221d]">رقم الموبايل</label>
+                            <input class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition placeholder:text-[#9ba49a] focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="phone" value="{{ old('phone', $restaurant->phone) }}" placeholder="مثال: 0100XXXXXXX">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-black text-[#12221d]">العنوان</label>
+                        <input class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition placeholder:text-[#9ba49a] focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="address" value="{{ old('address', $restaurant->address) }}" placeholder="مثال: 15 شارع البحر">
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-black text-[#12221d]">وصف قصير</label>
+                        <textarea class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition placeholder:text-[#9ba49a] focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" name="description" rows="3" placeholder="جملة بسيطة عن المكان">{{ old('description', $restaurant->description) }}</textarea>
+                    </div>
+
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label class="mb-2 block text-sm font-black text-[#12221d]">اللوجو</label>
+                            <input type="file" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] file:ml-4 file:rounded-xl file:border-0 file:bg-[#12221d] file:px-4 file:py-2 file:text-sm file:font-black file:text-white" name="logo" accept="image/*">
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-black text-[#12221d]">صورة الغلاف</label>
+                            <input type="file" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] file:ml-4 file:rounded-xl file:border-0 file:bg-[#12221d] file:px-4 file:py-2 file:text-sm file:font-black file:text-white" name="banner" accept="image/*">
+                        </div>
+                    </div>
+
+                    @if($restaurant->logo_path || $restaurant->banner_path)
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            @if($restaurant->logo_path)
+                                <img src="{{ asset('storage/'.$restaurant->logo_path) }}" class="h-24 w-24 rounded-3xl object-cover shadow-[0_14px_34px_rgba(33,43,37,0.12)]" alt="logo">
+                            @endif
+                            @if($restaurant->banner_path)
+                                <img src="{{ asset('storage/'.$restaurant->banner_path) }}" class="h-24 w-full rounded-3xl object-cover shadow-[0_14px_34px_rgba(33,43,37,0.12)]" alt="banner">
+                            @endif
+                        </div>
+                    @endif
+
+                    <button class="inline-flex w-full items-center justify-center rounded-2xl bg-[#d55441] px-5 py-3 text-sm font-black text-white transition hover:bg-[#bd4838] sm:w-auto">حفظ بيانات المكان</button>
+                </form>
             </div>
 
-            <div>
-                <label class="zz-label">ثيم المنيو</label>
-                <select name="theme" class="zz-input" required>
-                    <option value="classy" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'classy')>Classic (الأساسي)</option>
-                    <option value="tree" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'tree')>Tree Essence (جديد)</option>
-                    <option value="sipchill" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'sipchill')>Sipchill</option>
-                    <option value="ng" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'ng')>NG Theme (جديد)</option>
-                    <option value="paper" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'paper')>Paper (ديزاين كلاسيك)</option>
-                </select>
-                <p class="mt-2 text-xs text-[#6e695e]">تقدر تبدّل بين الثيم الأساسي والثيم الجديد في أي وقت.</p>
+            <div class="rounded-[30px] border border-[#dce4d8] bg-white p-5 shadow-[0_16px_38px_rgba(33,43,37,0.06)] sm:p-6">
+                <div class="mb-5">
+                    <p class="text-xs font-black text-[#2f7f79]">إعدادات المنيو</p>
+                    <h2 class="mt-1 text-2xl font-black text-[#12221d]">اللينك والثيم وحالة النشر</h2>
+                </div>
+
+                <form method="POST" action="{{ route('settings.menu.update') }}" class="space-y-5">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label class="mb-2 block text-sm font-black text-[#12221d]">اسم لينك المنيو</label>
+                        <input name="slug" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" value="{{ old('slug', $restaurant->menuSetting->slug) }}" required pattern="[a-z0-9-]+" inputmode="latin" spellcheck="false" autocapitalize="off" title="اكتب slug بالإنجليزي فقط" data-slug-input data-slug-status="#slug-status" data-slug-preview="#slug-preview">
+                        <p class="mt-2 text-xs font-bold text-[#68766d]">الرابط النهائي: <span id="slug-preview" class="text-[#12221d]">{{ url('/menu/'.$restaurant->menuSetting->slug) }}</span></p>
+                        <p id="slug-status" class="mt-1 text-xs font-bold text-[#68766d]">أي تعديل هنتأكد منه فوراً.</p>
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-black text-[#12221d]">ثيم المنيو</label>
+                        <select name="theme" class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-sm font-bold text-[#12221d] outline-none transition focus:border-[#2f7f79] focus:bg-white focus:ring-4 focus:ring-[#2f7f79]/10" required>
+                            <option value="classy" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'classy')>Classic</option>
+                            <option value="tree" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'tree')>Tree Essence</option>
+                            <option value="sipchill" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'sipchill')>Sipchill</option>
+                            <option value="ng" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'ng')>NG Theme</option>
+                            <option value="paper" @selected(old('theme', $restaurant->menuSetting->theme ?? 'classy') === 'paper')>Paper</option>
+                        </select>
+                    </div>
+
+                    <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#dce4d8] bg-[#fbf9f4] p-4 text-sm font-black text-[#12221d]">
+                        <input type="checkbox" class="h-4 w-4 rounded border-[#cdd6ca] text-[#2f7f79] focus:ring-[#2f7f79]/30" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}>
+                        المنيو متاح لأي حد معاه اللينك
+                    </label>
+
+                    <button class="inline-flex w-full items-center justify-center rounded-2xl bg-[#12221d] px-5 py-3 text-sm font-black text-white transition hover:bg-[#1f3a33] sm:w-auto">حفظ إعدادات المنيو</button>
+                </form>
             </div>
+        </section>
 
-            <label class="flex items-center gap-2 text-sm font-semibold text-[#2f3a2f]"><input type="checkbox" class="zz-checkbox" name="is_public" value="1" {{ old('is_public', $restaurant->menuSetting->is_public) ? 'checked' : '' }}> المنيو متاحة لأي حد معاه اللينك</label>
-            <button class="zz-btn-primary">حفظ إعدادات المنيو</button>
-        </form>
+        <aside class="space-y-6">
+            <div class="rounded-[30px] border border-[#dce4d8] bg-white p-5 shadow-[0_16px_38px_rgba(33,43,37,0.06)]">
+                <p class="text-xs font-black text-[#2f7f79]">اللينكات</p>
+                <h2 class="mt-1 text-xl font-black text-[#12221d]">انسخ وابعت بسرعة</h2>
 
-        <div class="mt-6 space-y-4 rounded-2xl border border-[#e3dacb] bg-[#f8f5ef] p-4">
-            <div class="space-y-2">
-                <p class="text-sm font-semibold">لينك المنيو الحالي</p>
-                <input id="settings-menu-link" readonly class="zz-input" value="{{ $menuUrl }}">
-                <div class="flex gap-2">
-                    <button data-copy-target="#settings-menu-link" class="zz-btn-secondary w-full">نسخ لينك المنيو</button>
-                    <a target="_blank" href="{{ $menuUrl }}" class="zz-btn-primary w-full">فتح المنيو</a>
+                <div class="mt-5 space-y-4">
+                    <div>
+                        <label class="mb-2 block text-xs font-black text-[#68766d]">لينك المنيو الحالي</label>
+                        <input id="settings-menu-link" readonly class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-xs font-bold text-[#12221d]" value="{{ $menuUrl }}">
+                        <div class="mt-2 grid grid-cols-2 gap-2">
+                            <button data-copy-target="#settings-menu-link" class="rounded-2xl border border-[#2f7f79] bg-white px-3 py-2.5 text-xs font-black text-[#2f7f79] transition hover:bg-[#eef8f6]">انسخ</button>
+                            <a target="_blank" href="{{ $menuUrl }}" class="inline-flex items-center justify-center rounded-2xl bg-[#12221d] px-3 py-2.5 text-xs font-black text-white">افتح</a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-xs font-black text-[#68766d]">رابط QR الثابت</label>
+                        <input id="settings-permanent-qr-link" readonly class="w-full rounded-2xl border border-[#d9dfd2] bg-[#fbf9f4] px-4 py-3 text-xs font-bold text-[#12221d]" value="{{ $permanentQrUrl }}">
+                        <div class="mt-2 grid grid-cols-2 gap-2">
+                            <button data-copy-target="#settings-permanent-qr-link" class="rounded-2xl border border-[#2f7f79] bg-white px-3 py-2.5 text-xs font-black text-[#2f7f79] transition hover:bg-[#eef8f6]">انسخ</button>
+                            <a target="_blank" href="{{ $permanentQrUrl }}" class="inline-flex items-center justify-center rounded-2xl bg-[#2f7f79] px-3 py-2.5 text-xs font-black text-white">افتح</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-2 rounded-2xl border border-[#dfd6c6] bg-white p-3">
-                <p class="text-sm font-semibold">رابط QR الثابت (Permanent QR Link)</p>
-                <input id="settings-permanent-qr-link" readonly class="zz-input" value="{{ $permanentQrUrl }}">
-                <div class="flex gap-2">
-                    <button data-copy-target="#settings-permanent-qr-link" class="zz-btn-secondary w-full">نسخ رابط QR الثابت</button>
-                    <a target="_blank" href="{{ $permanentQrUrl }}" class="zz-btn-primary w-full">فتح الرابط الثابت</a>
+            <div class="rounded-[30px] border border-[#dce4d8] bg-white p-5 text-center shadow-[0_16px_38px_rgba(33,43,37,0.06)]">
+                <p class="text-xs font-black text-[#d55441]">QR للطباعة</p>
+                <h2 class="mt-1 text-xl font-black text-[#12221d]">جاهز يتحط في المكان</h2>
+                <img src="{{ route('settings.menu.qr') }}" class="mx-auto mt-5 w-44 rounded-3xl border border-[#dce4d8] bg-white p-3 shadow-sm" alt="permanent qr">
+                <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                    <a href="{{ route('settings.menu.qr') }}" download="permanent-menu-qr.svg" class="inline-flex items-center justify-center rounded-2xl border border-[#2f7f79] bg-white px-4 py-3 text-sm font-black text-[#2f7f79] transition hover:bg-[#eef8f6]">QR لوحده</a>
+                    <a href="{{ $qrDesignDownloadUrl }}" class="inline-flex items-center justify-center rounded-2xl bg-[#d55441] px-4 py-3 text-sm font-black text-white transition hover:bg-[#bd4838]">تصميم كامل</a>
                 </div>
-                <p class="text-xs leading-6 text-[#6e695e]">هذا الرابط ثابت ولا يتغير حتى لو تم تغيير اسم المطعم أو رابط المنيو. استخدم هذا الرابط عند طباعة QR Code للعميل.</p>
-            </div>
-
-            <div class="rounded-2xl border border-[#dfd6c6] bg-white p-3 text-center">
-                <p class="text-sm font-semibold">QR ثابت جاهز للطباعة</p>
-                <img src="{{ route('settings.menu.qr') }}" class="mx-auto mt-3 w-44 rounded-2xl border border-[#dfd6c6] bg-white p-2" alt="permanent qr">
-                <div class="mt-3 grid gap-2 sm:grid-cols-2">
-                    <a href="{{ route('settings.menu.qr') }}" download="permanent-menu-qr.svg" class="zz-btn-secondary w-full">تحميل QR (SVG)</a>
-                    <a href="{{ $qrDesignDownloadUrl }}" class="zz-btn-primary w-full">تحميل تصميم QR</a>
-                </div>
-                <a href="{{ $qrDesignPreviewUrl }}" target="_blank" class="mt-2 inline-flex text-xs font-semibold text-[#7a6844] hover:text-[#5f5035]">معاينة التصميم قبل الطباعة</a>
-                <div class="mt-3 overflow-hidden rounded-2xl border border-[#e7dece] bg-[#fbf8f2]">
+                <a href="{{ $qrDesignPreviewUrl }}" target="_blank" class="mt-3 inline-flex text-xs font-black text-[#2f7f79] hover:underline">عاين التصميم</a>
+                <div class="mt-4 overflow-hidden rounded-3xl border border-[#dce4d8] bg-[#fbf9f4]">
                     <iframe src="{{ $qrDesignPreviewUrl }}" title="QR print design preview" class="h-72 w-full" loading="lazy"></iframe>
                 </div>
             </div>
-        </div>
-    </section>
+        </aside>
+    </div>
 </div>
 @endsection

@@ -10,202 +10,115 @@
     ];
 
     $statusMap = [
-        'active' => ['label' => 'نشط', 'class' => 'zz-badge-active'],
-        'inactive' => ['label' => 'غير نشط', 'class' => 'zz-badge-muted'],
-        'suspended' => ['label' => 'موقوف', 'class' => 'zz-badge-danger'],
-        'expired' => ['label' => 'منتهي', 'class' => 'zz-badge-muted'],
+        'active' => ['label' => 'شغال', 'class' => 'bg-[#edf9f5] text-[#23625c]'],
+        'inactive' => ['label' => 'مش شغال', 'class' => 'bg-[#f4f0e7] text-[#68766d]'],
+        'suspended' => ['label' => 'موقوف', 'class' => 'bg-[#fff0ed] text-[#b84d3a]'],
+        'expired' => ['label' => 'منتهي', 'class' => 'bg-[#f4f0e7] text-[#68766d]'],
     ];
 @endphp
 
-<div class="space-y-5">
-    <section class="zz-card space-y-5">
-        <div class="space-y-2">
-            <h1 class="zz-title">إدارة المطاعم والاشتراكات</h1>
-            <p class="zz-subtitle">تابع حالة كل حساب بسرعة، وعدّل الاشتراك أو افتح رابط المنيو من نفس الشاشة.</p>
-        </div>
+<div class="space-y-6">
+    <section class="rounded-[30px] border border-[#dce4d8] bg-white p-5 shadow-[0_16px_38px_rgba(33,43,37,0.06)] sm:p-6">
+        <p class="text-xs font-black text-[#2f7f79]">لوحة المالك</p>
+        <h1 class="mt-1 text-3xl font-black text-[#12221d]">الحسابات والاشتراكات</h1>
+        <p class="mt-2 max-w-2xl text-sm font-semibold leading-7 text-[#68766d]">تابع كل مكان، افتح المنيو بتاعه، وعدّل حالة الاشتراك من نفس الصفحة.</p>
+    </section>
 
-        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <article class="zz-stat-card">
-                <p class="zz-stat-label">إجمالي الحسابات</p>
-                <p class="zz-stat-value">{{ $stats['total'] }}</p>
-            </article>
-            <article class="zz-stat-card">
-                <p class="zz-stat-label">اشتراكات نشطة</p>
-                <p class="zz-stat-value text-[#3e5a20]">{{ $stats['active'] }}</p>
-            </article>
-            <article class="zz-stat-card">
-                <p class="zz-stat-label">اشتراكات منتهية</p>
-                <p class="zz-stat-value text-[#8f3d2f]">{{ $stats['expired'] }}</p>
-            </article>
-            <article class="zz-stat-card">
-                <p class="zz-stat-label">منيو متاحة الآن</p>
-                <p class="zz-stat-value text-[#2d6a62]">{{ $stats['public_menu'] }}</p>
-            </article>
-        </div>
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <article class="rounded-[24px] border border-[#dce4d8] bg-white p-5 shadow-[0_14px_34px_rgba(33,43,37,0.06)]">
+            <p class="text-xs font-black text-[#68766d]">كل الحسابات</p>
+            <p class="mt-3 text-4xl font-black text-[#12221d]">{{ $stats['total'] }}</p>
+        </article>
+        <article class="rounded-[24px] border border-[#dce4d8] bg-white p-5 shadow-[0_14px_34px_rgba(33,43,37,0.06)]">
+            <p class="text-xs font-black text-[#68766d]">اشتراكات شغالة</p>
+            <p class="mt-3 text-4xl font-black text-[#23625c]">{{ $stats['active'] }}</p>
+        </article>
+        <article class="rounded-[24px] border border-[#dce4d8] bg-white p-5 shadow-[0_14px_34px_rgba(33,43,37,0.06)]">
+            <p class="text-xs font-black text-[#68766d]">اشتراكات منتهية</p>
+            <p class="mt-3 text-4xl font-black text-[#b84d3a]">{{ $stats['expired'] }}</p>
+        </article>
+        <article class="rounded-[24px] border border-[#dce4d8] bg-white p-5 shadow-[0_14px_34px_rgba(33,43,37,0.06)]">
+            <p class="text-xs font-black text-[#68766d]">منيو منشورة</p>
+            <p class="mt-3 text-4xl font-black text-[#2f7f79]">{{ $stats['public_menu'] }}</p>
+        </article>
     </section>
 
     @if($restaurants->isEmpty())
-        <section class="zz-empty">لسه مفيش مطاعم مضافة. أول ما يتم إنشاء حساب جديد هتلاقيه هنا تلقائيًا.</section>
-    @else
-        <section class="zz-table-wrap hidden xl:block">
-            <div class="overflow-x-auto">
-                <table class="zz-table zz-owner-table">
-                    <thead>
-                    <tr>
-                        <th>المطعم / الحساب</th>
-                        <th>البيانات</th>
-                        <th>الحالة</th>
-                        <th>الإحصائيات</th>
-                        <th>إجراءات سريعة</th>
-                        <th>تحديث الاشتراك</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($restaurants as $restaurant)
-                        @php
-                            $owner = $restaurant->users->first();
-                            $statusData = $statusMap[$restaurant->effectiveSubscriptionStatus()] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
-                            $menuUrl = $restaurant->menuSetting?->slug ? route('menu.show', $restaurant->menuSetting->slug) : null;
-                            $isPublicMenu = (bool) $restaurant->menuSetting?->is_public;
-                        @endphp
-                        <tr>
-                            <td>
-                                <div class="space-y-1">
-                                    <p class="font-bold text-[#2b3526]">{{ $restaurant->name }}</p>
-                                    <p class="text-xs text-[#7a756a]">رقم الحساب: #{{ $restaurant->id }}</p>
-                                    @if($restaurant->menuSetting?->slug)
-                                        <p class="text-xs text-[#7a756a]">Slug: <span class="font-semibold text-[#2f3a2f]">{{ $restaurant->menuSetting->slug }}</span></p>
-                                    @else
-                                        <p class="text-xs text-[#a0937f]">Slug غير متاح</p>
-                                    @endif
-                                </div>
-                            </td>
-                            <td>
-                                <div class="space-y-1 text-[13px] leading-6">
-                                    <p><span class="font-semibold text-[#5f695f]">المالك:</span> {{ $owner?->name ?: '-' }}</p>
-                                    <p><span class="font-semibold text-[#5f695f]">البريد:</span> {{ $owner?->email ?: '-' }}</p>
-                                    <p><span class="font-semibold text-[#5f695f]">الهاتف:</span> {{ $restaurant->phone ?: '-' }}</p>
-                                    <p><span class="font-semibold text-[#5f695f]">تاريخ الإنشاء:</span> {{ $restaurant->created_at->format('Y-m-d') }}</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="space-y-2">
-                                    <span class="zz-badge {{ $statusData['class'] }}">{{ $statusData['label'] }}</span>
-                                    <div>
-                                        <p class="text-[11px] text-[#7a756a]">بداية: {{ $restaurant->subscription_starts_at?->format('Y-m-d') ?: '-' }}</p>
-                                        <p class="text-[11px] text-[#7a756a]">نهاية: {{ $restaurant->subscription_ends_at?->format('Y-m-d') ?: '-' }}</p>
-                                    </div>
-                                    <span class="zz-badge {{ $isPublicMenu ? 'zz-badge-info' : 'zz-badge-muted' }}">{{ $isPublicMenu ? 'المنيو متاحة' : 'المنيو مخفية' }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="zz-chip">الأقسام: {{ $restaurant->categories_count }}</span>
-                                    <span class="zz-chip">المنتجات: {{ $restaurant->products_count }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex flex-wrap gap-2">
-                                    @if($menuUrl)
-                                        <a href="{{ $menuUrl }}" target="_blank" class="zz-btn-secondary !rounded-xl !px-3 !py-1.5 !text-xs">فتح المنيو</a>
-                                        <button type="button" data-copy-link="{{ $menuUrl }}" class="zz-btn-ghost !rounded-xl !px-3 !py-1.5 !text-xs">نسخ الرابط</button>
-                                    @else
-                                        <span class="text-xs text-[#9b988f]">لا يوجد رابط منيو حاليًا</span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td>
-                                <form action="{{ route('owner.restaurants.subscription.update', $restaurant) }}" method="POST" class="zz-action-grid">
-                                    @csrf
-                                    @method('PATCH')
-                                    <div>
-                                        <label class="zz-mini-label">الحالة</label>
-                                        <select name="subscription_status" class="zz-input zz-input-compact">
-                                            <option value="active" @selected($restaurant->subscription_status === 'active')>نشط</option>
-                                            <option value="suspended" @selected($restaurant->subscription_status === 'suspended')>موقوف</option>
-                                            <option value="expired" @selected($restaurant->subscription_status === 'expired')>منتهي</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="zz-mini-label">بداية الاشتراك</label>
-                                        <input type="date" name="subscription_starts_at" value="{{ optional($restaurant->subscription_starts_at)->format('Y-m-d') }}" class="zz-input zz-input-compact">
-                                    </div>
-                                    <div>
-                                        <label class="zz-mini-label">نهاية الاشتراك</label>
-                                        <input type="date" name="subscription_ends_at" value="{{ optional($restaurant->subscription_ends_at)->format('Y-m-d') }}" class="zz-input zz-input-compact">
-                                    </div>
-                                    <button class="zz-btn-primary zz-action-submit">حفظ التحديث</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+        <section class="rounded-[28px] border border-dashed border-[#d55441]/45 bg-[#fff0ed] p-8 text-center">
+            <h2 class="text-2xl font-black text-[#12221d]">لسه مفيش حسابات</h2>
+            <p class="mx-auto mt-2 max-w-xl text-sm font-bold leading-7 text-[#8b3b2e]">أول ما حد يعمل حساب ويجهز مكانه، هيظهر هنا تلقائياً.</p>
         </section>
-
-        <section class="space-y-4 xl:hidden">
+    @else
+        <section class="grid gap-4">
             @foreach($restaurants as $restaurant)
                 @php
                     $owner = $restaurant->users->first();
-                    $statusData = $statusMap[$restaurant->effectiveSubscriptionStatus()] ?? ['label' => 'غير محدد', 'class' => 'zz-badge-muted'];
+                    $statusData = $statusMap[$restaurant->effectiveSubscriptionStatus()] ?? ['label' => 'مش محدد', 'class' => 'bg-[#f4f0e7] text-[#68766d]'];
                     $menuUrl = $restaurant->menuSetting?->slug ? route('menu.show', $restaurant->menuSetting->slug) : null;
                     $isPublicMenu = (bool) $restaurant->menuSetting?->is_public;
                 @endphp
 
-                <article class="zz-owner-card">
-                    <div class="flex flex-wrap items-start justify-between gap-2 border-b border-[#eee6d8] pb-3">
+                <article class="rounded-[28px] border border-[#dce4d8] bg-white p-5 shadow-[0_14px_34px_rgba(33,43,37,0.06)]">
+                    <div class="grid gap-5 xl:grid-cols-[1fr_360px]">
                         <div>
-                            <h2 class="text-base font-bold text-[#253126]">{{ $restaurant->name }}</h2>
-                            <p class="text-xs text-[#7a756a]">حساب رقم #{{ $restaurant->id }}</p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="zz-badge {{ $statusData['class'] }}">{{ $statusData['label'] }}</span>
-                            <span class="zz-badge {{ $isPublicMenu ? 'zz-badge-info' : 'zz-badge-muted' }}">{{ $isPublicMenu ? 'المنيو متاحة' : 'المنيو مخفية' }}</span>
-                        </div>
-                    </div>
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                    <h2 class="text-2xl font-black text-[#12221d]">{{ $restaurant->name }}</h2>
+                                    <p class="mt-1 text-sm font-bold text-[#68766d]">حساب #{{ $restaurant->id }} · {{ $owner?->name ?: 'بدون مالك' }}</p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="rounded-full px-3 py-1 text-[11px] font-black {{ $statusData['class'] }}">{{ $statusData['label'] }}</span>
+                                    <span class="rounded-full px-3 py-1 text-[11px] font-black {{ $isPublicMenu ? 'bg-[#edf9f5] text-[#23625c]' : 'bg-[#f4f0e7] text-[#68766d]' }}">{{ $isPublicMenu ? 'المنيو منشورة' : 'المنيو مخفية' }}</span>
+                                </div>
+                            </div>
 
-                    <div class="grid gap-2 text-sm text-[#2f3a2f] sm:grid-cols-2">
-                        <p><span class="font-semibold text-[#5f695f]">المالك:</span> {{ $owner?->name ?: '-' }}</p>
-                        <p><span class="font-semibold text-[#5f695f]">البريد:</span> {{ $owner?->email ?: '-' }}</p>
-                        <p><span class="font-semibold text-[#5f695f]">الهاتف:</span> {{ $restaurant->phone ?: '-' }}</p>
-                        <p><span class="font-semibold text-[#5f695f]">الإنشاء:</span> {{ $restaurant->created_at->format('Y-m-d') }}</p>
-                        <p class="sm:col-span-2"><span class="font-semibold text-[#5f695f]">Slug:</span> {{ $restaurant->menuSetting?->slug ?: '-' }}</p>
-                    </div>
+                            <div class="mt-5 grid gap-3 text-sm font-bold text-[#68766d] md:grid-cols-2">
+                                <p><span class="text-[#12221d]">الإيميل:</span> {{ $owner?->email ?: '-' }}</p>
+                                <p><span class="text-[#12221d]">الموبايل:</span> {{ $restaurant->phone ?: '-' }}</p>
+                                <p><span class="text-[#12221d]">تاريخ الإنشاء:</span> {{ $restaurant->created_at->format('Y-m-d') }}</p>
+                                <p><span class="text-[#12221d]">Slug:</span> {{ $restaurant->menuSetting?->slug ?: '-' }}</p>
+                            </div>
 
-                    <div class="flex flex-wrap gap-2">
-                        <span class="zz-chip">الأقسام: {{ $restaurant->categories_count }}</span>
-                        <span class="zz-chip">المنتجات: {{ $restaurant->products_count }}</span>
-                    </div>
+                            <div class="mt-5 flex flex-wrap gap-2">
+                                <span class="rounded-full bg-[#eef8f6] px-3 py-1 text-xs font-black text-[#2f7f79]">الأقسام: {{ $restaurant->categories_count }}</span>
+                                <span class="rounded-full bg-[#fff3df] px-3 py-1 text-xs font-black text-[#94611c]">الأصناف: {{ $restaurant->products_count }}</span>
+                            </div>
 
-                    <div class="flex flex-wrap gap-2">
-                        @if($menuUrl)
-                            <a href="{{ $menuUrl }}" target="_blank" class="zz-btn-secondary !rounded-xl !px-3 !py-2 !text-xs">فتح المنيو</a>
-                            <button type="button" data-copy-link="{{ $menuUrl }}" class="zz-btn-ghost !rounded-xl !px-3 !py-2 !text-xs">نسخ الرابط</button>
-                        @endif
-                    </div>
+                            <div class="mt-5 flex flex-wrap gap-2">
+                                @if($menuUrl)
+                                    <a href="{{ $menuUrl }}" target="_blank" class="inline-flex items-center justify-center rounded-2xl bg-[#12221d] px-4 py-2.5 text-xs font-black text-white transition hover:bg-[#1f3a33]">افتح المنيو</a>
+                                    <button type="button" data-copy-link="{{ $menuUrl }}" class="inline-flex items-center justify-center rounded-2xl border border-[#2f7f79] bg-white px-4 py-2.5 text-xs font-black text-[#2f7f79] transition hover:bg-[#eef8f6]">انسخ الرابط</button>
+                                @else
+                                    <span class="text-xs font-bold text-[#9ba49a]">مفيش رابط منيو حالياً</span>
+                                @endif
+                            </div>
+                        </div>
 
-                    <form action="{{ route('owner.restaurants.subscription.update', $restaurant) }}" method="POST" class="grid gap-3 border-t border-[#eee6d8] pt-3 sm:grid-cols-2">
-                        @csrf
-                        @method('PATCH')
-                        <div>
-                            <label class="zz-mini-label">الحالة</label>
-                            <select name="subscription_status" class="zz-input zz-input-compact">
-                                <option value="active" @selected($restaurant->subscription_status === 'active')>نشط</option>
-                                <option value="suspended" @selected($restaurant->subscription_status === 'suspended')>موقوف</option>
-                                <option value="expired" @selected($restaurant->subscription_status === 'expired')>منتهي</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="zz-mini-label">بداية الاشتراك</label>
-                            <input type="date" name="subscription_starts_at" value="{{ optional($restaurant->subscription_starts_at)->format('Y-m-d') }}" class="zz-input zz-input-compact">
-                        </div>
-                        <div>
-                            <label class="zz-mini-label">نهاية الاشتراك</label>
-                            <input type="date" name="subscription_ends_at" value="{{ optional($restaurant->subscription_ends_at)->format('Y-m-d') }}" class="zz-input zz-input-compact">
-                        </div>
-                        <button class="zz-btn-primary sm:self-end">حفظ التحديث</button>
-                    </form>
+                        <form action="{{ route('owner.restaurants.subscription.update', $restaurant) }}" method="POST" class="rounded-3xl border border-[#dce4d8] bg-[#fbf9f4] p-4">
+                            @csrf
+                            @method('PATCH')
+                            <p class="mb-4 text-sm font-black text-[#12221d]">تحديث الاشتراك</p>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="mb-1 block text-xs font-black text-[#68766d]">الحالة</label>
+                                    <select name="subscription_status" class="w-full rounded-2xl border border-[#d9dfd2] bg-white px-3 py-2.5 text-xs font-bold text-[#12221d]">
+                                        <option value="active" @selected($restaurant->subscription_status === 'active')>شغال</option>
+                                        <option value="suspended" @selected($restaurant->subscription_status === 'suspended')>موقوف</option>
+                                        <option value="expired" @selected($restaurant->subscription_status === 'expired')>منتهي</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="mb-1 block text-xs font-black text-[#68766d]">بداية الاشتراك</label>
+                                    <input type="date" name="subscription_starts_at" value="{{ optional($restaurant->subscription_starts_at)->format('Y-m-d') }}" class="w-full rounded-2xl border border-[#d9dfd2] bg-white px-3 py-2.5 text-xs font-bold text-[#12221d]">
+                                </div>
+                                <div>
+                                    <label class="mb-1 block text-xs font-black text-[#68766d]">نهاية الاشتراك</label>
+                                    <input type="date" name="subscription_ends_at" value="{{ optional($restaurant->subscription_ends_at)->format('Y-m-d') }}" class="w-full rounded-2xl border border-[#d9dfd2] bg-white px-3 py-2.5 text-xs font-bold text-[#12221d]">
+                                </div>
+                                <button class="w-full rounded-2xl bg-[#d55441] px-4 py-3 text-sm font-black text-white transition hover:bg-[#bd4838]">حفظ التحديث</button>
+                            </div>
+                        </form>
+                    </div>
                 </article>
             @endforeach
         </section>
@@ -228,7 +141,7 @@
 
         navigator.clipboard.writeText(link).then(() => {
             const originalText = trigger.textContent;
-            trigger.textContent = 'اتنسخ الرابط';
+            trigger.textContent = 'اتنسخ';
             setTimeout(() => {
                 trigger.textContent = originalText;
             }, 1400);

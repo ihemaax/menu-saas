@@ -5,21 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class MenuSetting extends Model
+class MenuVisit extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'restaurant_id',
-        'slug',
-        'is_public',
-        'theme',
+        'menu_setting_id',
+        'visited_on',
+        'visited_at',
+        'visitor_hash',
+        'ip_hash',
+        'user_agent_hash',
+        'device_type',
+        'source',
+        'path',
+        'referer',
     ];
 
     protected $casts = [
-        'is_public' => 'boolean',
+        'visited_on' => 'date',
+        'visited_at' => 'datetime',
     ];
 
     public function restaurant(): BelongsTo
@@ -27,8 +34,8 @@ class MenuSetting extends Model
         return $this->belongsTo(Restaurant::class);
     }
 
-    public function visits(): HasMany
+    public function menuSetting(): BelongsTo
     {
-        return $this->hasMany(MenuVisit::class);
+        return $this->belongsTo(MenuSetting::class);
     }
 }

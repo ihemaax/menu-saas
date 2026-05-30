@@ -45,6 +45,11 @@ class Restaurant extends Model
         return $this->hasMany(Product::class)->orderBy('sort_order');
     }
 
+    public function menuVisits(): HasMany
+    {
+        return $this->hasMany(MenuVisit::class);
+    }
+
     public function menuSetting(): HasOne
     {
         return $this->hasOne(MenuSetting::class);

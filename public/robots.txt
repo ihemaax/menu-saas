@@ -1,2 +1,12 @@
 User-agent: *
 Disallow:
+Disallow: /dashboard
+Disallow: /owner
+Disallow: /profile
+Disallow: /settings
+Disallow: /products
+Disallow: /categories
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://menu.osirix.online/sitemap.xml

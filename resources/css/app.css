@@ -114,3 +114,152 @@
   .zz-auth-links a {@apply text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
   .zz-auth-single-link {@apply block pt-1 text-center text-sm text-[#2f7f79] transition hover:text-[#266762] hover:underline;}
 }
+
+.zz-admin-ui {
+  font-size: 13px;
+}
+
+.zz-admin-ui .text-xs {
+  font-size: 0.7rem !important;
+  line-height: 1rem !important;
+}
+
+.zz-admin-ui .text-sm {
+  font-size: 0.78rem !important;
+  line-height: 1.25rem !important;
+}
+
+.zz-admin-ui .text-base {
+  font-size: 0.88rem !important;
+  line-height: 1.45rem !important;
+}
+
+.zz-admin-ui .text-lg {
+  font-size: 0.98rem !important;
+  line-height: 1.45rem !important;
+}
+
+.zz-admin-ui .text-xl {
+  font-size: 1.08rem !important;
+  line-height: 1.55rem !important;
+}
+
+.zz-admin-ui .text-2xl {
+  font-size: 1.22rem !important;
+  line-height: 1.7rem !important;
+}
+
+.zz-admin-ui .text-3xl {
+  font-size: 1.45rem !important;
+  line-height: 1.95rem !important;
+}
+
+.zz-admin-ui .text-4xl {
+  font-size: 1.75rem !important;
+  line-height: 2.15rem !important;
+}
+
+/* ====================================================
+   Osirix Landing — Modern Egyptian Theme (Light)
+   ==================================================== */
+
+@keyframes osx-glow-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.06); }
+}
+
+@keyframes osx-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes osx-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes osx-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.osx-animate-in {
+  animation: osx-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.osx-animate-in-d1 { animation-delay: 0.1s; }
+.osx-animate-in-d2 { animation-delay: 0.2s; }
+.osx-animate-in-d3 { animation-delay: 0.3s; }
+.osx-animate-in-d4 { animation-delay: 0.4s; }
+
+.osx-glow {
+  animation: osx-glow-pulse 4s ease-in-out infinite;
+}
+.osx-float {
+  animation: osx-float 5s ease-in-out infinite;
+}
+
+.osx-gold-shimmer {
+  background: linear-gradient(110deg, #a07c2a 0%, #c9a84c 30%, #dfc06e 50%, #c9a84c 70%, #a07c2a 100%);
+  background-size: 200% 100%;
+  animation: osx-shimmer 3.5s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.osx-card-hover {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.osx-card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(160, 124, 42, 0.12);
+  border-color: rgba(201, 168, 76, 0.45);
+}
+
+.osx-egyptian-divider {
+  position: relative;
+}
+.osx-egyptian-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #c9a84c 25%, #dfc06e 50%, #c9a84c 75%, transparent 100%);
+  opacity: 0.35;
+}
+
+/* Phone mockup — light edition */
+.osx-phone {
+  position: relative;
+  width: 280px;
+  border-radius: 36px;
+  border: 3px solid rgba(201, 168, 76, 0.4);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(201, 168, 76, 0.15),
+    0 25px 70px rgba(120, 90, 30, 0.14),
+    0 8px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+.osx-phone::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 20px;
+  background: #f0ebe0;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+/* Subtle geometric pattern */
+.osx-geo-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23c9a84c' stroke-width='0.4' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* Scrollbar */
+.osx-landing::-webkit-scrollbar { width: 6px; }
+.osx-landing::-webkit-scrollbar-track { background: #f5f0e5; }
+.osx-landing::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 3px; }

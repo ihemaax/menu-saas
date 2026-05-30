@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $restaurant->name }} | المنيو الكلاسيكي</title>
+    <title>{{ $seoTitle ?? $restaurant->name.' | المنيو' }}</title>
+    @include('partials.seo')
+    @include('partials.menu-structured-data')
     
     <!-- Dynamic Favicon (Restaurant Logo) -->
     <link rel="icon" href="{{ $restaurant->logo_path ? asset('storage/'.$restaurant->logo_path) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=300&auto=format&fit=crop' }}" type="image/x-icon">
@@ -244,6 +246,17 @@
             letter-spacing: 1px;
         }
 
+        .brand-subname {
+            font-family: 'Cinzel', 'Outfit', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 12px;
+            text-shadow: 0 2px 4px var(--shadow-color);
+        }
+
         .brand-tagline {
             font-family: 'Cinzel', 'Outfit', sans-serif;
             font-size: 0.8rem;
@@ -251,7 +264,7 @@
             color: var(--gold-accent);
             text-transform: uppercase;
             letter-spacing: 0.22em;
-            margin-top: 4px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -272,6 +285,16 @@
             max-width: 500px;
             margin-top: 12px;
             line-height: 1.6;
+        }
+
+        .brand-desc-en {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-top: 4px;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
         }
 
         /* Theme Toggle Button */
@@ -1433,6 +1456,63 @@
 
 @php
     $allItemsCount = $categories->sum(fn($category) => $category->products->count());
+
+    // Split restaurant name (e.g., "صالون النرويجي     El-Nerwegy Barber Shop")
+    $name = $restaurant->name;
+    $nameParts = [];
+    if (str_contains($name, '/')) {
+        $nameParts = explode('/', $name);
+    } elseif (preg_match('/\s{2,}/', $name)) {
+        $nameParts = preg_split('/\s{2,}/', $name);
+    } elseif (str_contains($name, ' - ')) {
+        $nameParts = explode(' - ', $name);
+    } else {
+        $nameParts = [$name];
+    }
+    
+    $arabicName = trim($nameParts[0]);
+    $englishName = isset($nameParts[1]) ? trim($nameParts[1]) : '';
+    
+    // Split restaurant description (e.g. "أرقى خدمات العناية بالشعر والوجه والبشرة للرجال والسيدات / Premium Hair, Face & Skin Care Services")
+    $desc = $restaurant->description;
+    $arabicDesc = '';
+    $englishDesc = '';
+    
+    if ($desc) {
+        $descParts = [];
+        if (str_contains($desc, '/')) {
+            $descParts = explode('/', $desc);
+        } elseif (str_contains($desc, ' - ')) {
+            $descParts = explode(' - ', $desc);
+        } elseif (preg_match('/\s{2,}/', $desc)) {
+            $descParts = preg_split('/\s{2,}/', $desc);
+        } else {
+            $descParts = [$desc];
+        }
+        
+        $hasArabic = function($str) {
+            return preg_match('/\p{Arabic}/u', $str);
+        };
+        
+        if (count($descParts) > 1) {
+            $part1 = trim($descParts[0]);
+            $part2 = trim($descParts[1]);
+            if ($hasArabic($part1)) {
+                $arabicDesc = $part1;
+                $englishDesc = $part2;
+            } else {
+                $arabicDesc = $part2;
+                $englishDesc = $part1;
+            }
+        } else {
+            $part = trim($descParts[0]);
+            if ($hasArabic($part)) {
+                $arabicDesc = $part;
+            } else {
+                $englishDesc = $part;
+            }
+        }
+    }
 @endphp
 
 <div class="outer-frame">
@@ -1567,11 +1647,17 @@
             @endif
         </div>
 
-        <h1 class="brand-name">{{ $restaurant->name }}</h1>
+        <h1 class="brand-name">{{ $arabicName }}</h1>
+        @if($englishName)
+            <span class="brand-subname">{{ $englishName }}</span>
+        @endif
         <span class="brand-tagline">MENU</span>
 
-        @if($restaurant->description)
-            <p class="brand-desc">{{ $restaurant->description }}</p>
+        @if($arabicDesc)
+            <p class="brand-desc">{{ $arabicDesc }}</p>
+        @endif
+        @if($englishDesc)
+            <p class="brand-desc-en">{{ $englishDesc }}</p>
         @endif
     </header>
 
